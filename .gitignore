@@ -1,6 +1,7 @@
 # compiled class files
 *.class
 target/*
+out/*
 
 # package files
 *.jar
