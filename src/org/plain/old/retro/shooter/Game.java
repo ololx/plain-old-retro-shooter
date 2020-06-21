@@ -17,13 +17,11 @@
 package org.plain.old.retro.shooter;
 
 /**
- * @project plain-old-retro-shooter
- * @created 19.06.2020 08:58
- * <p>
- * @author Alexander A. Kropotin
+ * The type Game.
  *
- * This is a main game class, which is runnable and will manage
- * all game logics (such as fps, screen update && e.t.c.)
+ * @author Alexander A. Kropotin This is a main game class, which is runnable and will manage all game logics (such as fps, screen update && e.t.c.)
+ * @project plain -old-retro-shooter
+ * @created 19.06.2020 08:58 <p>
  */
 public class Game implements Runnable {
 
@@ -31,11 +29,14 @@ public class Game implements Runnable {
 
     private boolean running;
 
-    private FrameCounter frameCounter;
+    private ClockRate clockRate;
 
+    /**
+     * Instantiates a new Game.
+     */
     public Game() {
         thread = new Thread(this);
-        this.frameCounter = new FrameCounter(60.0);
+        this.clockRate = new ClockRate(60);
     }
 
     @Override
@@ -43,20 +44,21 @@ public class Game implements Runnable {
         long previousMoment = System.nanoTime();
 
         while (running) {
-            long currentMoment = System.nanoTime();
-            double frameTime = (currentMoment - previousMoment);
-
-            previousMoment = currentMoment;
-            System.out.println("FPS : " + 1.0 / frameTime);
-            frameCounter.process();
+            this.clockRate.clock();
         }
     }
 
+    /**
+     * Start.
+     */
     public synchronized void start() {
         running = true;
         thread.start();
     }
 
+    /**
+     * Stop.
+     */
     public synchronized void stop() {
         running = false;
 
