@@ -1,8 +1,10 @@
-/**
+package org.plain.old.retro.shooter; /**
  * Copyright 2020 the project plain-old-retro-shooter authors
  * and the original author or authors annotated by {@author}
  */
-package org.plain.old.retro.shooter;
+
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * The type Clock rate.
@@ -23,10 +25,18 @@ public class ClockRate {
         /**
          * Process.
          *
-         * @param <T>  the type parameter
-         * @param args the args
+         * //@param arg the args
          */
-        <T> void process(T... args);
+        void process();
+
+        default Processing<T> andThen(Processing<? super T> after) {
+            Objects.requireNonNull(after);
+
+            return () -> {
+                process();
+                after.process();
+            };
+        }
     }
 
     /**
@@ -82,20 +92,22 @@ public class ClockRate {
      *
      * @param <T> the type parameter
      */
-    public <T> void clock() {
+    public void clock() {
         this.clock(null);
     }
 
     /**
      * Clock.
      *
-     * @param <T>        the type parameter
+     * //@param <T>        the type parameter
      * @param processing the processing
      */
-    public <T> void clock(Processing<T> processing) {
+    public void clock(Processing<?>... processing) {
         this.beep();
 
-        if (processing != null) processing.process(null);
+        if (processing != null && processing.length > 0) {
+            Arrays.stream(processing).forEach(p -> p.process());
+        }
 
         this.sleep();
     }

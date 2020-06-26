@@ -41,8 +41,6 @@ public class Game implements Runnable {
 
     @Override
     public void run() {
-        long previousMoment = System.nanoTime();
-
         while (running) {
             this.clockRate.clock();
         }
