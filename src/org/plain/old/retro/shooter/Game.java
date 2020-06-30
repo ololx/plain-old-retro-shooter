@@ -23,47 +23,21 @@ package org.plain.old.retro.shooter;
  * @project plain -old-retro-shooter
  * @created 19.06.2020 08:58 <p>
  */
-public class Game implements Runnable {
+public class Game {
 
-    private Thread thread;
-
-    private boolean running;
-
-    private ClockRate clockRate;
+    private RateTimer gameLoop;
 
     /**
      * Instantiates a new Game.
      */
     public Game() {
-        thread = new Thread(this);
-        this.clockRate = new ClockRate(60);
-    }
-
-    @Override
-    public void run() {
-        while (running) {
-            this.clockRate.clock();
-        }
+        this.gameLoop = new RateTimer(120, () -> System.out.println(gameLoop.getHerz()));
     }
 
     /**
-     * Start.
+     * Init.
      */
-    public synchronized void start() {
-        running = true;
-        thread.start();
-    }
-
-    /**
-     * Stop.
-     */
-    public synchronized void stop() {
-        running = false;
-
-        try {
-            thread.join();
-        } catch(InterruptedException e) {
-            e.printStackTrace();
-        }
+    public void init() {
+        this.gameLoop.start();
     }
 }
