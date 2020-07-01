@@ -11,7 +11,9 @@ public class Main {
      * @param args the input arguments
      */
     public static void main(String[] args) {
-        Game game = new Game();
-        game.init();
+        //Game game = new Game();
+        //game.init();
+        Rayc r = new Rayc();
+        r.start();
     }
 }

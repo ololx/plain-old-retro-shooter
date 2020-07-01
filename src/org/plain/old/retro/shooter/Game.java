@@ -16,6 +16,8 @@
  */
 package org.plain.old.retro.shooter;
 
+import org.plain.old.retro.shooter.clock.RateTimer;
+
 /**
  * The type Game.
  *

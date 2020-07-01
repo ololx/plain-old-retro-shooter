@@ -1,9 +1,10 @@
-package org.plain.old.retro.shooter;
+package org.plain.old.retro.shooter.clock;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
 
 /**
  * The type Rate timer.
