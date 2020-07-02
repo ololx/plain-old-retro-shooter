@@ -1,5 +1,7 @@
 package org.plain.old.retro.shooter.math;
 
+import org.plain.old.retro.shooter.math.point.Coordinate;
+
 /**
  * The interface Vector.
  *
@@ -8,19 +10,19 @@ package org.plain.old.retro.shooter.math;
  * @project plain -old-retro-shooter
  * @created 01.07.2020 17:30 <p>
  */
-interface Vector<P extends Point> {
+interface Vector<P extends Coordinate> {
 
     /**
      * Gets a.
      *
      * @return the a
      */
-    Point getA();
+    Coordinate getA();
 
     /**
      * Gets b.
      *
      * @return the b
      */
-    Point getB();
+    Coordinate getB();
 }

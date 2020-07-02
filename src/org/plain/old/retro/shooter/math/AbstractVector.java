@@ -1,5 +1,7 @@
 package org.plain.old.retro.shooter.math;
 
+import org.plain.old.retro.shooter.math.point.Coordinate;
+
 /**
  * The type Abstract vector.
  *
@@ -8,7 +10,7 @@ package org.plain.old.retro.shooter.math;
  * @project plain -old-retro-shooter
  * @created 01.07.2020 17:32 <p>
  */
-public class AbstractVector<P extends Point> implements Vector<P> {
+public class AbstractVector<P extends Coordinate> implements Vector<P> {
 
     /**
      * The A.
@@ -32,12 +34,12 @@ public class AbstractVector<P extends Point> implements Vector<P> {
     }
 
     @Override
-    public Point getA() {
+    public Coordinate getA() {
         return this.a;
     }
 
     @Override
-    public Point getB() {
+    public Coordinate getB() {
         return this.b;
     }
 }
