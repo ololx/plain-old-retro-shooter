@@ -17,12 +17,14 @@ interface Vector<P extends Coordinate> {
      *
      * @return the a
      */
-    Coordinate getA();
+    P getA();
 
     /**
      * Gets b.
      *
      * @return the b
      */
-    Coordinate getB();
+    P getB();
+
+    void setB(P b);
 }

@@ -16,27 +16,9 @@ public interface Coordinate<D extends Number> {
     Number ZERO = 0;
 
     /**
-     * Returns the coordinate space dimension.
+     * Returns a shallow copy of this {@code Point<D>} instance.
      *
-     * @return the coordinate space dimension
+     * @return a clone of this {@code Point<D>} instance
      */
-    int dimension();
-
-    /**
-     * Returns the coordinate value at the specified axis
-     * of this space space dimension.
-     *
-     * @param axisIndex an index of the axis for value to return
-     * @return the value at the specified axis of this space space dimension
-     */
-    D get(int axisIndex);
-
-    /**
-     * Replaces the coordinateValue value at the specified axis
-     * of this space space dimension with the specified value.
-     *
-     * @param axisIndex       an index of the axis for value to replace
-     * @param coordinateValue a value to be stored at the specified axis
-     */
-    void set(int axisIndex, D coordinateValue);
+    Coordinate<D> clone();
 }

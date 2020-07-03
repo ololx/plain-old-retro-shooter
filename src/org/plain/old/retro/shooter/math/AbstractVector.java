@@ -2,6 +2,8 @@ package org.plain.old.retro.shooter.math;
 
 import org.plain.old.retro.shooter.math.point.Coordinate;
 
+import java.util.Objects;
+
 /**
  * The type Abstract vector.
  *
@@ -34,12 +36,18 @@ public class AbstractVector<P extends Coordinate> implements Vector<P> {
     }
 
     @Override
-    public Coordinate getA() {
+    public P getA() {
         return this.a;
     }
 
     @Override
-    public Coordinate getB() {
+    public P getB() {
         return this.b;
+    }
+
+    @Override
+    public void setB(P b) {
+        Objects.nonNull(b);
+        this.b = b;
     }
 }
