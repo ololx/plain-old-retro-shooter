@@ -17,6 +17,7 @@
 package org.plain.old.retro.shooter;
 
 import org.plain.old.retro.shooter.clock.RateTimer;
+import org.plain.old.retro.shooter.math.Vector2d;
 
 /**
  * The type Game.
@@ -33,7 +34,12 @@ public class Game {
      * Instantiates a new Game.
      */
     public Game() {
-        this.gameLoop = new RateTimer(120, () -> System.out.println(gameLoop.getHerz()));
+        Vector2d OM = new Vector2d(4.5, 4.5);
+        this.gameLoop = new RateTimer(
+                120,
+                () -> System.out.println(gameLoop.getHerz()),
+                () -> System.out.println(OM.length())
+        );
     }
 
     /**
