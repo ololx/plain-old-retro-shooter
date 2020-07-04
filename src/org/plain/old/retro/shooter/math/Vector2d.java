@@ -32,16 +32,16 @@ public class Vector2d implements Vector {
 		this.y = y;
 	}
 
-	public double length() {
+	public double getModule() {
 		return Math.hypot(this.x, this.y);
+	}
+
+	public Vector2d getNormalized() {
+		return new Vector2d(this.x / this.getModule(), this.y / this.getModule());
 	}
 
 	public double dotProduct(Vector2d om) {
 		return this.x * om.getX() + this.y * om.getY();
-	}
-
-	public Vector2d getNormalized() {
-		return new Vector2d(this.x / this.length(), this.y / this.length());
 	}
 
 	public Vector2d rotate(double angle) {
