@@ -88,6 +88,6 @@ public class Vector2d implements Vector {
 	}
 
 	public String toString() {
-		return String.format("<%d, %d>", this.getX(), this.getY());
+		return String.format("<%s, %s>", this.getX(), this.getY());
 	}
 }
