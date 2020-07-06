@@ -12,9 +12,9 @@ public class Space2d {
 
     private final int[][] space;
 
-    private final int width;
+    public final int width;
 
-    private final int height;
+    public final int height;
 
     public Space2d(int[][] space) {
         Objects.requireNonNull(space);

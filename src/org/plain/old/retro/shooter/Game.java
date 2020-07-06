@@ -2,10 +2,15 @@ package org.plain.old.retro.shooter;
 
 import org.plain.old.retro.shooter.clock.RateTimer;
 import org.plain.old.retro.shooter.listener.KeyboardController;
+import org.plain.old.retro.shooter.monitor.Screen;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +27,11 @@ public class Game extends JFrame {
 
     private RateTimer gameLoop;
 
-    GeneralPlayer mainP;
+    private GeneralPlayer mainP;
+
+    private BufferedImage image;
+    public int[] pixels;
+    public Screen screen;
 
     //TODO: Refactor It when main entities will be completed - it's just for tests
     /**
@@ -49,12 +58,23 @@ public class Game extends JFrame {
                 }
         );
         mainP = new GeneralPlayer(1, 5, 1, 0);
+        image = new BufferedImage(200 * map.width, 200 * map.height, BufferedImage.TYPE_INT_RGB);
+        pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
+        screen = new Screen(map.getSpace(), 200);
         KeyboardController controller = new KeyboardController(new HashMap<Integer, String>(){{
             put(KeyEvent.VK_W, "MV_FWD");
             put(KeyEvent.VK_S, "MV_BWD");
             put(KeyEvent.VK_LEFT, "MV_LFT");
             put(KeyEvent.VK_RIGHT, "MV_RHT");
         }});
+        addKeyListener(controller);
+        setSize(image.getWidth(), image.getHeight());
+        setResizable(true);
+        setTitle("The Plain Old Retro Shooter");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBackground(Color.black);
+        setLocationRelativeTo(null);
+        setVisible(true);
         this.gameLoop = new RateTimer(
                 120,
                 () -> {
@@ -79,23 +99,28 @@ public class Game extends JFrame {
                         }
                     }
                 },
-                () -> System.out.printf("FPS: %s; KEYS: %s PLAYER %s\r", gameLoop.getHerz(), controller.getState(), mainP.toString())
+                () -> System.out.printf("FPS: %s; KEYS: %s PLAYER %s\r", gameLoop.getHerz(), controller.getState(), mainP.toString()),
+                () -> screen.update(pixels, mainP.position.getX(), mainP.position.getY(), mainP.direction.divide(4).getX(), mainP.direction.divide(4).getY()),
+                this::render
         );
-        addKeyListener(controller);
     }
 
     /**
      * Init.
      */
     public void init() {
-        setSize(1000, 1000);
-        setResizable(true);
-        setTitle("The Plain Old Retro Shooter");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBackground(Color.black);
-        setLocationRelativeTo(null);
-        setVisible(true);
-
+        requestFocus();
         this.gameLoop.start();
+    }
+
+    public void render() {
+        BufferStrategy bs = getBufferStrategy();
+        if(bs == null) {
+            createBufferStrategy(3);
+            return;
+        }
+        Graphics g = bs.getDrawGraphics();
+        g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
+        bs.show();
     }
 }

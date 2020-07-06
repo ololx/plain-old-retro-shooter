@@ -7,9 +7,11 @@ public class GeneralPlayer {
     public final double MOVE_SPEED = 0.08;
     public final double ROTATION_SPEED = 0.045;
 
-    private Vector2d position;
+    public Vector2d position;
 
-    private Vector2d direction;
+    public Vector2d direction;
+
+    public Vector2d movementVector;
 
     public GeneralPlayer(double x, double y, double x2, double y2) {
         this.position = new Vector2d(x, y);
@@ -33,11 +35,11 @@ public class GeneralPlayer {
     }
 
     public void moveLeft() {
-        direction = direction.rotate(-ROTATION_SPEED);
+        direction = direction.rotate(ROTATION_SPEED);
     }
 
     public void moveRight() {
-        direction = direction.rotate(ROTATION_SPEED);
+        direction = direction.rotate(-ROTATION_SPEED);
     }
 
     @Override
