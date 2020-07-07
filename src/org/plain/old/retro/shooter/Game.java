@@ -64,6 +64,8 @@ public class Game extends JFrame {
         KeyboardController controller = new KeyboardController(new HashMap<Integer, String>(){{
             put(KeyEvent.VK_W, "MV_FWD");
             put(KeyEvent.VK_S, "MV_BWD");
+            put(KeyEvent.VK_A, "TN_LFT");
+            put(KeyEvent.VK_D, "TN_RGT");
             put(KeyEvent.VK_LEFT, "MV_LFT");
             put(KeyEvent.VK_RIGHT, "MV_RHT");
         }});
@@ -95,6 +97,14 @@ public class Game extends JFrame {
 
                             if (state.getKey().equals("MV_RHT")) {
                                 mainP.moveRight();
+                            }
+
+                            if (state.getKey().equals("TN_LFT")) {
+                                mainP.turnLeft(map.getSpace());
+                            }
+
+                            if (state.getKey().equals("TN_RGT")) {
+                                mainP.turnRight(map.getSpace());
                             }
                         }
                     }

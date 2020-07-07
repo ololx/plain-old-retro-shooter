@@ -87,7 +87,12 @@ public class Vector2d implements Vector {
 		return new Vector2d(Math.abs(this.x), Math.abs(this.y));
 	}
 
+	@Override
 	public String toString() {
 		return String.format("<%s, %s>", this.getX(), this.getY());
+	}
+
+	public Vector2d clone() {
+		return new Vector2d(this.getX(), this.getY());
 	}
 }
