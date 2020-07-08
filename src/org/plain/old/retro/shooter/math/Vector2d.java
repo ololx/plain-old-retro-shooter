@@ -44,6 +44,10 @@ public class Vector2d implements Vector {
 		return this.x * om.getX() + this.y * om.getY();
 	}
 
+	public double getAngle(Vector2d om) {
+		return Math.cos(this.dotProduct(om) / (this.getModule() * om.getModule()));
+	}
+
 	public Vector2d rotate(double angle) {
 		return new Vector2d(
 				(this.x * Math.cos(angle) - this.y * Math.sin(angle)),

@@ -1,9 +1,6 @@
 package org.plain.old.retro.shooter.monitor;
 
-import org.plain.old.retro.shooter.Space2d;
-
 import java.awt.*;
-import java.util.ArrayList;
 
 public class Screen {
 

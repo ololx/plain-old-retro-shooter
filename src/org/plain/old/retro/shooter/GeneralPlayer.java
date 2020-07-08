@@ -26,41 +26,19 @@ public class GeneralPlayer {
     }
 
     public void moveForward(int[][] space) {
-        Vector2d shiftVector = position.add(movementVector.multiply(direction));
-
-        if (space[(int)shiftVector.getX()][(int) position.getY()] == 0
-                && space[(int) position.getX()][(int)shiftVector.getY()] == 0) {
-            this.position = shiftVector;
-        }
+        this.shiftPosition(space, position.add(getStepPosition()));
     }
 
     public void moveBackward(int[][] space) {
-        Vector2d shiftVector = position.subtract(movementVector.multiply(direction));
-
-        if (space[(int)shiftVector.getX()][(int) position.getY()] == 0
-                && space[(int) position.getX()][(int)shiftVector.getY()] == 0) {
-            this.position = shiftVector;
-        }
+        this.shiftPosition(space, position.subtract(getStepPosition()));
     }
 
     public void turnLeft(int[][] space) {
-        Vector2d shiftVector = this.direction.rotate(1 * Math.PI / 2);
-
-        if(space[(int)(position.getX() + shiftVector.getX() * MOVE_SPEED)][(int) position.getY()] == 0)
-            position.setX(position.getX() + shiftVector.getX() * MOVE_SPEED);
-
-        if(space[(int) position.getX()][(int)(position.getY() + shiftVector.getY() * MOVE_SPEED)] == 0)
-            position.setY(position.getY() + shiftVector.getY() * MOVE_SPEED);
+        this.shiftPosition(space, position.add(getStepPosition(this.direction.rotate(Math.PI / 2))));
     }
 
     public void turnRight(int[][] space) {
-        Vector2d shiftVector = this.direction.rotate(-1 * Math.PI / 2);
-
-        if(space[(int)(position.getX() + shiftVector.getX() * MOVE_SPEED)][(int) position.getY()] == 0)
-            position.setX(position.getX() + shiftVector.getX() * MOVE_SPEED);
-
-        if(space[(int) position.getX()][(int)(position.getY() + shiftVector.getY() * MOVE_SPEED)] == 0)
-            position.setY(position.getY() + shiftVector.getY() * MOVE_SPEED);
+        this.shiftPosition(space, position.subtract(getStepPosition(this.direction.rotate(Math.PI / 2))));
     }
 
     public void moveLeft() {
@@ -69,6 +47,18 @@ public class GeneralPlayer {
 
     public void moveRight() {
         direction = direction.rotate(-ROTATION_SPEED);
+    }
+
+    private void shiftPosition(int[][] space, Vector2d shiftVector) {
+        if (space[(int) shiftVector.getX()][(int) shiftVector.getY()] == 0) this.position = shiftVector;
+    }
+
+    private Vector2d getStepPosition(Vector2d direction) {
+        return movementVector.multiply(direction);
+    }
+
+    private Vector2d getStepPosition() {
+        return getStepPosition(this.direction);
     }
 
     @Override
