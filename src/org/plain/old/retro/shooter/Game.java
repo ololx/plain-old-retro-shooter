@@ -24,7 +24,9 @@ import java.util.Map;
  */
 public class Game extends JFrame {
 
-    private RateTimer gameLoop;
+    private RateTimer gameTemp;
+
+    private RateTimer renderTemp;
 
     private GeneralPlayer mainP;
 
@@ -57,9 +59,9 @@ public class Game extends JFrame {
                 }
         );
         mainP = new GeneralPlayer(1, 5, 1, 0);
-        image = new BufferedImage(200 * map.width, 200 * map.height, BufferedImage.TYPE_INT_RGB);
+        image = new BufferedImage(50 * map.width, 50 * map.height, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
-        screen = new Screen(map.getSpace(), 200);
+        screen = new Screen(map.getSpace(), 50);
         KeyboardController controller = new KeyboardController(new HashMap<Integer, String>(){{
             put(KeyEvent.VK_W, "MV_FWD");
             put(KeyEvent.VK_S, "MV_BWD");
@@ -76,8 +78,8 @@ public class Game extends JFrame {
         setBackground(Color.black);
         setLocationRelativeTo(null);
         setVisible(true);
-        this.gameLoop = new RateTimer(
-                120,
+        this.gameTemp = new RateTimer(
+                30,
                 () -> {
                     for (Map.Entry<String, Boolean> state : controller.getState().entrySet()) {
 
@@ -108,8 +110,17 @@ public class Game extends JFrame {
                         }
                     }
                 },
-                () -> System.out.printf("FPS: %s; KEYS: %s PLAYER %s\r", gameLoop.getHerz(), controller.getState(), mainP.toString()),
-                () -> screen.update(pixels, mainP.position.getX(), mainP.position.getY(), mainP.direction.divide(4).getX(), mainP.direction.divide(4).getY()),
+                () -> System.out.printf(
+                        "UPS: %s; FPS: %s; KEYS: %s PLAYER %s\r",
+                        gameTemp.getHerz(),
+                        renderTemp.getHerz(),
+                        controller.getState(),
+                        mainP.toString()
+                )
+        );
+        renderTemp = new RateTimer(
+                120,
+                () -> screen.update(pixels, mainP.position, mainP.direction),
                 this::render
         );
     }
@@ -119,7 +130,8 @@ public class Game extends JFrame {
      */
     public void init() {
         requestFocus();
-        this.gameLoop.start();
+        this.gameTemp.start();
+        this.renderTemp.start();
     }
 
     public void render() {
