@@ -3,10 +3,6 @@ package org.plain.old.retro.shooter.monitor;
 import org.plain.old.retro.shooter.math.Vector2d;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class Screen {
 
@@ -19,83 +15,97 @@ public class Screen {
 
     }
 
-    public int[] update(int[] pixels, Vector2d pos, Vector2d dir) {
+    public int[] render(int[] pixels, Vector2d pos, Vector2d dir, Vector2d plain) {
         int p  = this.map.length;
         int q  = this.map[0].length;
 
         int width = p * this.cellSize;
         int height = q * this.cellSize;
 
-        int xx = (int) ((pos.getX() * this.cellSize));
-        int yy = (int) ((pos.getY() * this.cellSize));
-
-        int offset = this.cellSize / 10;
-
-        Vector2d sideRay = dir.rotate(30);
-        double angleBetween = dir.getAngle(sideRay);
-        List<Vector2d> rays = new ArrayList<>();
-        for (double angle = -angleBetween; angle <= angleBetween; angle += angleBetween / 5) {
-            Vector2d rayDir = dir.clone().rotate(angle);
-            Vector2d ray = pos.clone();
-
-            boolean hit = false;
-            while (!hit) {
-                Vector2d temp_ray = ray.clone().add(rayDir.multiply(0.1));
-
-                if (map[(int) temp_ray.getX()][(int) temp_ray.getY()] != 0) hit = true;
-
-                ray = temp_ray.clone();
-            }
-
-            rays.add(ray);
-        }
-
-        /*for(int i = pixels.length/2; i< pixels.length; i++){
+        for(int i = pixels.length / 2; i< pixels.length; i++){
             if(pixels[i] != Color.BLUE.getRGB()) pixels[i] = Color.BLUE.getRGB();
         }
 
-        for(int i = 0; i< pixels.length/2; i++){
+        for(int i = 0; i< pixels.length / 2; i++){
             if(pixels[i] != Color.GREEN.getRGB()) pixels[i] = Color.GREEN.getRGB();
         }
 
-        for(int i = 0; i < rays.size(); i++){
+        int pix = this.cellSize / 5;
 
-            for (int k = i * width; k < width / rays.size(); k++) {
+        for(int x = 0; x < width; x+= pix) {
 
-                double hight = rays.get(i).subtract(pos).getModule();
-                for (int j = 0; j < height / hight; j++) {
-                    pixels[i + j * width] = Color.RED.getRGB();
-                }
+            double cameraX = 2.5 * x / (double)(width) -1;
+            Vector2d rayVector = dir.add(plain.multiply(cameraX));
+
+            int currentPosOnX = (int)pos.getX();
+            int currentPosOnY = (int)pos.getY();
+
+            double sideDistX;
+            double sideDistY;
+
+            double deltaDistX = Math.sqrt(1 + (rayVector.getY()*rayVector.getY()) / (rayVector.getX()*rayVector.getX()));
+            double deltaDistY = Math.sqrt(1 + (rayVector.getX()*rayVector.getX()) / (rayVector.getY()*rayVector.getY()));
+            double perpWallDist;
+
+            int stepX, stepY;
+            boolean hit = false;
+            int side = 0;
+
+            if (rayVector.getX() < 0) {
+                stepX = -1;
+                sideDistX = (pos.getX() - currentPosOnX) * deltaDistX;
+            } else {
+                stepX = 1;
+                sideDistX = (currentPosOnX + 1.0 - pos.getX()) * deltaDistX;
             }
-        }*/
 
-        for (int i = 0; i < p; i++) {
-            for (int j = 0; j < q; j++) {
-                int cl = map[i][j] == 0 ? Color.BLUE.getRGB() : Color.GREEN.getRGB();
-                for (int n = i * this.cellSize; n < (1 + i) * this.cellSize; n++) {
-                    for (int nn = j * this.cellSize; nn < (1 + j) * this.cellSize; nn++) {
-                        pixels[(n * width) + nn] = cl;
+            if (rayVector.getY() < 0) {
+                stepY = -1;
+                sideDistY = (pos.getY() - currentPosOnY) * deltaDistY;
+            } else {
+                stepY = 1;
+                sideDistY = (currentPosOnY + 1.0 - pos.getY()) * deltaDistY;
+            }
 
-                        if (n >= xx - offset && n <= xx + offset
-                            && nn >= yy - offset && nn <= yy + offset) {
-                            pixels[(n * width) + nn] = Color.RED.getRGB();
-                        }
+            while (!hit) {
 
-                        for (Vector2d ray : rays) {
+                if (sideDistX < sideDistY) {
+                    sideDistX += deltaDistX;
+                    currentPosOnX += stepX;
+                    side = 0;
+                } else {
+                    sideDistY += deltaDistY;
+                    currentPosOnY += stepY;
+                    side = 1;
+                }
 
-                            int xx3 = (int) ((ray.getX() * this.cellSize));
-                            int yy3 = (int) ((ray.getY() * this.cellSize));
+                if(map[currentPosOnX][currentPosOnY] > 0) hit = true;
+            }
 
-                            if (n >= xx3 - offset && n <= xx3 + offset
-                                    && nn >= yy3 - offset && nn <= yy3 + offset) {
-                                pixels[(n * width) + nn] = Color.CYAN.getRGB();
-                            }
-                        }
-                    }
+            if (side == 0) perpWallDist = Math.abs((currentPosOnX - pos.getX() + (1 - stepX) / 2) / rayVector.getX());
+            else perpWallDist = Math.abs((currentPosOnY - pos.getY() + (1 - stepY) / 2) / rayVector.getY());
+
+            int wallHeight;
+            if (perpWallDist > 0) wallHeight = Math.abs((int)(height / perpWallDist));
+            else wallHeight = height;
+
+            int drawStart = -wallHeight / 2+ height / 2;
+            if (drawStart < 0) drawStart = 0;
+
+            int drawEnd = wallHeight / 2 + height / 2;
+            if (drawEnd >= height) drawEnd = height - 1;
+
+            for (int y = drawStart; y < drawEnd; y++) {
+                for (int k = 0; k < pix; k++) {
+                    pixels[k + x + y * (width)] = Color.darkGray.getRGB();
                 }
             }
         }
-
         return pixels;
+    }
+
+    private Color adjustColor(Color base, double p) {
+        p = p > 1 ? 1 : p;
+        return Color.getHSBColor((int)(255*base.getRed()*(1-p)), (int)(255*base.getGreen()*(1-p)), (int)(255*base.getBlue()*(1-p)));
     }
 }

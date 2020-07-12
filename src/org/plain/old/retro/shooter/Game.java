@@ -24,11 +24,13 @@ import java.util.Map;
  */
 public class Game extends JFrame {
 
+    public static final int BLOCKSIZE = 200;
+
     private RateTimer gameTemp;
 
     private RateTimer renderTemp;
 
-    private GeneralPlayer mainP;
+    private Camera mainP;
 
     private BufferedImage image;
     public int[] pixels;
@@ -58,10 +60,10 @@ public class Game extends JFrame {
                         {1,1,1,1,1,1,1,4,4,4,4,4,4,4,4}
                 }
         );
-        mainP = new GeneralPlayer(1, 5, 1, 0);
-        image = new BufferedImage(50 * map.width, 50 * map.height, BufferedImage.TYPE_INT_RGB);
+        mainP = new Camera(1, 5, 1, 0, 0, -.66);
+        image = new BufferedImage(BLOCKSIZE * map.width, BLOCKSIZE * map.height, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
-        screen = new Screen(map.getSpace(), 50);
+        screen = new Screen(map.getSpace(), BLOCKSIZE);
         KeyboardController controller = new KeyboardController(new HashMap<Integer, String>(){{
             put(KeyEvent.VK_W, "MV_FWD");
             put(KeyEvent.VK_S, "MV_BWD");
@@ -120,7 +122,7 @@ public class Game extends JFrame {
         );
         renderTemp = new RateTimer(
                 120,
-                () -> screen.update(pixels, mainP.position, mainP.direction),
+                () -> screen.render(pixels, mainP.position, mainP.direction, mainP.plain),
                 this::render
         );
     }
