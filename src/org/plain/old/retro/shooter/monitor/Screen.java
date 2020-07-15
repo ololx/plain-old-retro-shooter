@@ -1,6 +1,6 @@
 package org.plain.old.retro.shooter.monitor;
 
-import org.plain.old.retro.shooter.math.Vector2d;
+import org.plain.old.retro.shooter.linear.Vector2d;
 
 import java.awt.*;
 
@@ -30,11 +30,11 @@ public class Screen {
             if(pixels[i] != Color.GREEN.getRGB()) pixels[i] = Color.GREEN.getRGB();
         }
 
-        int pix = this.cellSize / 5;
+        int pix = 1;
 
         for(int x = 0; x < width; x+= pix) {
 
-            double cameraX = 2.5 * x / (double)(width) -1;
+            double cameraX = 2.5 * x / (double)(width) - 1;
             Vector2d rayVector = dir.add(plain.multiply(cameraX));
 
             int currentPosOnX = (int)pos.getX();
@@ -43,9 +43,8 @@ public class Screen {
             double sideDistX;
             double sideDistY;
 
-            double deltaDistX = Math.sqrt(1 + (rayVector.getY()*rayVector.getY()) / (rayVector.getX()*rayVector.getX()));
-            double deltaDistY = Math.sqrt(1 + (rayVector.getX()*rayVector.getX()) / (rayVector.getY()*rayVector.getY()));
-            double perpWallDist;
+            double deltaDistX = Math.abs(rayVector.getModule() / rayVector.getX());
+            double deltaDistY = Math.abs(rayVector.getModule() / rayVector.getY());
 
             int stepX, stepY;
             boolean hit = false;
@@ -82,6 +81,7 @@ public class Screen {
                 if(map[currentPosOnX][currentPosOnY] > 0) hit = true;
             }
 
+            double perpWallDist;
             if (side == 0) perpWallDist = Math.abs((currentPosOnX - pos.getX() + (1 - stepX) / 2) / rayVector.getX());
             else perpWallDist = Math.abs((currentPosOnY - pos.getY() + (1 - stepY) / 2) / rayVector.getY());
 
@@ -97,7 +97,7 @@ public class Screen {
 
             for (int y = drawStart; y < drawEnd; y++) {
                 for (int k = 0; k < pix; k++) {
-                    pixels[k + x + y * (width)] = Color.darkGray.getRGB();
+                    pixels[k + x + y * (width)] = adjustColor(Color.darkGray, wallHeight).getRGB();
                 }
             }
         }

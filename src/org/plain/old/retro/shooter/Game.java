@@ -24,7 +24,9 @@ import java.util.Map;
  */
 public class Game extends JFrame {
 
-    public static final int BLOCKSIZE = 200;
+    public static final int BLOCKSIZE = 50;
+
+    public static final int SC_BLOCKSIZE = 300;
 
     private RateTimer gameTemp;
 
@@ -123,7 +125,7 @@ public class Game extends JFrame {
         renderTemp = new RateTimer(
                 120,
                 () -> screen.render(pixels, mainP.position, mainP.direction, mainP.plain),
-                this::render
+                () -> this.render(map)
         );
     }
 
@@ -136,14 +138,15 @@ public class Game extends JFrame {
         this.renderTemp.start();
     }
 
-    public void render() {
+    public void render(Space2d map) {
         BufferStrategy bs = getBufferStrategy();
-        if(bs == null) {
+
+        if (bs == null) {
             createBufferStrategy(3);
             return;
         }
         Graphics g = bs.getDrawGraphics();
-        g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
+        g.drawImage(image, 0, 0, 5120, 2880,null);
         bs.show();
     }
 }

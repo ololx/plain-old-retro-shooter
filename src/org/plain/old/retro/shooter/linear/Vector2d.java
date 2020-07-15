@@ -1,4 +1,4 @@
-package org.plain.old.retro.shooter.math;
+package org.plain.old.retro.shooter.linear;
 
 /**
  * The type Vector2d.

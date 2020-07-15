@@ -1,6 +1,6 @@
 package org.plain.old.retro.shooter;
 
-import org.plain.old.retro.shooter.math.Vector2d;
+import org.plain.old.retro.shooter.linear.Vector2d;
 
 public class Camera extends GeneralPlayer {
 
