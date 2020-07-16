@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
 public class KeyboardController implements KeyListener {
 
     private final Map<Integer, String> keys;

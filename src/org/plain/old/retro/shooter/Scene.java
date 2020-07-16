@@ -15,20 +15,23 @@ import java.util.Map;
 
 /**
  * The type Game.
- * This is a main game class, which is runnable and
- * will manage all game logics (such as fps, screen update && e.t.c.)
+ * This is a main scene class, which is runnable and
+ * will manage all scene logics (such as fps, screen update && e.t.c.)
  *
  * @author Alexander A. Kropotin
  * @project plain -old-retro-shooter
  * @created 19.06.2020 08:58 <p>
  */
-public class Game extends JFrame {
+public class Scene extends JFrame {
+
+    public static final int SCENE_WIDTH = 1280;
+    public static final int SCENE_HEIGHT = 720;
 
     public static final int BLOCKSIZE = 50;
 
     public static final int SC_BLOCKSIZE = 300;
 
-    private RateTimer gameTemp;
+    private RateTimer sceneTemp;
 
     private RateTimer renderTemp;
 
@@ -42,7 +45,7 @@ public class Game extends JFrame {
     /**
      * Instantiates a new Game.
      */
-    public Game() {
+    public Scene() {
         Space2d map = new Space2d(
                 new int[][]{
                         {1,1,1,1,1,1,1,1,2,2,2,2,2,2,2},
@@ -62,10 +65,6 @@ public class Game extends JFrame {
                         {1,1,1,1,1,1,1,4,4,4,4,4,4,4,4}
                 }
         );
-        mainP = new Camera(1, 5, 1, 0, 0, -.66);
-        image = new BufferedImage(BLOCKSIZE * map.width, BLOCKSIZE * map.height, BufferedImage.TYPE_INT_RGB);
-        pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
-        screen = new Screen(map.getSpace(), BLOCKSIZE);
         KeyboardController controller = new KeyboardController(new HashMap<Integer, String>(){{
             put(KeyEvent.VK_W, "MV_FWD");
             put(KeyEvent.VK_S, "MV_BWD");
@@ -74,6 +73,11 @@ public class Game extends JFrame {
             put(KeyEvent.VK_LEFT, "MV_LFT");
             put(KeyEvent.VK_RIGHT, "MV_RHT");
         }});
+        mainP = new Camera(1, 5, 1, 0, 0, -.66);
+        image = new BufferedImage(SCENE_WIDTH, SCENE_HEIGHT, BufferedImage.TYPE_INT_RGB);
+        pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
+        screen = new Screen(map.getSpace(), SCENE_WIDTH, SCENE_HEIGHT);
+        this.setSize(SCENE_WIDTH, SCENE_HEIGHT);
         addKeyListener(controller);
         setSize(image.getWidth(), image.getHeight());
         setResizable(true);
@@ -82,7 +86,7 @@ public class Game extends JFrame {
         setBackground(Color.black);
         setLocationRelativeTo(null);
         setVisible(true);
-        this.gameTemp = new RateTimer(
+        this.sceneTemp = new RateTimer(
                 30,
                 () -> {
                     for (Map.Entry<String, Boolean> state : controller.getState().entrySet()) {
@@ -116,7 +120,7 @@ public class Game extends JFrame {
                 },
                 () -> System.out.printf(
                         "UPS: %s; FPS: %s; KEYS: %s PLAYER %s\r",
-                        gameTemp.getHerz(),
+                        sceneTemp.getHerz(),
                         renderTemp.getHerz(),
                         controller.getState(),
                         mainP.toString()
@@ -134,11 +138,13 @@ public class Game extends JFrame {
      */
     public void init() {
         requestFocus();
-        this.gameTemp.start();
+        this.sceneTemp.start();
         this.renderTemp.start();
     }
 
     public void render(Space2d map) {
+        int height = this.getSize().height;
+        int width = this.getSize().width;
         BufferStrategy bs = getBufferStrategy();
 
         if (bs == null) {
@@ -146,7 +152,7 @@ public class Game extends JFrame {
             return;
         }
         Graphics g = bs.getDrawGraphics();
-        g.drawImage(image, 0, 0, 5120, 2880,null);
+        g.drawImage(image, 0, 0, width, height,null);
         bs.show();
     }
 }

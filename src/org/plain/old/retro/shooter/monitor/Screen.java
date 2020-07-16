@@ -3,53 +3,49 @@ package org.plain.old.retro.shooter.monitor;
 import org.plain.old.retro.shooter.linear.Vector2d;
 
 import java.awt.*;
+import java.util.Vector;
 
 public class Screen {
 
     private int[][] map;
-    private int cellSize;
+    private int width;
+    private int height;
 
-    public Screen(int[][] map, int cellSize) {
+    public Screen(int[][] map, int width, int height) {
         this.map = map;
-        this.cellSize = cellSize;
+        this.width = width;
+        this.height = height;
 
     }
 
-    public int[] render(int[] pixels, Vector2d pos, Vector2d dir, Vector2d plain) {
-        int p  = this.map.length;
-        int q  = this.map[0].length;
-
-        int width = p * this.cellSize;
-        int height = q * this.cellSize;
-
-        for(int i = pixels.length / 2; i< pixels.length; i++){
-            if(pixels[i] != Color.BLUE.getRGB()) pixels[i] = Color.BLUE.getRGB();
+    public int[] renderFloor(int[] pixels) {
+        for (int i = 0; i< pixels.length / 2; i++){
+            pixels[i] = Color.BLUE.getRGB();
         }
 
-        for(int i = 0; i< pixels.length / 2; i++){
-            if(pixels[i] != Color.GREEN.getRGB()) pixels[i] = Color.GREEN.getRGB();
+        return pixels;
+    }
+
+    public int[] renderCeiling(int[] pixels) {
+        for (int i = pixels.length / 2; i< pixels.length; i++){
+            pixels[i] = Color.GREEN.getRGB();
         }
 
-        int pix = 1;
+        return pixels;
+    }
 
-        for(int x = 0; x < width; x+= pix) {
-
-            double cameraX = 2.5 * x / (double)(width) - 1;
-            Vector2d rayVector = dir.add(plain.multiply(cameraX));
-
-            int currentPosOnX = (int)pos.getX();
-            int currentPosOnY = (int)pos.getY();
-
-            double sideDistX;
-            double sideDistY;
-
+    public int[] renderWall(int[] pixels, Vector2d pos, Vector2d dir, Vector2d plain) {
+        for (int x = 0; x < width; x++) {
+            Vector2d rayVector = dir.add(plain.multiply(2 * x / (double)(width) - 1));
             double deltaDistX = Math.abs(rayVector.getModule() / rayVector.getX());
             double deltaDistY = Math.abs(rayVector.getModule() / rayVector.getY());
 
-            int stepX, stepY;
-            boolean hit = false;
-            int side = 0;
 
+            int currentPosOnX = (int)pos.getX();
+            int currentPosOnY = (int)pos.getY();
+            double sideDistX;
+            double sideDistY;
+            int stepX, stepY;
             if (rayVector.getX() < 0) {
                 stepX = -1;
                 sideDistX = (pos.getX() - currentPosOnX) * deltaDistX;
@@ -66,46 +62,55 @@ public class Screen {
                 sideDistY = (currentPosOnY + 1.0 - pos.getY()) * deltaDistY;
             }
 
+            boolean perpendicular = false;
+            boolean hit = false;
             while (!hit) {
 
                 if (sideDistX < sideDistY) {
                     sideDistX += deltaDistX;
                     currentPosOnX += stepX;
-                    side = 0;
+                    perpendicular = false;
                 } else {
                     sideDistY += deltaDistY;
                     currentPosOnY += stepY;
-                    side = 1;
+                    perpendicular = true;
                 }
 
-                if(map[currentPosOnX][currentPosOnY] > 0) hit = true;
+                if(map[currentPosOnX][currentPosOnY] != 0) hit = true;
             }
 
-            double perpWallDist;
-            if (side == 0) perpWallDist = Math.abs((currentPosOnX - pos.getX() + (1 - stepX) / 2) / rayVector.getX());
-            else perpWallDist = Math.abs((currentPosOnY - pos.getY() + (1 - stepY) / 2) / rayVector.getY());
+            Vector2d wallDistancePerpendicular = new Vector2d(
+                    (currentPosOnX - pos.getX() + (1 - stepX) / 2),
+                    (currentPosOnY - pos.getY() + (1 - stepY) / 2)
+            );
+            double perpWallDist = perpendicular
+                    ? Math.abs(wallDistancePerpendicular.getY() / rayVector.getY())
+                    : Math.abs(wallDistancePerpendicular.getX() / rayVector.getX());
 
             int wallHeight;
             if (perpWallDist > 0) wallHeight = Math.abs((int)(height / perpWallDist));
             else wallHeight = height;
 
-            int drawStart = -wallHeight / 2+ height / 2;
+            int drawStart = -wallHeight / 2 + height / 2;
             if (drawStart < 0) drawStart = 0;
 
             int drawEnd = wallHeight / 2 + height / 2;
-            if (drawEnd >= height) drawEnd = height - 1;
+            if (drawEnd >= height) drawEnd = height;
 
             for (int y = drawStart; y < drawEnd; y++) {
-                for (int k = 0; k < pix; k++) {
-                    pixels[k + x + y * (width)] = adjustColor(Color.darkGray, wallHeight).getRGB();
-                }
+                pixels[x + y * (width)] = Color.darkGray.getRGB();
             }
         }
+
         return pixels;
     }
 
-    private Color adjustColor(Color base, double p) {
-        p = p > 1 ? 1 : p;
-        return Color.getHSBColor((int)(255*base.getRed()*(1-p)), (int)(255*base.getGreen()*(1-p)), (int)(255*base.getBlue()*(1-p)));
+    public int[] render(int[] pixels, Vector2d pos, Vector2d dir, Vector2d plain) {
+
+        pixels = this.renderFloor(pixels);
+        pixels = this.renderCeiling(pixels);
+        pixels = this.renderWall(pixels, pos, dir, plain);
+
+        return pixels;
     }
 }

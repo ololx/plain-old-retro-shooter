@@ -11,7 +11,7 @@ public class Main {
      * @param args the input arguments
      */
     public static void main(String[] args) {
-        Game game = new Game();
+        Scene game = new Scene();
         game.init();
     }
 }
