@@ -105,11 +105,55 @@ public class Screen {
         return pixels;
     }
 
+    public int[] renderWall2(int[] pixels, Vector2d pos, Vector2d dir, Vector2d plain) {
+        double angleStep = (Math.PI / 3.0) / (width - 1);
+        double angle = (Math.PI / 3.0);
+
+        for (int x = 0; x < width; x++) {
+            Vector2d rayDir = dir.clone().rotate(angle);
+            Vector2d rayPos = pos.clone();
+
+            boolean hit = false;
+            while (!hit) {
+                Vector2d temp_ray = rayPos.clone().add(rayDir.multiply(0.01));
+
+                if (map[(int) temp_ray.getX()][(int) temp_ray.getY()] != 0) hit = true;
+
+                rayPos = temp_ray.clone();
+
+            }
+
+            angle -= angleStep;
+
+            int wallHeight;
+            double rayLength;
+
+            if (rayPos.getModule() > pos.getModule()) rayLength = rayPos.getModule() - pos.getModule();
+            else rayLength = pos.getModule() - rayPos.getModule();
+
+            if (rayLength > 0) wallHeight = Math.abs((int)(height / rayLength));
+            else wallHeight = height;
+
+            int drawStart = -wallHeight / 2 + height / 2;
+            if (drawStart < 0) drawStart = 0;
+
+            int drawEnd = wallHeight / 2 + height / 2;
+            if (drawEnd >= height) drawEnd = height;
+
+            for (int y = drawStart; y < drawEnd; y++) {
+                pixels[x + y * (width)] = Color.CYAN.getRGB();
+            }
+        }
+
+        return pixels;
+    }
+
     public int[] render(int[] pixels, Vector2d pos, Vector2d dir, Vector2d plain) {
 
         pixels = this.renderFloor(pixels);
         pixels = this.renderCeiling(pixels);
-        pixels = this.renderWall(pixels, pos, dir, plain);
+        //pixels = this.renderWall(pixels, pos, dir, plain);
+        pixels = this.renderWall2(pixels, pos, dir, plain);
 
         return pixels;
     }
