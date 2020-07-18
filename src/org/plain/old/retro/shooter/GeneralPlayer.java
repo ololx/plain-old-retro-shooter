@@ -2,6 +2,12 @@ package org.plain.old.retro.shooter;
 
 import org.plain.old.retro.shooter.linear.Vector2d;
 
+/**
+ * @project plain-old-retro-shooter
+ * @created 05.07.2020 08:37
+ * <p>
+ * @author Alexander A. Kropotin
+ */
 public class GeneralPlayer {
 
     public final static double MOVE_SPEED = 0.08;

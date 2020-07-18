@@ -6,6 +6,12 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * @project plain-old-retro-shooter
+ * @created 05.07.2020 08:37
+ * <p>
+ * @author Alexander A. Kropotin
+ */
 public class KeyboardController implements KeyListener {
 
     private final Map<Integer, String> keys;

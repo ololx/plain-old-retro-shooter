@@ -2,6 +2,12 @@ package org.plain.old.retro.shooter;
 
 import org.plain.old.retro.shooter.linear.Vector2d;
 
+/**
+ * @project plain-old-retro-shooter
+ * @created 05.07.2020 08:37
+ * <p>
+ * @author Alexander A. Kropotin
+ */
 public class Camera extends GeneralPlayer {
 
     public Vector2d plain;
