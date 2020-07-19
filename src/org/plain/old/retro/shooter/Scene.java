@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,9 +28,9 @@ public class Scene extends JFrame {
     public static final int SCENE_WIDTH = 1280;
     public static final int SCENE_HEIGHT = 720;
 
-    public static final int BLOCKSIZE = 50;
+    private double widthScalling;
 
-    public static final int SC_BLOCKSIZE = 300;
+    private double heightScalling;
 
     private RateTimer sceneTemp;
 
@@ -40,6 +41,8 @@ public class Scene extends JFrame {
     private BufferedImage image;
     public int[] pixels;
     public Screen screen;
+
+    private Shotgun gun;
 
     //TODO: Refactor It when main entities will be completed - it's just for tests
     /**
@@ -76,7 +79,12 @@ public class Scene extends JFrame {
         mainP = new Camera(1, 1, 1, 0, 0, -.66);
         image = new BufferedImage(SCENE_WIDTH, SCENE_HEIGHT, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
-        screen = new Screen(map.getSpace(), SCENE_WIDTH, SCENE_HEIGHT);
+        screen = new Screen(map.getSpace(), SCENE_WIDTH, SCENE_HEIGHT, new ArrayList<Texture>(){{
+            add(Texture.wood);
+            add(Texture.brick);
+            add(Texture.bluestone);
+            add(Texture.stone);
+        }});
         this.setSize(SCENE_WIDTH, SCENE_HEIGHT);
         addKeyListener(controller);
         setSize(image.getWidth(), image.getHeight());
@@ -138,6 +146,7 @@ public class Scene extends JFrame {
      */
     public void init() {
         requestFocus();
+        this.gun = new Shotgun("src/resources/main_gun.png");
         this.sceneTemp.start();
         this.renderTemp.start();
     }
@@ -145,14 +154,29 @@ public class Scene extends JFrame {
     public void render(Space2d map) {
         int height = this.getSize().height;
         int width = this.getSize().width;
+        this.widthScalling = width / SCENE_WIDTH;
+        this.heightScalling = height / SCENE_HEIGHT;
+
         BufferStrategy bs = getBufferStrategy();
 
         if (bs == null) {
             createBufferStrategy(3);
             return;
         }
+
+        int gunWidth = (int) (gun.getWidth() * widthScalling);
+        int gunHeight = (int) (gun.getHeight() * heightScalling);
+
         Graphics g = bs.getDrawGraphics();
         g.drawImage(image, 0, 0, width, height,null);
+        g.drawImage(
+                gun.getImage(),
+                (width / 2) - (gunWidth / 2),
+                height - gunHeight,
+                gunWidth,
+                gunHeight,
+                null
+        );
         bs.show();
     }
 }
