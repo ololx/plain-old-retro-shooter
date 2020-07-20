@@ -125,19 +125,23 @@ public class Scene extends JFrame {
                             }
                         }
                     }
-                },
+                }/*,
                 () -> System.out.printf(
                         "UPS: %s; FPS: %s; KEYS: %s PLAYER %s\r",
                         sceneTemp.getHerz(),
                         renderTemp.getHerz(),
                         controller.getState(),
                         mainP.toString()
-                )
+                )*/
         );
         renderTemp = new RateTimer(
                 300,
                 () -> screen.render(pixels, mainP.position, mainP.direction, mainP.plain),
-                () -> this.render(map)
+                () -> this.render(map, String.format(
+                        "UPS: %s \n FPS: %s",
+                        sceneTemp.getHerz(),
+                        renderTemp.getHerz())
+                )
         );
     }
 
@@ -151,7 +155,7 @@ public class Scene extends JFrame {
         this.renderTemp.start();
     }
 
-    public void render(Space2d map) {
+    public void render(Space2d map, String rateInfo) {
         int height = this.getSize().height;
         int width = this.getSize().width;
         this.widthScalling = width / SCENE_WIDTH;
@@ -177,6 +181,9 @@ public class Scene extends JFrame {
                 gunHeight,
                 null
         );
+        g.setColor(Color.GREEN);
+        g.setFont(g.getFont().deriveFont(50f));
+        g.drawString(rateInfo, 25, 75);
         bs.show();
     }
 }

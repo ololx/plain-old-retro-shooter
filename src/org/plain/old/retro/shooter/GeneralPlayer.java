@@ -11,7 +11,7 @@ import org.plain.old.retro.shooter.linear.Vector2d;
 public class GeneralPlayer {
 
     public final static double MOVE_SPEED = 0.08;
-    public final static double ROTATION_SPEED = 0.045;
+    public final static double ROTATION_SPEED = 0.05;
 
     public Vector2d position;
 
@@ -69,6 +69,6 @@ public class GeneralPlayer {
 
     @Override
     public String toString() {
-        return "POS: " + this.position.toString() + "DIR: " + direction.toString();
+        return "POS: " + this.position.toString() + " DIR: " + direction.toString();
     }
 }

@@ -5,8 +5,6 @@ import org.plain.old.retro.shooter.linear.Vector2d;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Vector;
 
 /**
  * @project plain-old-retro-shooter
@@ -53,18 +51,18 @@ public class Screen {
         for (int x = 0; x < width; x++) {
             Vector2d rayDir = dir.rotate(angle);
             Vector2d rayPos = pos.clone();
-            Vector2d temp_ray = rayPos.clone();
+            double offsetLength = Math.sqrt(
+                    Math.pow(rayPos.getX() - (int)rayPos.getX(), 2)
+                            + Math.pow(rayPos.getY() - (int)rayPos.getY(), 2)
+            );
 
             boolean hit = false;
-            do {
+            double steps = 0.01;
+            while (!hit) {
+                rayPos = rayPos.add(rayDir.multiply(steps));
 
-                temp_ray = temp_ray.add(rayDir.multiply(0.01));
-
-                if (map[(int) temp_ray.getX()][(int) temp_ray.getY()] != 0) hit = true;
-
-                rayPos = temp_ray.clone();
-
-            } while (!hit);
+                if (map[(int) rayPos.getX()][(int) rayPos.getY()] != 0) hit = true;
+            }
 
             angle -= angleStep;
 
@@ -78,32 +76,39 @@ public class Screen {
             int drawEnd = (int) (wallHeight / 2 + height / 2);
             if (drawEnd >= height) drawEnd = height;
 
-            /*for (int y = drawStart; y < drawEnd; y++) {
-                pixels[x + y * (width)] = colors[map[(int) rayPos.getX()][(int) rayPos.getY()] - 1].getRGB();
-            }*/
 
             int texNum = map[(int) rayPos.getX()][(int) rayPos.getY()] - 1;
 
-            double rayX = Math.floor(rayPos.getX());
-            double rayY = Math.floor(rayPos.getY());
-            boolean perpendicular = rayPos.getX() % rayX == 0 ? true : false;
-
-            double wallX = 0;
-            if (perpendicular) {
-                wallX = rayPos.getX() > rayX ? rayPos.getX() - rayX : rayPos.getX() - (rayX + 1) ;
-            } else {
-                wallX = rayPos.getY() > rayY ? rayPos.getY() - rayY : rayPos.getY() - (rayY + 1);
-            }
-
-            //wallX *= 10;
+            double intersectionX = pos.getX() < rayPos.getX() ? Math.abs(rayPos.getX() - (int) rayPos.getX()) : 1 - Math.abs(rayPos.getX() - (int) rayPos.getX());//Math.round((pos.getX() < rayPos.getX() ? Math.abs(rayPos.getX() - (int) rayPos.getX()) : 1 - Math.abs(rayPos.getX() - (int) rayPos.getX())) * 100.0) / 100.0;
+            double intersectionY = pos.getY() < rayPos.getY() ? Math.abs(rayPos.getY() - (int) rayPos.getY()) : 1 - Math.abs(rayPos.getY() - (int) rayPos.getY());//Math.round((pos.getY() < rayPos.getY() ? Math.abs(rayPos.getY() - (int) rayPos.getY()) : 1 - Math.abs(rayPos.getY() - (int) rayPos.getY())) * 100.0) / 100.0;
+            boolean horizontal = intersectionX < intersectionY && intersectionX <= 0.1
+                    ? true
+                    : false;
+            double wallX = horizontal ? intersectionY  : intersectionX;
             wallX -= Math.floor(wallX);
 
+            /*if (angle == 0.60 - angleStep) {
+                System.out.printf(
+                        "rayPos.getX(): %s; (int) rayPos.getX(): %s; intersectionX: %s;   rayPos.getY(): %s; (int) rayPos.getY(): %s; intersectionY: %s\r",
+                        rayPos.getX(),
+                        (int) rayPos.getX(),
+                        intersectionX,
+                        rayPos.getY(),
+                        (int) rayPos.getY(),
+                        intersectionY
+                );
+            }*/
+
             int texX = (int)(wallX * (textures.get(texNum).SIZE));
-            for(int y=drawStart; y<drawEnd; y++) {
+            if (!horizontal && rayDir.getX() >= 0) texX = (textures.get(texNum).SIZE) - texX - 1;
+            if (horizontal && rayDir.getY() <= 0) texX = (textures.get(texNum).SIZE) - texX - 1;
+
+            for (int y = drawStart; y < drawEnd; y++) {
                 int texY = (((y * 2 - height + wallHeight) << 6) / wallHeight) / 2;
                 int color;
-                color = textures.get(texNum).pixels[texX + (texY * textures.get(texNum).SIZE)];
-                pixels[x + y*(width)] = color;
+                color = textures.get(texNum).pixels[(int) (texX + (texY * textures.get(texNum).SIZE))];
+                //if(!horizontal) color = (color >> 1) & 8355711;
+                pixels[x + y * width] = color;
             }
         }
 

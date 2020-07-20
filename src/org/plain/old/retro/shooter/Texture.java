@@ -28,8 +28,8 @@ public class Texture {
         }
     }
 
-    public static Texture wood = new Texture("src/resources/wall/wood.png", 64);
-    public static Texture brick = new Texture("src/resources/wall/redbrick.png", 64);
-    public static Texture bluestone = new Texture("src/resources/wall/bluestone.png", 64);
-    public static Texture stone = new Texture("src/resources/wall/greystone.png", 64);
+    public static Texture wood = new Texture("src/resources/wall/wood.png", 100);
+    public static Texture brick = new Texture("src/resources/wall/redbrick.png", 100);
+    public static Texture bluestone = new Texture("src/resources/wall/bluestone.png", 100);
+    public static Texture stone = new Texture("src/resources/wall/greystone.png", 100);
 }
