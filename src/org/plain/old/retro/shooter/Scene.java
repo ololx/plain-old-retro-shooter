@@ -44,6 +44,8 @@ public class Scene extends JFrame {
 
     private Shotgun gun;
 
+    private BoomStick stick;
+
     //TODO: Refactor It when main entities will be completed - it's just for tests
     /**
      * Instantiates a new Game.
@@ -75,6 +77,7 @@ public class Scene extends JFrame {
             put(KeyEvent.VK_D, "TN_RGT");
             put(KeyEvent.VK_LEFT, "MV_LFT");
             put(KeyEvent.VK_RIGHT, "MV_RHT");
+            put(KeyEvent.VK_SPACE, "SHOT");
         }});
         mainP = new Camera(1, 1, 1, 0, 0, -.66);
         image = new BufferedImage(SCENE_WIDTH, SCENE_HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -96,6 +99,9 @@ public class Scene extends JFrame {
         setVisible(true);
         this.sceneTemp = new RateTimer(
                 30,
+                () -> {
+                    this.stick.resetActive();
+                },
                 () -> {
                     for (Map.Entry<String, Boolean> state : controller.getState().entrySet()) {
 
@@ -123,6 +129,10 @@ public class Scene extends JFrame {
                             if (state.getKey().equals("TN_RGT")) {
                                 mainP.turnRight(map.getSpace());
                             }
+
+                            if (state.getKey().equals("SHOT")) {
+                                this.stick.setActive();
+                            }
                         }
                     }
                 }/*,
@@ -136,7 +146,13 @@ public class Scene extends JFrame {
         );
         renderTemp = new RateTimer(
                 300,
-                () -> screen.render(pixels, mainP.position, mainP.direction, mainP.plain),
+                () -> screen.render(
+                        pixels,
+                        mainP.position,
+                        mainP.direction,
+                        mainP.plain,
+                        this.stick.getSprite()
+                ),
                 () -> this.render(map, String.format(
                         "UPS: %s \n FPS: %s",
                         sceneTemp.getHerz(),
@@ -151,6 +167,10 @@ public class Scene extends JFrame {
     public void init() {
         requestFocus();
         this.gun = new Shotgun("src/resources/main_gun.png");
+        this.stick = new BoomStick(
+                new Sprite("src/resources/boomstick-1.png"),
+                new Sprite("src/resources/boomstick-2.png")
+        );
         this.sceneTemp.start();
         this.renderTemp.start();
     }
@@ -173,14 +193,14 @@ public class Scene extends JFrame {
 
         Graphics g = bs.getDrawGraphics();
         g.drawImage(image, 0, 0, width, height,null);
-        g.drawImage(
+        /*g.drawImage(
                 gun.getImage(),
                 (width / 2) - (gunWidth / 2),
                 height - gunHeight,
                 gunWidth,
                 gunHeight,
                 null
-        );
+        );*/
         g.setColor(Color.GREEN);
         g.setFont(g.getFont().deriveFont(50f));
         g.drawString(rateInfo, 25, 75);

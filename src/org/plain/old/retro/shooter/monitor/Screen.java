@@ -1,5 +1,6 @@
 package org.plain.old.retro.shooter.monitor;
 
+import org.plain.old.retro.shooter.Sprite;
 import org.plain.old.retro.shooter.Texture;
 import org.plain.old.retro.shooter.linear.Vector2d;
 
@@ -51,13 +52,9 @@ public class Screen {
         for (int x = 0; x < width; x++) {
             Vector2d rayDir = dir.rotate(angle);
             Vector2d rayPos = pos.clone();
-            double offsetLength = Math.sqrt(
-                    Math.pow(rayPos.getX() - (int)rayPos.getX(), 2)
-                            + Math.pow(rayPos.getY() - (int)rayPos.getY(), 2)
-            );
 
             boolean hit = false;
-            double steps = 0.01;
+            double steps = .01;
             while (!hit) {
                 rayPos = rayPos.add(rayDir.multiply(steps));
 
@@ -87,18 +84,6 @@ public class Screen {
             double wallX = horizontal ? intersectionY  : intersectionX;
             wallX -= Math.floor(wallX);
 
-            /*if (angle == 0.60 - angleStep) {
-                System.out.printf(
-                        "rayPos.getX(): %s; (int) rayPos.getX(): %s; intersectionX: %s;   rayPos.getY(): %s; (int) rayPos.getY(): %s; intersectionY: %s\r",
-                        rayPos.getX(),
-                        (int) rayPos.getX(),
-                        intersectionX,
-                        rayPos.getY(),
-                        (int) rayPos.getY(),
-                        intersectionY
-                );
-            }*/
-
             int texX = (int)(wallX * (textures.get(texNum).SIZE));
             if (!horizontal && rayDir.getX() >= 0) texX = (textures.get(texNum).SIZE) - texX - 1;
             if (horizontal && rayDir.getY() <= 0) texX = (textures.get(texNum).SIZE) - texX - 1;
@@ -115,11 +100,26 @@ public class Screen {
         return pixels;
     }
 
-    public int[] render(int[] pixels, Vector2d pos, Vector2d dir, Vector2d plain) {
+    public int[] renderGun(int[] pixels, Sprite gun) {
+        int xStart = width / 2 - gun.getWidth() / 2;
+        int yStart = height - gun.getHeight();
+
+        for (int x = 0; x < gun.getWidth(); x++) {
+            for (int y = 0; y < gun.getHeight(); y++) {
+                int pixelColor = gun.getPixel(x, y);
+                if (pixelColor != 0) pixels[(x + xStart) + (y + yStart) * width] = gun.getPixel(x, y);
+            }
+        }
+
+        return pixels;
+    }
+
+    public int[] render(int[] pixels, Vector2d pos, Vector2d dir, Vector2d plain, Sprite gun) {
 
         pixels = this.renderFloor(pixels);
         pixels = this.renderCeiling(pixels);
         pixels = this.renderWall(pixels, pos, dir, plain);
+        pixels = this.renderGun(pixels, gun);
 
         return pixels;
     }
