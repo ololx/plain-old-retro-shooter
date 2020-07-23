@@ -2,14 +2,14 @@ package org.plain.old.retro.shooter.linear;
 
 /**
  * The type Vector2d.
- *
+ * <p>
  * @author Alexander A. Kropotin
  * @project plain -old-retro-shooter
- * @created 01.07.2020 17:30 <p>
+ * @created 01.07.2020 17:30
  */
 public class Vector2d implements Vector {
-	private double x;
-	private double y;
+	protected double x;
+	protected double y;
 
 	public Vector2d(double x, double y) {
 		this.x = x;

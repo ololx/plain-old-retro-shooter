@@ -42,8 +42,6 @@ public class Scene extends JFrame {
     public int[] pixels;
     public Screen screen;
 
-    private Shotgun gun;
-
     private BoomStick stick;
 
     //TODO: Refactor It when main entities will be completed - it's just for tests
@@ -82,12 +80,7 @@ public class Scene extends JFrame {
         mainP = new Camera(1, 1, 1, 0, 0, -.66);
         image = new BufferedImage(SCENE_WIDTH, SCENE_HEIGHT, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
-        screen = new Screen(map.getSpace(), SCENE_WIDTH, SCENE_HEIGHT, new ArrayList<Texture>(){{
-            add(Texture.wood);
-            add(Texture.brick);
-            add(Texture.bluestone);
-            add(Texture.stone);
-        }});
+        screen = new Screen(map.getSpace(), SCENE_WIDTH, SCENE_HEIGHT);
         this.setSize(SCENE_WIDTH, SCENE_HEIGHT);
         addKeyListener(controller);
         setSize(image.getWidth(), image.getHeight());
@@ -99,9 +92,6 @@ public class Scene extends JFrame {
         setVisible(true);
         this.sceneTemp = new RateTimer(
                 30,
-                () -> {
-                    this.stick.resetActive();
-                },
                 () -> {
                     for (Map.Entry<String, Boolean> state : controller.getState().entrySet()) {
 
@@ -131,18 +121,14 @@ public class Scene extends JFrame {
                             }
 
                             if (state.getKey().equals("SHOT")) {
-                                this.stick.setActive();
+                                this.stick.shoot();
                             }
                         }
                     }
-                }/*,
-                () -> System.out.printf(
-                        "UPS: %s; FPS: %s; KEYS: %s PLAYER %s\r",
-                        sceneTemp.getHerz(),
-                        renderTemp.getHerz(),
-                        controller.getState(),
-                        mainP.toString()
-                )*/
+                },
+                () -> {
+                    this.stick.update();
+                }
         );
         renderTemp = new RateTimer(
                 300,
@@ -166,11 +152,19 @@ public class Scene extends JFrame {
      */
     public void init() {
         requestFocus();
-        this.gun = new Shotgun("src/resources/main_gun.png");
         this.stick = new BoomStick(
-                new Sprite("src/resources/boomstick-1.png"),
-                new Sprite("src/resources/boomstick-2.png")
-        );
+                new ArrayList<>(){{
+                    add(new Sprite("src/resources/boomstick-1.png"));
+                    add(new Sprite("src/resources/boomstick-2.png"));
+                }},
+                new ArrayList<>(){{
+                    add(1);
+                }},
+                new ArrayList<>(){{
+                    add(0);
+                }},
+                0
+                );
         this.sceneTemp.start();
         this.renderTemp.start();
     }
@@ -188,19 +182,8 @@ public class Scene extends JFrame {
             return;
         }
 
-        int gunWidth = (int) (gun.getWidth() * widthScalling);
-        int gunHeight = (int) (gun.getHeight() * heightScalling);
-
         Graphics g = bs.getDrawGraphics();
         g.drawImage(image, 0, 0, width, height,null);
-        /*g.drawImage(
-                gun.getImage(),
-                (width / 2) - (gunWidth / 2),
-                height - gunHeight,
-                gunWidth,
-                gunHeight,
-                null
-        );*/
         g.setColor(Color.GREEN);
         g.setFont(g.getFont().deriveFont(50f));
         g.drawString(rateInfo, 25, 75);

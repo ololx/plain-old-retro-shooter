@@ -7,10 +7,10 @@ import java.util.Objects;
 
 /**
  * The type Rate timer.
- *
+ * <p>
  * @author Alexander A. Kropotin
  * @project plain-old-retro-shooter
- * @created 24.06.2020 19:20 <p>
+ * @created 24.06.2020 19:20
  */
 public class RateTimer implements Runnable {
 

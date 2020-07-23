@@ -13,28 +13,85 @@ import java.util.stream.Collectors;
  */
 public class BoomStick {
 
+    int fireTimes = 15;
+
+    int currentFireTimes = 0;
+
+    int reloadTimes = 30;
+
+    int currentReloadTime = 0;
+
+    private boolean isShooting;
+
+    private boolean isReload;
+
     private List<Sprite> sprites;
 
-    private boolean isActive;
+    private List<Integer> fireFrames;
+
+    private List<Integer> reloadFrames;
+
+    private int mainFrame;
 
     {
         this.sprites = new ArrayList<>();
-        this.isActive = false;
+        List<Integer> fireFrames = new ArrayList<>();
+        List<Integer> reloadFrames = new ArrayList<>();
+        this.mainFrame = 0;
+        this.isShooting = false;
+        this.isReload = false;
     }
 
-    public BoomStick(Sprite ... sprites) {
-        this.sprites.addAll(Arrays.asList(sprites).stream().collect(Collectors.toList()));
+    public BoomStick(List<Sprite> sprites,
+                     List<Integer> fireFrames,
+                     List<Integer> reloadFrames,
+                     int mainFrame) {
+        this.mainFrame = mainFrame;
+        this.sprites = sprites;
+        this.fireFrames = fireFrames;
+        this.reloadFrames = reloadFrames;
+    }
+
+    public void update() {
+        if (this.isShooting()) {
+            if (currentFireTimes < this.fireTimes) {
+                this.currentFireTimes++;
+            } else {
+                this.currentFireTimes = 0;
+                this.isShooting = false;
+                this.isReload = true;
+            }
+        }
+        else if (this.isReload())
+            if (currentReloadTime < this.reloadTimes) {
+                this.currentReloadTime++;
+            } else {
+                this.currentReloadTime = 0;
+                this.isReload = false;
+            }
     }
 
     public Sprite getSprite() {
-        return this.isActive ? sprites.get(1) : sprites.get(0);
+        if (this.isShooting())
+            return this.sprites.get(this.fireFrames.get(0));
+        else if (this.isReload())
+            return this.sprites.get(this.reloadFrames.get(0));
+        else return this.sprites.get(mainFrame);
     }
 
-    public void setActive() {
-        this.isActive = true;
+    public void shoot() {
+        isShooting = !isReload ? true : false;
     }
 
-    public void resetActive() {
-        this.isActive = false;
+    public void reload() {
+        isReload = !isShooting ? true : false;
+    }
+
+    public boolean isShooting() {
+        return this.isShooting;
+    }
+
+    public boolean isReload() {
+        return this.isReload;
     }
 }

@@ -1,7 +1,6 @@
 package org.plain.old.retro.shooter;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +26,6 @@ public class Sprite {
             this.width = image.getWidth();
             this.height = image.getHeight();
             this.pixels = new int[this.width][this.height];
-
             int[] pixels = new int[this.width * this.height];
             image.getRGB(
                     0,
@@ -39,7 +37,6 @@ public class Sprite {
                     this.width);
             for (int x = 0; x < this.width; x++) {
                 for (int y = 0; y < this.height; y++) {
-                    System.err.println(pixels[x + y * this.width]);
                     this.pixels[x][y] = pixels[x + y * this.width];
                 }
             }
