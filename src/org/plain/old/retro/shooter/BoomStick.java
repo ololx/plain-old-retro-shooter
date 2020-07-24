@@ -72,11 +72,19 @@ public class BoomStick {
     }
 
     public Sprite getSprite() {
-        if (this.isShooting())
-            return this.sprites.get(this.fireFrames.get(0));
-        else if (this.isReload())
-            return this.sprites.get(this.reloadFrames.get(0));
-        else return this.sprites.get(mainFrame);
+        if (this.isShooting()) {
+            int currentFrameNum = (int) Math.floor(currentFireTimes / ((fireTimes + 1) / fireFrames.size()));
+
+            return this.sprites.get(this.fireFrames.get(currentFrameNum));
+        }
+
+        if (this.isReload()) {
+            int currentFrameNum = (int) Math.floor(currentReloadTime / ((reloadTimes + 3) / reloadFrames.size()));
+
+            return this.sprites.get(this.reloadFrames.get(currentFrameNum));
+        }
+
+        return this.sprites.get(mainFrame);
     }
 
     public void shoot() {

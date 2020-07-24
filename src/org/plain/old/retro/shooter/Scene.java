@@ -154,14 +154,21 @@ public class Scene extends JFrame {
         requestFocus();
         this.stick = new BoomStick(
                 new ArrayList<>(){{
-                    add(new Sprite("src/resources/boomstick-1.png"));
-                    add(new Sprite("src/resources/boomstick-2.png"));
+                    add(new Sprite("src/resources/equip/boomstick-1.png"));
+                    add(new Sprite("src/resources/equip/boomstick-2.png"));
+                    add(new Sprite("src/resources/equip/boomstick-3.png"));
+                    add(new Sprite("src/resources/equip/boomstick-4.png"));
+                    add(new Sprite("src/resources/equip/boomstick-5.png"));
+                    add(new Sprite("src/resources/equip/boomstick-6.png"));
                 }},
                 new ArrayList<>(){{
                     add(1);
+                    add(2);
                 }},
                 new ArrayList<>(){{
-                    add(0);
+                    add(3);
+                    add(4);
+                    add(5);
                 }},
                 0
                 );

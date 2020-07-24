@@ -59,4 +59,14 @@ public class Sprite {
 
         return this.pixels[x][y];
     }
+
+    public int getPixelSafty(int x, int y) {
+        if (x < 0) x = -x;
+        if (x >= this.getWidth()) x = x % this.getWidth();
+        if (y < 0) y = -y;
+        if (y >= this.getHeight()) y = y % this.getHeight();
+
+
+        return this.getPixel(x, y);
+    }
 }
