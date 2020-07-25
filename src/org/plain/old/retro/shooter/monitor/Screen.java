@@ -17,17 +17,13 @@ public class Screen {
     private int[][] map;
     private int width;
     private int height;
-    private ArrayList<Sprite> textures = new ArrayList<>(){{
-        add(new Sprite("src/resources/room/brick-texture-1.png"));
-        add(new Sprite("src/resources/room/brick-texture-2.png"));
-        add(new Sprite("src/resources/room/brick-texture-1.png"));
-        add(new Sprite("src/resources/room/brick-texture-2.png"));
-    }};
+    private ArrayList<Sprite> textures;
 
-    public Screen(int[][] map, int width, int height) {
+    public Screen(int[][] map, int width, int height, ArrayList<Sprite> textures) {
         this.map = map;
         this.width = width;
         this.height = height;
+        this.textures = textures;
     }
 
     public int[] renderFloor(int[] pixels) {

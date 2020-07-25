@@ -76,11 +76,17 @@ public class Scene extends JFrame {
             put(KeyEvent.VK_LEFT, "MV_LFT");
             put(KeyEvent.VK_RIGHT, "MV_RHT");
             put(KeyEvent.VK_SPACE, "SHOT");
+            put(KeyEvent.VK_R, "RELOAD");
         }});
         mainP = new Camera(1, 1, 1, 0, 0, -.66);
         image = new BufferedImage(SCENE_WIDTH, SCENE_HEIGHT, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
-        screen = new Screen(map.getSpace(), SCENE_WIDTH, SCENE_HEIGHT);
+        screen = new Screen(map.getSpace(), SCENE_WIDTH, SCENE_HEIGHT, new ArrayList<>(){{
+            add(new Sprite("src/resources/room/brick-texture-1.png"));
+            add(new Sprite("src/resources/room/brick-texture-2.png"));
+            add(new Sprite("src/resources/room/brick-texture-1.png"));
+            add(new Sprite("src/resources/room/brick-texture-2.png"));
+        }});
         this.setSize(SCENE_WIDTH, SCENE_HEIGHT);
         addKeyListener(controller);
         setSize(image.getWidth(), image.getHeight());
@@ -122,6 +128,10 @@ public class Scene extends JFrame {
 
                             if (state.getKey().equals("SHOT")) {
                                 this.stick.shoot();
+                            }
+
+                            if (state.getKey().equals("RELOAD")) {
+                                this.stick.reload();
                             }
                         }
                     }
