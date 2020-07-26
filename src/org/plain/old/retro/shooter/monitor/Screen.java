@@ -40,8 +40,7 @@ public class Screen {
             double floorX = pos.getX() + rowDistance * rayDirLeft.getX();
             double floorY = pos.getY() + rowDistance * rayDirLeft.getY();
 
-            for(int x = 0; x < this.width; ++x)
-            {
+            for(int x = 0; x < this.width; ++x) {
                 int cellX = (int)(floorX);
                 int cellY = (int)(floorY);
                 int tx = (int)(textures.get(0).getWidth() * (floorX - cellX)) & (textures.get(0).getWidth() - 1);
@@ -60,8 +59,33 @@ public class Screen {
     }
 
     public int[] renderCeiling(int[] pixels, Vector2d pos, Vector2d dir) {
-        for (int i = 0; i< pixels.length / 2; i++) {
-            pixels[i] = Color.LIGHT_GRAY.getRGB();
+        double angle = 0.60;
+        Vector2d rayDirLeft = dir.rotate(angle);
+        Vector2d rayDirRight = dir.rotate(-angle);
+
+        for(int y = 0; y < this.height / 2; y++) {
+            int p = this.height / 2 - y;
+            double posZ = 0.5 * this.height;
+            double rowDistance = 1.0 * posZ / p;
+            double floorStepX = rowDistance * (rayDirRight.getX() - rayDirLeft.getX()) / this.width;
+            double floorStepY = rowDistance * (rayDirRight.getY() - rayDirLeft.getY()) / this.width;
+
+            double floorX = pos.getX() + rowDistance * rayDirLeft.getX();
+            double floorY = pos.getY() + rowDistance * rayDirLeft.getY();
+
+            for(int x = 0; x < this.width; ++x) {
+                int cellX = (int)(floorX);
+                int cellY = (int)(floorY);
+                int tx = (int)(textures.get(0).getWidth() * (floorX - cellX)) & (textures.get(0).getWidth() - 1);
+                int ty = (int)(textures.get(0).getHeight() * (floorY - cellY)) & (textures.get(0).getHeight() - 1);
+                int ceilingTexture = 1;
+                int colorCeiling = textures.get(ceilingTexture).getPixel(tx, ty);
+
+                pixels[x + y * width] = colorCeiling;
+
+                floorX += floorStepX;
+                floorY += floorStepY;
+            }
         }
 
         return pixels;
