@@ -26,17 +26,42 @@ public class Screen {
         this.textures = textures;
     }
 
-    public int[] renderFloor(int[] pixels) {
-        for (int i = 0; i< pixels.length / 2; i++) {
-            pixels[i] = Color.LIGHT_GRAY.getRGB();
+    public int[] renderFloor(int[] pixels, Vector2d pos, Vector2d dir) {
+        double angle = 0.60;
+        Vector2d rayDirLeft = dir.rotate(angle);
+        Vector2d rayDirRight = dir.rotate(-angle);
+
+        for(int y = 0; y < this.height; y++) {
+            int p = y - this.height / 2;
+            double posZ = 0.5 * this.height;
+            double rowDistance = 1.0 * posZ / p;
+            double floorStepX = rowDistance * (rayDirRight.getX() - rayDirLeft.getX()) / this.width;
+            double floorStepY = rowDistance * (rayDirRight.getY() - rayDirLeft.getY()) / this.width;
+            double floorX = pos.getX() + rowDistance * rayDirLeft.getX();
+            double floorY = pos.getY() + rowDistance * rayDirLeft.getY();
+
+            for(int x = 0; x < this.width; ++x)
+            {
+                int cellX = (int)(floorX);
+                int cellY = (int)(floorY);
+                int tx = (int)(textures.get(0).getWidth() * (floorX - cellX)) & (textures.get(0).getWidth() - 1);
+                int ty = (int)(textures.get(0).getHeight() * (floorY - cellY)) & (textures.get(0).getHeight() - 1);
+                int floorTexture = 0;
+                int colorFloor = textures.get(floorTexture).getPixel(tx, ty);
+
+                pixels[x + y * width] = colorFloor;
+
+                floorX += floorStepX;
+                floorY += floorStepY;
+            }
         }
 
         return pixels;
     }
 
-    public int[] renderCeiling(int[] pixels) {
-        for (int i = pixels.length / 2; i< pixels.length; i++){
-            pixels[i] = Color.DARK_GRAY.getRGB();
+    public int[] renderCeiling(int[] pixels, Vector2d pos, Vector2d dir) {
+        for (int i = 0; i< pixels.length / 2; i++) {
+            pixels[i] = Color.LIGHT_GRAY.getRGB();
         }
 
         return pixels;
@@ -111,8 +136,8 @@ public class Screen {
 
     public int[] render(int[] pixels, Vector2d pos, Vector2d dir, Vector2d plain, Sprite gun) {
 
-        pixels = this.renderFloor(pixels);
-        pixels = this.renderCeiling(pixels);
+        pixels = this.renderFloor(pixels, pos, dir);
+        pixels = this.renderCeiling(pixels, pos, dir);
         pixels = this.renderWall(pixels, pos, dir);
         pixels = this.renderGun(pixels, gun);
 
