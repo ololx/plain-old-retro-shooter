@@ -27,11 +27,14 @@ public class Screen {
     }
 
     public int[] renderFloor(int[] pixels, Vector2d pos, Vector2d dir) {
+        int floorTexture = 5;
         double angle = 0.60;
         Vector2d rayDirLeft = dir.rotate(angle);
         Vector2d rayDirRight = dir.rotate(-angle);
 
-        for(int y = 0; y < this.height; y++) {
+        int drawStart = this.height / 2;
+        int drawEnd = this.height;
+        for (int y = drawStart; y < drawEnd; y++) {
             int p = y - this.height / 2;
             double posZ = 0.5 * this.height;
             double rowDistance = 1.0 * posZ / p;
@@ -40,13 +43,12 @@ public class Screen {
             double floorX = pos.getX() + rowDistance * rayDirLeft.getX();
             double floorY = pos.getY() + rowDistance * rayDirLeft.getY();
 
-            for(int x = 0; x < this.width; ++x) {
+            for (int x = 0; x < this.width; ++x) {
                 int cellX = (int)(floorX);
                 int cellY = (int)(floorY);
-                int tx = (int)(textures.get(0).getWidth() * (floorX - cellX)) & (textures.get(0).getWidth() - 1);
-                int ty = (int)(textures.get(0).getHeight() * (floorY - cellY)) & (textures.get(0).getHeight() - 1);
-                int floorTexture = 0;
-                int colorFloor = textures.get(floorTexture).getPixel(tx, ty);
+                int tx = (int)(textures.get(floorTexture).getWidth() * (floorX - cellX)) & (textures.get(floorTexture).getWidth() - 1);
+                int ty = (int)(textures.get(floorTexture).getHeight() * (floorY - cellY)) & (textures.get(floorTexture).getHeight() - 1);
+                int colorFloor = textures.get(floorTexture).getPixelSafty(tx, ty);
 
                 pixels[x + y * width] = colorFloor;
 
@@ -59,32 +61,34 @@ public class Screen {
     }
 
     public int[] renderCeiling(int[] pixels, Vector2d pos, Vector2d dir) {
+        int ceilingTexture = 4;
         double angle = 0.60;
         Vector2d rayDirLeft = dir.rotate(angle);
         Vector2d rayDirRight = dir.rotate(-angle);
+        int drawStart = 0;
+        int drawEnd = this.height / 2;
 
-        for(int y = 0; y < this.height / 2; y++) {
+        for (int y = drawStart; y < drawEnd; y++) {
             int p = this.height / 2 - y;
             double posZ = 0.5 * this.height;
             double rowDistance = 1.0 * posZ / p;
-            double floorStepX = rowDistance * (rayDirRight.getX() - rayDirLeft.getX()) / this.width;
-            double floorStepY = rowDistance * (rayDirRight.getY() - rayDirLeft.getY()) / this.width;
+            double ceilingStepX = rowDistance * (rayDirRight.getX() - rayDirLeft.getX()) / this.width;
+            double ceilingStepY = rowDistance * (rayDirRight.getY() - rayDirLeft.getY()) / this.width;
 
-            double floorX = pos.getX() + rowDistance * rayDirLeft.getX();
-            double floorY = pos.getY() + rowDistance * rayDirLeft.getY();
+            double ceilingX = pos.getX() + rowDistance * rayDirLeft.getX();
+            double ceilingY = pos.getY() + rowDistance * rayDirLeft.getY();
 
-            for(int x = 0; x < this.width; ++x) {
-                int cellX = (int)(floorX);
-                int cellY = (int)(floorY);
-                int tx = (int)(textures.get(0).getWidth() * (floorX - cellX)) & (textures.get(0).getWidth() - 1);
-                int ty = (int)(textures.get(0).getHeight() * (floorY - cellY)) & (textures.get(0).getHeight() - 1);
-                int ceilingTexture = 1;
-                int colorCeiling = textures.get(ceilingTexture).getPixel(tx, ty);
+            for (int x = 0; x < this.width; ++x) {
+                int cellX = (int)(ceilingX);
+                int cellY = (int)(ceilingY);
+                int tx = (int)(textures.get(ceilingTexture).getWidth() * (ceilingX - cellX)) & (textures.get(ceilingTexture).getWidth() - 1);
+                int ty = (int)(textures.get(ceilingTexture).getHeight() * (ceilingY - cellY)) & (textures.get(ceilingTexture).getHeight() - 1);
+                int colorCeiling = textures.get(ceilingTexture).getPixelSafty(tx, ty);
 
                 pixels[x + y * width] = colorCeiling;
 
-                floorX += floorStepX;
-                floorY += floorStepY;
+                ceilingX += ceilingStepX;
+                ceilingY += ceilingStepY;
             }
         }
 

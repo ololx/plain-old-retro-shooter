@@ -82,10 +82,12 @@ public class Scene extends JFrame {
         image = new BufferedImage(SCENE_WIDTH, SCENE_HEIGHT, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
         screen = new Screen(map.getSpace(), SCENE_WIDTH, SCENE_HEIGHT, new ArrayList<>(){{
-            add(new Sprite("src/resources/room/brick-texture-1.png"));
-            add(new Sprite("src/resources/room/brick-texture-2.png"));
-            add(new Sprite("src/resources/room/brick-texture-1.png"));
-            add(new Sprite("src/resources/room/brick-texture-2.png"));
+            add(new Sprite("src/resources/room/wall-1.png"));
+            add(new Sprite("src/resources/room/wall-2.png"));
+            add(new Sprite("src/resources/room/wall-3.png"));
+            add(new Sprite("src/resources/room/wall-4.png"));
+            add(new Sprite("src/resources/room/ceiling.png"));
+            add(new Sprite("src/resources/room/floor.png"));
         }});
         this.setSize(SCENE_WIDTH, SCENE_HEIGHT);
         addKeyListener(controller);
