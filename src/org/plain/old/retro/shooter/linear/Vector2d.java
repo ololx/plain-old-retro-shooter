@@ -45,7 +45,11 @@ public class Vector2d implements Vector {
 	}
 
 	public double getAngle(Vector2d om) {
-		return Math.cos(this.dotProduct(om) / (this.getModule() * om.getModule()));
+		return Math.acos(this.dotProduct(om) / (this.getModule() * om.getModule()));
+	}
+
+	public double getAngleBetweenNormal(Vector2d om) {
+		return Math.acos(this.getNormalized().dotProduct(om.getNormalized()));
 	}
 
 	public Vector2d rotate(double angle) {

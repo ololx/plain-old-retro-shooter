@@ -1,10 +1,13 @@
 package org.plain.old.retro.shooter.monitor;
 
+import org.plain.old.retro.shooter.Entity;
 import org.plain.old.retro.shooter.Sprite;
 import org.plain.old.retro.shooter.linear.Vector2d;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * @project plain-old-retro-shooter
@@ -17,13 +20,25 @@ public class Screen {
     private int[][] map;
     private int width;
     private int height;
-    private ArrayList<Sprite> textures;
 
-    public Screen(int[][] map, int width, int height, ArrayList<Sprite> textures) {
+    private List<Sprite> textures;
+
+    private List<Entity> enemies;
+
+    public Screen(int[][] map, int width, int height, List<Sprite> textures, List<Entity> enemies) {
         this.map = map;
         this.width = width;
         this.height = height;
         this.textures = textures;
+        this.enemies = enemies;
+    }
+
+    public Screen(int[][] map, int width, int height, List<Sprite> textures) {
+        this.map = map;
+        this.width = width;
+        this.height = height;
+        this.textures = textures;
+        this.enemies = new ArrayList<>();
     }
 
     public int[] renderFloor(int[] pixels, Vector2d pos, Vector2d dir) {
@@ -37,13 +52,13 @@ public class Screen {
         for (int y = drawStart; y < drawEnd; y++) {
             int p = y - this.height / 2;
             double posZ = 0.5 * this.height;
-            double rowDistance = 1.0 * posZ / p;
+            double rowDistance = posZ / p;
             double floorStepX = rowDistance * (rayDirRight.getX() - rayDirLeft.getX()) / this.width;
             double floorStepY = rowDistance * (rayDirRight.getY() - rayDirLeft.getY()) / this.width;
             double floorX = pos.getX() + rowDistance * rayDirLeft.getX();
             double floorY = pos.getY() + rowDistance * rayDirLeft.getY();
 
-            for (int x = 0; x < this.width; ++x) {
+            for (int x = 0; x < this.width; x++) {
                 int cellX = (int)(floorX);
                 int cellY = (int)(floorY);
                 int tx = (int)(textures.get(floorTexture).getWidth() * (floorX - cellX)) & (textures.get(floorTexture).getWidth() - 1);
@@ -71,14 +86,14 @@ public class Screen {
         for (int y = drawStart; y < drawEnd; y++) {
             int p = this.height / 2 - y;
             double posZ = 0.5 * this.height;
-            double rowDistance = 1.0 * posZ / p;
+            double rowDistance = posZ / p;
             double ceilingStepX = rowDistance * (rayDirRight.getX() - rayDirLeft.getX()) / this.width;
             double ceilingStepY = rowDistance * (rayDirRight.getY() - rayDirLeft.getY()) / this.width;
 
             double ceilingX = pos.getX() + rowDistance * rayDirLeft.getX();
             double ceilingY = pos.getY() + rowDistance * rayDirLeft.getY();
 
-            for (int x = 0; x < this.width; ++x) {
+            for (int x = 0; x < this.width; x++) {
                 int cellX = (int)(ceilingX);
                 int cellY = (int)(ceilingY);
                 int tx = (int)(textures.get(ceilingTexture).getWidth() * (ceilingX - cellX)) & (textures.get(ceilingTexture).getWidth() - 1);
@@ -162,11 +177,89 @@ public class Screen {
         return pixels;
     }
 
+    public int[] renderSprite(int[] pixels, Vector2d pos, Vector2d dir, List<Entity> enemies) {
+        enemies.stream()
+                .forEach(s -> s.distanceToCamera = Math.pow(
+                        Math.abs(pos.getX() - s.xPosition),
+                        Math.abs(pos.getY() - s.yPosition))
+                );
+        enemies.sort((s1, s2) -> (s2.distanceToCamera > s1.distanceToCamera) ? 1 : -1 );
+
+        double normAngle = dir.getAngle(new Vector2d(1, 0));
+
+        double angleStep = width / 1.20;
+        double angle = 0.60;
+
+        for (Entity entity : enemies) {
+
+            Vector2d enemyPos = new Vector2d(entity.xPosition, entity.yPosition);
+            Vector2d rayToEnemy = enemyPos.subtract(pos);
+
+            double angleToEnemeny = dir.getAngle(rayToEnemy);
+
+            boolean isVisible = angleToEnemeny > angle ? false : true;
+
+            if (!isVisible) continue;
+
+            double rayLength = Math.hypot(
+                    pos.getX() > enemyPos.getX()
+                            ? pos.getX() - enemyPos.getX()
+                            : enemyPos.getX() - pos.getX(),
+                    pos.getY() > enemyPos.getY()
+                            ? pos.getY() - enemyPos.getY()
+                            : -pos.getY() + enemyPos.getY()
+            );
+
+            Sprite sprite = entity.getSprite();
+            int enemyHeight = (rayLength == 0) ? sprite.getHeight() : (int) ((int) (sprite.getHeight() / (rayLength)));
+            if (enemyHeight > sprite.getHeight()) enemyHeight = sprite.getHeight();
+
+            int enemyWidth = (rayLength == 0) ? sprite.getWidth() : (int) ((int) (sprite.getWidth() / (rayLength)));
+            if (enemyWidth > sprite.getWidth()) enemyWidth = sprite.getWidth();
+
+            int drawStart = (int) (-enemyHeight / 2 + height / 2);
+            if (drawStart < 0) drawStart = 0;
+
+            int drawEnd = (int) (enemyHeight / 2 + height / 2);
+            if (drawEnd >= height) drawEnd = height;
+
+            double angles = pos.getY() > entity.yPosition && pos.getX() < entity.xPosition
+                    ? (angleStep * (-1 * angleToEnemeny + 0.6))
+                    : (angleStep * (1 * angleToEnemeny + 0.6));
+
+            double imgPixYSize = 1.0 * sprite.getHeight() / enemyHeight;
+            int drawXStart = (int) angles - (enemyWidth / 2);
+            int drawXEnd = (int) drawXStart + (enemyWidth / 2);
+            double imgPixXSize = 1.0 * sprite.getWidth() / enemyWidth;
+
+
+
+            System.err.printf("A " + angleToEnemeny
+                    + "   drawXStart   " + drawXStart
+                    + "   drawXEnd   " + drawXEnd
+                    + "   drawStart   " + drawStart
+                    + "   drawEnd   " + drawEnd
+                    + "   enemyHeight   " + enemyHeight
+                    + "\r");
+
+            for (int y = drawStart; y < drawEnd; y++) {
+                int texY = (int)((y - drawStart) * imgPixYSize);
+                for (int x = drawXStart; x < drawXEnd; x++) {
+                    int color = sprite.getPixelSafty((int) ((x - drawXStart) * imgPixXSize), texY);
+                    if (color != 0) pixels[x + y * width] = color;
+                }
+            }
+        }
+
+        return pixels;
+    }
+
     public int[] render(int[] pixels, Vector2d pos, Vector2d dir, Vector2d plain, Sprite gun) {
 
         pixels = this.renderFloor(pixels, pos, dir);
         pixels = this.renderCeiling(pixels, pos, dir);
         pixels = this.renderWall(pixels, pos, dir);
+        pixels = this.renderSprite(pixels, pos, dir, enemies);
         pixels = this.renderGun(pixels, gun);
 
         return pixels;

@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -81,14 +82,22 @@ public class Scene extends JFrame {
         mainP = new Camera(1, 1, 1, 0, 0, -.66);
         image = new BufferedImage(SCENE_WIDTH, SCENE_HEIGHT, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
-        screen = new Screen(map.getSpace(), SCENE_WIDTH, SCENE_HEIGHT, new ArrayList<>(){{
-            add(new Sprite("src/resources/room/wall-1.png"));
-            add(new Sprite("src/resources/room/wall-2.png"));
-            add(new Sprite("src/resources/room/wall-3.png"));
-            add(new Sprite("src/resources/room/wall-4.png"));
-            add(new Sprite("src/resources/room/ceiling.png"));
-            add(new Sprite("src/resources/room/floor.png"));
-        }});
+        screen = new Screen(
+                map.getSpace(),
+                SCENE_WIDTH,
+                SCENE_HEIGHT,
+                new ArrayList<>(){{
+                    add(new Sprite("src/resources/room/wall-1.png"));
+                    add(new Sprite("src/resources/room/wall-2.png"));
+                    add(new Sprite("src/resources/room/wall-3.png"));
+                    add(new Sprite("src/resources/room/wall-4.png"));
+                    add(new Sprite("src/resources/room/ceiling.png"));
+                    add(new Sprite("src/resources/room/floor.png"));
+                }},
+                new ArrayList<>(){{
+                    add(new Entity(2.5, 2.5, new Sprite("src/resources/barrel.png")));
+                }}
+        );
         this.setSize(SCENE_WIDTH, SCENE_HEIGHT);
         addKeyListener(controller);
         setSize(image.getWidth(), image.getHeight());
