@@ -7,10 +7,7 @@ public class Entity {
 
 	public double distanceToCamera;
 
-	public double cameraWallDistanceFactor;
-
-	public double xTransformed;
-	public double yTransformed;
+	public boolean isAlive = true;
 
 	public Sprite texture;
 

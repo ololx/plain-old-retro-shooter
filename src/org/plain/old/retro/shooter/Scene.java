@@ -45,6 +45,8 @@ public class Scene extends JFrame {
 
     private BoomStick stick;
 
+    private List<Entity> enemies;
+
     //TODO: Refactor It when main entities will be completed - it's just for tests
     /**
      * Instantiates a new Game.
@@ -79,6 +81,11 @@ public class Scene extends JFrame {
             put(KeyEvent.VK_SPACE, "SHOT");
             put(KeyEvent.VK_R, "RELOAD");
         }});
+        this.enemies = new ArrayList<>(){{
+            add(new Entity(7.5, 7.5, new Sprite("src/resources/enemy-1.png")));
+            add(new Entity(10.5, 7.5, new Sprite("src/resources/enemy-2.png")));
+            add(new Entity(12.5, 10.5, new Sprite("src/resources/enemy-3.png")));
+        }};
         mainP = new Camera(1, 1, 1, 0, 0, -.66);
         image = new BufferedImage(SCENE_WIDTH, SCENE_HEIGHT, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
@@ -93,9 +100,6 @@ public class Scene extends JFrame {
                     add(new Sprite("src/resources/room/wall-4.png"));
                     add(new Sprite("src/resources/room/ceiling.png"));
                     add(new Sprite("src/resources/room/floor.png"));
-                }},
-                new ArrayList<>(){{
-                    add(new Entity(2.5, 2.5, new Sprite("src/resources/barrel.png")));
                 }}
         );
         this.setSize(SCENE_WIDTH, SCENE_HEIGHT);
@@ -158,7 +162,8 @@ public class Scene extends JFrame {
                         mainP.position,
                         mainP.direction,
                         mainP.plain,
-                        this.stick.getSprite()
+                        this.stick.getSprite(),
+                        this.enemies
                 ),
                 () -> this.render(map, String.format(
                         "UPS: %s \n FPS: %s",
