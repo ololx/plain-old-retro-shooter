@@ -156,13 +156,13 @@ public class Scene extends JFrame {
                 }
         );
         renderTemp = new RateTimer(
-                300,
+                65,
                 () -> screen.render(
                         pixels,
                         mainP.position,
                         mainP.direction,
                         mainP.plain,
-                        this.stick.getSprite(),
+                        this.stick,
                         this.enemies
                 ),
                 () -> this.render(map, String.format(

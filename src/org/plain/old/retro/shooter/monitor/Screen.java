@@ -1,5 +1,6 @@
 package org.plain.old.retro.shooter.monitor;
 
+import org.plain.old.retro.shooter.BoomStick;
 import org.plain.old.retro.shooter.Entity;
 import org.plain.old.retro.shooter.Sprite;
 import org.plain.old.retro.shooter.linear.Vector2d;
@@ -169,7 +170,7 @@ public class Screen {
         return pixels;
     }
 
-    public int[] renderSprite(int[] pixels, Vector2d pos, Vector2d dir, List<Entity> enemies) {
+    public int[] renderSprite(int[] pixels, Vector2d pos, Vector2d dir, List<Entity> enemies, boolean isShooting) {
         enemies.stream()
                 .forEach(s -> s.distanceToCamera = Math.pow(
                         Math.abs(pos.getX() - s.xPosition),
@@ -189,7 +190,7 @@ public class Screen {
             double angleToEnemenyCenter = dir.getAngle(rayToEnemy);
             boolean isVisible = angleToEnemenyCenter <= angle && angleToEnemenyLeft  <= angle * 2 ? true : false;
 
-            if (!isVisible) continue;
+            if (!isVisible || !entity.isAlive) continue;
 
             double angles = angleStep * (angleToEnemenyLeft);
             double rayLength = Math.hypot(Math.abs(pos.getX() - enemyPos.getX()), Math.abs(pos.getY() - enemyPos.getY()));
@@ -227,18 +228,20 @@ public class Screen {
                     if (color != 0) pixels[x + y * width] = color;
                 }
             }
+
+            if (isShooting && (angleToEnemenyCenter >= 0 && angleToEnemenyCenter < 0.1)) entity.isAlive = false;
         }
 
         return pixels;
     }
 
-    public int[] render(int[] pixels, Vector2d pos, Vector2d dir, Vector2d plain, Sprite gun, List<Entity> enemies) {
+    public int[] render(int[] pixels, Vector2d pos, Vector2d dir, Vector2d plain, BoomStick gun, List<Entity> enemies) {
 
         pixels = this.renderFloor(pixels, pos, dir);
         pixels = this.renderCeiling(pixels, pos, dir);
         pixels = this.renderWall(pixels, pos, dir);
-        pixels = this.renderSprite(pixels, pos, dir, enemies);
-        pixels = this.renderGun(pixels, gun);
+        pixels = this.renderSprite(pixels, pos, dir, enemies, gun.isShooting());
+        pixels = this.renderGun(pixels, gun.getSprite());
 
         return pixels;
     }
