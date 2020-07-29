@@ -1,5 +1,7 @@
 package org.plain.old.retro.shooter;
 
+import org.plain.old.retro.shooter.equip.Bullet;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

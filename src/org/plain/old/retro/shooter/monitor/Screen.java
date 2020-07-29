@@ -196,7 +196,7 @@ public class Screen {
         return pixels;
     }
 
-    public int[] renderSprite(int[] pixels, Vector2d pos, Vector2d dir, List<Entity> enemies, boolean isShooting) {
+    public int[] renderSprite(int[] pixels, Vector2d pos, Vector2d dir, List<Entity> enemies) {
         enemies.stream()
                 .forEach(s -> s.distanceToCamera = Math.pow(
                         Math.abs(pos.getX() - s.xPosition),
@@ -254,8 +254,6 @@ public class Screen {
                     if (color != 0) pixels[x + y * width] = color;
                 }
             }
-
-            if (isShooting && (angleToEnemenyCenter >= 0 && angleToEnemenyCenter < 0.1)) entity.isAlive = false;
         }
 
         return pixels;
@@ -266,7 +264,7 @@ public class Screen {
         pixels = this.renderFloor(pixels, pos, dir);
         pixels = this.renderCeiling(pixels, pos, dir);
         pixels = this.renderWall(pixels, pos, dir);
-        pixels = this.renderSprite(pixels, pos, dir, enemies, gun.isShooting());
+        pixels = this.renderSprite(pixels, pos, dir, enemies);
         pixels = this.renderGun(pixels, gun.getSprite());
 
         return pixels;

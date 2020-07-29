@@ -1,6 +1,8 @@
 package org.plain.old.retro.shooter;
 
 import org.plain.old.retro.shooter.clock.RateTimer;
+import org.plain.old.retro.shooter.equip.Bullet;
+import org.plain.old.retro.shooter.linear.Vector2d;
 import org.plain.old.retro.shooter.listener.KeyboardController;
 import org.plain.old.retro.shooter.monitor.Screen;
 
@@ -46,6 +48,8 @@ public class Scene extends JFrame {
     private BoomStick stick;
 
     private List<Entity> enemies;
+
+    private List<Bullet> bullets = new ArrayList<>();
 
     //TODO: Refactor It when main entities will be completed - it's just for tests
     /**
@@ -143,6 +147,10 @@ public class Scene extends JFrame {
 
                             if (state.getKey().equals("SHOT")) {
                                 this.stick.shoot();
+
+                                if (this.stick.isShooting() && (this.stick.currentFireTimes == 0)) {
+                                    this.bullets.add(new Bullet(this.mainP.position, this.mainP.direction));
+                                }
                             }
 
                             if (state.getKey().equals("RELOAD")) {
@@ -153,6 +161,27 @@ public class Scene extends JFrame {
                 },
                 () -> {
                     this.stick.update();
+                    for (Bullet bullet : this.bullets) {
+                        if (bullet.isHited) continue;
+
+                        bullet.move(map.getSpace());
+                        Vector2d bVec = bullet.position;
+                        for (Entity enemy : this.enemies) {
+                            if (!enemy.isAlive) continue;
+
+                            Vector2d eVec = new Vector2d(enemy.xPosition, enemy.yPosition);
+                            double bLength = bVec.getModule();
+                            double eLength = eVec.getModule();
+                            double angle = bVec.getAngle(eVec);
+
+                            if (bLength - 1 <= eLength && bLength >= eLength && angle <= 0.1) {
+                                System.err.printf("Bullet : "+ bVec + "  Enemy : " + eVec +"\r");
+                                enemy.isAlive = false;
+                                bullet.isHited = true;
+                                break;
+                            }
+                        }
+                    }
                 }
         );
         renderTemp = new RateTimer(
