@@ -167,6 +167,32 @@ public class Screen {
             }
         }
 
+        int aimXStart = (width / 2) - (width / 100);
+        int aimXEnd = (width / 2) + (width / 100);
+        int aimXEmptyStart = (width / 2) - (width / 300);
+        int aimXEmptyEnd = (width / 2) + (width / 300);
+
+        for (int x = aimXStart; x <= aimXEnd; x++) {
+            for (int y = (height / 2) - 2; y <= (height / 2) + 2; y++) {
+                if (x <= aimXEmptyEnd && x >= aimXEmptyStart) continue;
+
+                pixels[x + y * width] = Color.yellow.getRGB();
+            }
+        }
+
+        int aimYStart = (height / 2) - ((aimXEnd - aimXStart) / 2);
+        int aimYEnd = aimYStart + (aimXEnd - aimXStart);
+        int aimYEmptyStart = (height / 2) - (width / 300);
+        int aimYEmptyEnd = (height / 2) + (width / 300);
+
+        for (int y = aimYStart; y <= aimYEnd; y++) {
+            for (int x = (width / 2) - 2; x <= (width / 2) + 2; x++) {
+                if (y <= aimYEmptyEnd && y >= aimYEmptyStart) continue;
+
+                pixels[x + y * width] = Color.yellow.getRGB();
+            }
+        }
+
         return pixels;
     }
 
