@@ -52,8 +52,8 @@ public class Screen {
             for (int x = 0; x < this.width; x++) {
                 int cellX = (int)(floorX);
                 int cellY = (int)(floorY);
-                int tx = (int)(textures.get(floorTexture).getWidth() * (floorX - cellX)) & (textures.get(floorTexture).getWidth() - 1);
-                int ty = (int)(textures.get(floorTexture).getHeight() * (floorY - cellY)) & (textures.get(floorTexture).getHeight() - 1);
+                int tx = (int)(textures.get(floorTexture).getWidth() * Math.abs(floorX - cellX));
+                int ty = (int)(textures.get(floorTexture).getHeight() * Math.abs(floorY - cellY));
                 int colorFloor = textures.get(floorTexture).getPixelSafty(tx, ty);
 
                 pixels[x + y * width] = colorFloor;
@@ -87,8 +87,8 @@ public class Screen {
             for (int x = 0; x < this.width; x++) {
                 int cellX = (int)(ceilingX);
                 int cellY = (int)(ceilingY);
-                int tx = (int)(textures.get(ceilingTexture).getWidth() * (ceilingX - cellX)) & (textures.get(ceilingTexture).getWidth() - 1);
-                int ty = (int)(textures.get(ceilingTexture).getHeight() * (ceilingY - cellY)) & (textures.get(ceilingTexture).getHeight() - 1);
+                int tx = (int)(textures.get(ceilingTexture).getWidth() * Math.abs(ceilingX - cellX));
+                int ty = (int)(textures.get(ceilingTexture).getHeight() * Math.abs(ceilingY - cellY));
                 int colorCeiling = textures.get(ceilingTexture).getPixelSafty(tx, ty);
 
                 pixels[x + y * width] = colorCeiling;
@@ -201,11 +201,11 @@ public class Screen {
             int enemyWidth = (rayLength == 0) ? sprite.getWidth() : (int) ((int) (sprite.getWidth() / (rayLength)));
             if (enemyWidth > sprite.getWidth()) enemyWidth = sprite.getWidth();
 
-            int drawStart = (int) (-enemyHeight / 2 + height / 2);
-            if (drawStart < 0) drawStart = 0;
+            int drawYStart = (int) (-enemyHeight / 2 + height / 2);
+            if (drawYStart < 0) drawYStart = 0;
 
-            int drawEnd = (int) (enemyHeight / 2 + height / 2);
-            if (drawEnd >= height) drawEnd = height;
+            int drawYEnd = (int) (enemyHeight / 2 + height / 2);
+            if (drawYEnd >= height) drawYEnd = height;
 
             double imgPixYSize = 1.0 * sprite.getHeight() / enemyHeight;
             int drawXStart = (int)angles - (enemyWidth / 2);
@@ -218,8 +218,8 @@ public class Screen {
                 drawXStart = 0;
             }
 
-            for (int y = drawStart; y < drawEnd; y++) {
-                int texY = (int)((y - drawStart) * imgPixYSize);
+            for (int y = drawYStart; y < drawYEnd; y++) {
+                int texY = (int)((y - drawYStart) * imgPixYSize);
                 for (int x = drawXStart; x < drawXEnd; x++) {
                     int color = sprite.getPixelSafty((int) ((x - drawXStart + texXOffset) * imgPixXSize), texY);
 
