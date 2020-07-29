@@ -47,7 +47,7 @@ public class Scene extends JFrame {
 
     private BoomStick stick;
 
-    private List<Entity> enemies;
+    private List<Enemy> enemies;
 
     private List<Bullet> bullets = new ArrayList<>();
 
@@ -86,9 +86,9 @@ public class Scene extends JFrame {
             put(KeyEvent.VK_R, "RELOAD");
         }});
         this.enemies = new ArrayList<>(){{
-            add(new Entity(7.5, 7.5, new Sprite("src/resources/enemy-1.png")));
-            add(new Entity(10.5, 7.5, new Sprite("src/resources/enemy-2.png")));
-            add(new Entity(12.5, 10.5, new Sprite("src/resources/enemy-3.png")));
+            add(new Enemy(7.5, 7.5, new Sprite("src/resources/enemy-1.png")));
+            add(new Enemy(10.5, 7.5, new Sprite("src/resources/enemy-2.png")));
+            add(new Enemy(12.5, 10.5, new Sprite("src/resources/enemy-3.png")));
         }};
         mainP = new Camera(1, 1, 1, 0, 0, -.66);
         image = new BufferedImage(SCENE_WIDTH, SCENE_HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -164,28 +164,25 @@ public class Scene extends JFrame {
                     for (Bullet bullet : this.bullets) {
                         if (bullet.isHited) continue;
 
-                        bullet.move(map.getSpace());
                         Vector2d bVec = bullet.position;
-                        for (Entity enemy : this.enemies) {
+                        for (Enemy enemy : this.enemies) {
                             if (!enemy.isAlive) continue;
 
                             Vector2d eVec = new Vector2d(enemy.xPosition, enemy.yPosition);
-                            double bLength = bVec.getModule();
-                            double eLength = eVec.getModule();
-                            double angle = bVec.getAngle(eVec);
 
-                            if (bLength - 1 <= eLength && bLength >= eLength && angle <= 0.1) {
-                                System.err.printf("Bullet : "+ bVec + "  Enemy : " + eVec +"\r");
+                            if (eVec.subtract(bVec).getModule() <= Bullet.RADIUS + enemy.radius) {
                                 enemy.isAlive = false;
                                 bullet.isHited = true;
                                 break;
                             }
                         }
+
+                        bullet.move(map.getSpace());
                     }
                 }
         );
         renderTemp = new RateTimer(
-                65,
+                90,
                 () -> screen.render(
                         pixels,
                         mainP.position,

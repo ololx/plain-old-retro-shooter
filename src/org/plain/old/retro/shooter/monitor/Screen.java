@@ -1,7 +1,7 @@
 package org.plain.old.retro.shooter.monitor;
 
 import org.plain.old.retro.shooter.BoomStick;
-import org.plain.old.retro.shooter.Entity;
+import org.plain.old.retro.shooter.Enemy;
 import org.plain.old.retro.shooter.Sprite;
 import org.plain.old.retro.shooter.linear.Vector2d;
 
@@ -196,7 +196,7 @@ public class Screen {
         return pixels;
     }
 
-    public int[] renderSprite(int[] pixels, Vector2d pos, Vector2d dir, List<Entity> enemies) {
+    public int[] renderSprite(int[] pixels, Vector2d pos, Vector2d dir, List<Enemy> enemies) {
         enemies.stream()
                 .forEach(s -> s.distanceToCamera = Math.pow(
                         Math.abs(pos.getX() - s.xPosition),
@@ -207,7 +207,7 @@ public class Screen {
         double angleStep = width / 1.20;
         double angle = 0.60;
 
-        for (Entity entity : enemies) {
+        for (Enemy entity : enemies) {
             Sprite sprite = entity.getSprite();
 
             Vector2d enemyPos = new Vector2d(entity.xPosition, entity.yPosition);
@@ -259,7 +259,7 @@ public class Screen {
         return pixels;
     }
 
-    public int[] render(int[] pixels, Vector2d pos, Vector2d dir, Vector2d plain, BoomStick gun, List<Entity> enemies) {
+    public int[] render(int[] pixels, Vector2d pos, Vector2d dir, Vector2d plain, BoomStick gun, List<Enemy> enemies) {
 
         pixels = this.renderFloor(pixels, pos, dir);
         pixels = this.renderCeiling(pixels, pos, dir);

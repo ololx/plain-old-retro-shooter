@@ -10,7 +10,9 @@ import org.plain.old.retro.shooter.linear.Vector2d;
  */
 public class Bullet {
 
-    public final static double MOVE_SPEED = 1.0;
+    public final static double MOVE_SPEED = 1;
+
+    public final static double RADIUS = 0.01;
 
     public boolean isHited = false;
 
@@ -31,7 +33,7 @@ public class Bullet {
     public Bullet(double x, double y, double x2, double y2, double moveStep) {
         this.position = new Vector2d(x, y);
         this.direction = new Vector2d(x2, y2);
-        this.movementVector = new Vector2d(moveStep, moveStep);
+        this.movementVector = new Vector2d(moveStep, moveStep).getNormalized();
     }
 
     public void move(int[][] space) {

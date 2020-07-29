@@ -63,7 +63,8 @@ public class Sprite {
                     this.height,
                     pixels,
                     0,
-                    this.width);
+                    this.width
+            );
             this.setPixels(this.width, this.height, pixels);
         } catch (IOException e) {
             e.printStackTrace();
