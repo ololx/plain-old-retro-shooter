@@ -3,6 +3,7 @@ package org.plain.old.retro.shooter.monitor;
 import org.plain.old.retro.shooter.BoomStick;
 import org.plain.old.retro.shooter.Enemy;
 import org.plain.old.retro.shooter.Sprite;
+import org.plain.old.retro.shooter.equip.Bullet;
 import org.plain.old.retro.shooter.linear.Vector2d;
 
 import java.awt.*;
@@ -196,7 +197,7 @@ public class Screen {
         return pixels;
     }
 
-    public int[] renderSprite(int[] pixels, Vector2d pos, Vector2d dir, List<Enemy> enemies) {
+    public int[] renderEnemies(int[] pixels, Vector2d pos, Vector2d dir, List<Enemy> enemies) {
         enemies.stream()
                 .forEach(s -> s.distanceToCamera = Math.pow(
                         Math.abs(pos.getX() - s.xPosition),
@@ -259,12 +260,76 @@ public class Screen {
         return pixels;
     }
 
-    public int[] render(int[] pixels, Vector2d pos, Vector2d dir, Vector2d plain, BoomStick gun, List<Enemy> enemies) {
+    public int[] renderBullets(int[] pixels, Vector2d pos, Vector2d dir, List<Bullet> bullets) {
+
+        double angleStep = width / 1.20;
+        double angle = 0.60;
+
+        for (Bullet entity : bullets) {
+            Sprite sprite = entity.getSprite();
+
+            Vector2d bulletPos = entity.position;
+            Vector2d rayToBullet = bulletPos.subtract(pos);
+            double angleToBulletLeft = dir.rotate(angle).getAngle(rayToBullet);
+            double angleToBulletCenter = dir.getAngle(rayToBullet);
+            boolean isVisible = angleToBulletCenter <= angle && angleToBulletLeft  <= angle * 2 ? true : false;
+
+            if (!isVisible || entity.isHited) continue;
+
+            double angles = angleStep * (angleToBulletLeft);
+            double rayLength = Math.hypot(Math.abs(pos.getX() - bulletPos.getX()), Math.abs(pos.getY() - bulletPos.getY()));
+
+            int enemyHeight = (rayLength == 0) ? sprite.getHeight() : (int) ((int) (sprite.getHeight() / (rayLength)));
+            if (enemyHeight > sprite.getHeight()) enemyHeight = sprite.getHeight();
+
+            int enemyWidth = (rayLength == 0) ? sprite.getWidth() : (int) ((int) (sprite.getWidth() / (rayLength)));
+            if (enemyWidth > sprite.getWidth()) enemyWidth = sprite.getWidth();
+
+            int drawYStart = (int) (-enemyHeight / 2 + height / 2);
+            if (drawYStart < 0) drawYStart = 0;
+
+            int drawYEnd = (int) (enemyHeight / 2 + height / 2);
+            if (drawYEnd >= height) drawYEnd = height;
+
+            double imgPixYSize = 1.0 * sprite.getHeight() / enemyHeight;
+            int drawXStart = (int)angles - (enemyWidth / 2);
+            int drawXEnd = (int) drawXStart + (enemyWidth);
+            double imgPixXSize = 1.0 * sprite.getWidth() / enemyWidth;
+
+            int texXOffset = 0;
+            if (drawXStart < 0) {
+                texXOffset = -drawXStart;
+                drawXStart = 0;
+            }
+
+            for (int y = drawYStart; y < drawYEnd; y++) {
+                int texY = (int)((y - drawYStart) * imgPixYSize);
+                for (int x = drawXStart; x < drawXEnd; x++) {
+                    int color = sprite.getPixelSafty((int) ((x - drawXStart + texXOffset) * imgPixXSize), texY);
+
+                    if (this.rayLengths.get(x) == null || this.rayLengths.get(x) <= rayLength) continue;
+
+                    if (color != 0) pixels[x + y * width] = color;
+                }
+            }
+        }
+
+        return pixels;
+    }
+
+    public int[] render(int[] pixels,
+                        Vector2d pos,
+                        Vector2d dir,
+                        Vector2d plain,
+                        BoomStick gun,
+                        List<Enemy> enemies,
+                        List<Bullet> bullets) {
 
         pixels = this.renderFloor(pixels, pos, dir);
         pixels = this.renderCeiling(pixels, pos, dir);
         pixels = this.renderWall(pixels, pos, dir);
-        pixels = this.renderSprite(pixels, pos, dir, enemies);
+        pixels = this.renderEnemies(pixels, pos, dir, enemies);
+        pixels = this.renderBullets(pixels, pos, dir, bullets);
         pixels = this.renderGun(pixels, gun.getSprite());
 
         return pixels;

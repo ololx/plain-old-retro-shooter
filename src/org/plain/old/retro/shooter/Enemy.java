@@ -17,7 +17,7 @@ public class Enemy {
 		this.xPosition = xPosition;
 		this.yPosition = yPosition;
 		this.texture = texture;
-		this.radius = 0.3;
+		this.radius = 0.25;
 	}
 
 	public Sprite getSprite() {

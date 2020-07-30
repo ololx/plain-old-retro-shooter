@@ -149,7 +149,11 @@ public class Scene extends JFrame {
                                 this.stick.shoot();
 
                                 if (this.stick.isShooting() && (this.stick.currentFireTimes == 0)) {
-                                    this.bullets.add(new Bullet(this.mainP.position, this.mainP.direction));
+                                    this.bullets.add(new Bullet(
+                                            this.mainP.position,
+                                            this.mainP.direction,
+                                            new Sprite("src/resources/fire-ball.png")
+                                    ));
                                 }
                             }
 
@@ -161,13 +165,31 @@ public class Scene extends JFrame {
                 },
                 () -> {
                     this.stick.update();
-                    for (Bullet bullet : this.bullets) {
-                        if (bullet.isHited) continue;
 
+                    for (int i = 0; i < this.bullets.size(); i++) {
+                        Bullet bullet = this.bullets.get(i);
+                        if (bullet.isHited) this.bullets.remove(i);
+                        bullet.move(map.getSpace());
+                    }
+
+                    for (int j = 0; j < this.enemies.size(); j++) {
+                        Enemy enemy = this.enemies.get(j);
+                        if (!enemy.isAlive) this.enemies.remove(j);
+                    }
+                }
+        );
+        renderTemp = new RateTimer(
+                90,
+                () -> {
+                    for (int i = 0; i < this.bullets.size(); i++) {
+                        Bullet bullet = this.bullets.get(i);
                         Vector2d bVec = bullet.position;
-                        for (Enemy enemy : this.enemies) {
-                            if (!enemy.isAlive) continue;
+                        double bulletSpeed = Bullet.MOVE_SPEED / renderTemp.getHerz();
 
+                        bullet.move(map.getSpace(), bulletSpeed);
+
+                        for (int j = 0; j < this.enemies.size(); j++) {
+                            Enemy enemy = this.enemies.get(j);
                             Vector2d eVec = new Vector2d(enemy.xPosition, enemy.yPosition);
 
                             if (eVec.subtract(bVec).getModule() <= Bullet.RADIUS + enemy.radius) {
@@ -176,20 +198,16 @@ public class Scene extends JFrame {
                                 break;
                             }
                         }
-
-                        bullet.move(map.getSpace());
                     }
-                }
-        );
-        renderTemp = new RateTimer(
-                90,
+                },
                 () -> screen.render(
                         pixels,
                         mainP.position,
                         mainP.direction,
                         mainP.plain,
                         this.stick,
-                        this.enemies
+                        this.enemies,
+                        this.bullets
                 ),
                 () -> this.render(map, String.format(
                         "UPS: %s \n FPS: %s",

@@ -1,5 +1,6 @@
 package org.plain.old.retro.shooter.equip;
 
+import org.plain.old.retro.shooter.Sprite;
 import org.plain.old.retro.shooter.linear.Vector2d;
 
 /**
@@ -10,7 +11,7 @@ import org.plain.old.retro.shooter.linear.Vector2d;
  */
 public class Bullet {
 
-    public final static double MOVE_SPEED = 1;
+    public final static double MOVE_SPEED = .5;
 
     public final static double RADIUS = 0.01;
 
@@ -22,22 +23,27 @@ public class Bullet {
 
     public Vector2d movementVector;
 
-    public Bullet(Vector2d position, Vector2d direction) {
-        this(position.getX(), position.getY(), direction.getX(), direction.getY(), MOVE_SPEED);
-    }
+    public double distanceToCamera;
 
-    public Bullet(double x, double y, double x2, double y2) {
-        this(x, y, x2, y2, MOVE_SPEED);
+    public Sprite texture;
+
+    public Bullet(Vector2d position, Vector2d direction, Sprite texture) {
+        this(position.getX(), position.getY(), direction.getX(), direction.getY(), MOVE_SPEED);
+        this.texture = texture;
     }
 
     public Bullet(double x, double y, double x2, double y2, double moveStep) {
         this.position = new Vector2d(x, y);
         this.direction = new Vector2d(x2, y2);
-        this.movementVector = new Vector2d(moveStep, moveStep).getNormalized();
+        this.movementVector = new Vector2d(moveStep, moveStep);
     }
 
     public void move(int[][] space) {
         this.shiftPosition(space, position.add(getStepPosition()));
+    }
+
+    public void move(int[][] space, double speed) {
+        this.shiftPosition(space, position.add(direction.multiply(speed)));
     }
 
     private void shiftPosition(int[][] space, Vector2d shiftVector) {
@@ -51,6 +57,10 @@ public class Bullet {
 
     private Vector2d getStepPosition() {
         return getStepPosition(this.direction);
+    }
+
+    public Sprite getSprite() {
+        return texture;
     }
 
     @Override
