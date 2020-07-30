@@ -197,7 +197,7 @@ public class Screen {
         return pixels;
     }
 
-    public int[] renderEnemies(int[] pixels, Vector2d pos, Vector2d dir, List<Enemy> enemies) {
+    public int[] renderEnemies(int[] pixels, Vector2d pos, Vector2d dir, Vector<Enemy> enemies) {
         enemies.stream()
                 .forEach(s -> s.distanceToCamera = Math.pow(
                         Math.abs(pos.getX() - s.xPosition),
@@ -260,7 +260,7 @@ public class Screen {
         return pixels;
     }
 
-    public int[] renderBullets(int[] pixels, Vector2d pos, Vector2d dir, List<Bullet> bullets) {
+    public int[] renderBullets(int[] pixels, Vector2d pos, Vector2d dir, Vector<Bullet> bullets) {
 
         double angleStep = width / 1.20;
         double angle = 0.60;
@@ -322,8 +322,8 @@ public class Screen {
                         Vector2d dir,
                         Vector2d plain,
                         BoomStick gun,
-                        List<Enemy> enemies,
-                        List<Bullet> bullets) {
+                        Vector<Enemy> enemies,
+                        Vector<Bullet> bullets) {
 
         pixels = this.renderFloor(pixels, pos, dir);
         pixels = this.renderCeiling(pixels, pos, dir);

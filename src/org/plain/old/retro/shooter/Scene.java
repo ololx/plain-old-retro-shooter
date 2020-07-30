@@ -12,10 +12,8 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The type Game.
@@ -47,9 +45,9 @@ public class Scene extends JFrame {
 
     private BoomStick stick;
 
-    private List<Enemy> enemies;
+    private Vector<Enemy> enemies;
 
-    private List<Bullet> bullets = new ArrayList<>();
+    private Vector<Bullet> bullets = new Vector<>();
 
     //TODO: Refactor It when main entities will be completed - it's just for tests
     /**
@@ -85,7 +83,7 @@ public class Scene extends JFrame {
             put(KeyEvent.VK_SPACE, "SHOT");
             put(KeyEvent.VK_R, "RELOAD");
         }});
-        this.enemies = new ArrayList<>(){{
+        this.enemies = new Vector<>(){{
             add(new Enemy(7.5, 7.5, new Sprite("src/resources/enemy-1.png")));
             add(new Enemy(10.5, 7.5, new Sprite("src/resources/enemy-2.png")));
             add(new Enemy(12.5, 10.5, new Sprite("src/resources/enemy-3.png")));
@@ -149,11 +147,15 @@ public class Scene extends JFrame {
                                 this.stick.shoot();
 
                                 if (this.stick.isShooting() && (this.stick.currentFireTimes == 0)) {
-                                    this.bullets.add(new Bullet(
-                                            this.mainP.position,
-                                            this.mainP.direction,
-                                            new Sprite("src/resources/fire-ball.png")
-                                    ));
+                                    synchronized (this.bullets) {
+                                        for (double c = -.025; c <= .025; c += .005) {
+                                            this.bullets.add(new Bullet(
+                                                    this.mainP.position,
+                                                    this.mainP.direction.rotate(c),
+                                                    new Sprite("src/resources/fire-ball.png")
+                                            ));
+                                        }
+                                    }
                                 }
                             }
 
@@ -166,36 +168,44 @@ public class Scene extends JFrame {
                 () -> {
                     this.stick.update();
 
-                    for (int i = 0; i < this.bullets.size(); i++) {
-                        Bullet bullet = this.bullets.get(i);
-                        if (bullet.isHited) this.bullets.remove(i);
-                        bullet.move(map.getSpace());
+                    synchronized (this.bullets) {
+                        for (int i = 0; i < this.bullets.size(); i++) {
+                            Bullet bullet = this.bullets.get(i);
+                            if (bullet.isHited) this.bullets.remove(i);
+                            bullet.move(map.getSpace());
+                        }
                     }
 
-                    for (int j = 0; j < this.enemies.size(); j++) {
-                        Enemy enemy = this.enemies.get(j);
-                        if (!enemy.isAlive) this.enemies.remove(j);
+                    synchronized (this.enemies) {
+                        for (int j = 0; j < this.enemies.size(); j++) {
+                            Enemy enemy = this.enemies.get(j);
+                            if (!enemy.isAlive) this.enemies.remove(j);
+                        }
                     }
                 }
         );
         renderTemp = new RateTimer(
                 90,
                 () -> {
-                    for (int i = 0; i < this.bullets.size(); i++) {
-                        Bullet bullet = this.bullets.get(i);
-                        Vector2d bVec = bullet.position;
-                        double bulletSpeed = Bullet.MOVE_SPEED / renderTemp.getHerz();
+                    synchronized (this.bullets) {
+                        for (int i = 0; i < this.bullets.size(); i++) {
+                            Bullet bullet = this.bullets.get(i);
+                            Vector2d bVec = bullet.position;
+                            double bulletSpeed = Bullet.MOVE_SPEED / renderTemp.getHerz();
 
-                        bullet.move(map.getSpace(), bulletSpeed);
+                            bullet.move(map.getSpace(), bulletSpeed);
 
-                        for (int j = 0; j < this.enemies.size(); j++) {
-                            Enemy enemy = this.enemies.get(j);
-                            Vector2d eVec = new Vector2d(enemy.xPosition, enemy.yPosition);
+                            synchronized (this.enemies) {
+                                for (int j = 0; j < this.enemies.size(); j++) {
+                                    Enemy enemy = this.enemies.get(j);
+                                    Vector2d eVec = new Vector2d(enemy.xPosition, enemy.yPosition);
 
-                            if (eVec.subtract(bVec).getModule() <= Bullet.RADIUS + enemy.radius) {
-                                enemy.isAlive = false;
-                                bullet.isHited = true;
-                                break;
+                                    if (eVec.subtract(bVec).getModule() <= Bullet.RADIUS + enemy.radius) {
+                                        enemy.isAlive = false;
+                                        bullet.isHited = true;
+                                        break;
+                                    }
+                                }
                             }
                         }
                     }
