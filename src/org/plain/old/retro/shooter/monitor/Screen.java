@@ -1,14 +1,16 @@
 package org.plain.old.retro.shooter.monitor;
 
-import org.plain.old.retro.shooter.BoomStick;
 import org.plain.old.retro.shooter.Enemy;
 import org.plain.old.retro.shooter.Sprite;
-import org.plain.old.retro.shooter.equip.Bullet;
+import org.plain.old.retro.shooter.equipment.bullet.Bullet;
+import org.plain.old.retro.shooter.equipment.weapon.BoomStick;
 import org.plain.old.retro.shooter.linear.Vector2d;
 
 import java.awt.*;
-import java.util.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  * @project plain-old-retro-shooter
@@ -328,8 +330,8 @@ public class Screen {
         pixels = this.renderFloor(pixels, pos, dir);
         pixels = this.renderCeiling(pixels, pos, dir);
         pixels = this.renderWall(pixels, pos, dir);
-        pixels = this.renderEnemies(pixels, pos, dir, enemies);
-        pixels = this.renderBullets(pixels, pos, dir, bullets);
+        pixels = this.renderEnemies(pixels, pos, dir, (Vector<Enemy>) enemies.clone());
+        pixels = this.renderBullets(pixels, pos, dir, (Vector<Bullet>) bullets.clone());
         pixels = this.renderGun(pixels, gun.getSprite());
 
         return pixels;

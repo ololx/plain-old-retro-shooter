@@ -1,10 +1,11 @@
 package org.plain.old.retro.shooter;
 
 import org.plain.old.retro.shooter.clock.RateTimer;
-import org.plain.old.retro.shooter.equip.Bullet;
-import org.plain.old.retro.shooter.linear.Vector2d;
+import org.plain.old.retro.shooter.equipment.bullet.Bullet;
+import org.plain.old.retro.shooter.equipment.weapon.BoomStick;
 import org.plain.old.retro.shooter.listener.KeyboardController;
 import org.plain.old.retro.shooter.monitor.Screen;
+import org.plain.old.retro.shooter.physics.BulletHitScanner;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,8 +13,10 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.util.*;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  * The type Game.
@@ -37,7 +40,7 @@ public class Scene extends JFrame {
 
     private RateTimer renderTemp;
 
-    private Camera mainP;
+    private Camera mainPlayer;
 
     private BufferedImage image;
     public int[] pixels;
@@ -58,12 +61,29 @@ public class Scene extends JFrame {
                 new int[][]{
                         {1,1,1,1,1,1,1,1,2,2,2,2,2,2,2},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
+                        {1,0,0,0,3,0,0,4,0,0,2,1,1,0,2},
+                        {1,0,2,2,3,0,0,4,0,0,3,0,0,0,2},
+                        {1,0,2,0,3,0,4,1,0,0,2,4,3,0,2},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
-                        {1,0,2,0,3,0,4,0,1,0,2,0,3,0,2},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
-                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
+                        {1,0,1,0,0,0,0,0,0,0,0,0,0,0,2},
+                        {1,0,1,0,0,0,0,0,0,0,0,0,0,0,4},
+                        {1,0,1,0,0,0,0,2,0,0,0,0,0,0,4},
+                        {1,0,1,0,0,0,0,2,0,0,0,0,0,0,4},
+                        {1,0,1,0,0,0,0,3,0,0,0,0,0,0,4},
+                        {1,0,1,0,0,0,0,1,0,0,0,0,0,0,4},
+                        {1,0,1,0,0,0,0,0,0,0,0,0,0,0,4},
+                        {1,0,1,0,0,0,0,0,0,0,0,0,0,0,4},
+                        {1,0,1,1,2,3,1,4,1,3,1,0,0,0,4},
+                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
+                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
+                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
+                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
+                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
+                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
+                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
+                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
+                        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
@@ -85,10 +105,16 @@ public class Scene extends JFrame {
         }});
         this.enemies = new Vector<>(){{
             add(new Enemy(7.5, 7.5, new Sprite("src/resources/enemy-1.png")));
-            add(new Enemy(10.5, 7.5, new Sprite("src/resources/enemy-2.png")));
+            add(new Enemy(25.5, 3.5, new Sprite("src/resources/enemy-1.png")));
+            add(new Enemy(21.5, 7.5, new Sprite("src/resources/enemy-1.png")));
+            add(new Enemy(22.5, 6.5, new Sprite("src/resources/enemy-2.png")));
+            add(new Enemy(23.5, 7.5, new Sprite("src/resources/enemy-2.png")));
+            add(new Enemy(20.5, 12.5, new Sprite("src/resources/enemy-2.png")));
+            add(new Enemy(5.5, 10.5, new Sprite("src/resources/enemy-3.png")));
+            add(new Enemy(14.5, 19.5, new Sprite("src/resources/enemy-3.png")));
             add(new Enemy(12.5, 10.5, new Sprite("src/resources/enemy-3.png")));
         }};
-        mainP = new Camera(1, 1, 1, 0, 0, -.66);
+        mainPlayer = new Camera(1, 2, 1, 0, 0, 0);
         image = new BufferedImage(SCENE_WIDTH, SCENE_HEIGHT, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
         screen = new Screen(
@@ -96,12 +122,12 @@ public class Scene extends JFrame {
                 SCENE_WIDTH,
                 SCENE_HEIGHT,
                 new ArrayList<>(){{
-                    add(new Sprite("src/resources/room/wall-1.png"));
-                    add(new Sprite("src/resources/room/wall-2.png"));
-                    add(new Sprite("src/resources/room/wall-3.png"));
-                    add(new Sprite("src/resources/room/wall-4.png"));
-                    add(new Sprite("src/resources/room/ceiling.png"));
-                    add(new Sprite("src/resources/room/floor.png"));
+                    add(new Sprite("src/resources/room/wall-5.jpg"));
+                    add(new Sprite("src/resources/room/wall-6.jpg"));
+                    add(new Sprite("src/resources/room/wall-7.jpg"));
+                    add(new Sprite("src/resources/room/wall-8.jpg"));
+                    add(new Sprite("src/resources/room/ceiling-2.png"));
+                    add(new Sprite("src/resources/room/floor-2.jpg"));
                 }}
         );
         this.setSize(SCENE_WIDTH, SCENE_HEIGHT);
@@ -120,43 +146,31 @@ public class Scene extends JFrame {
 
                         if (state.getValue()) {
                             if (state.getKey().equals("MV_FWD")) {
-                                mainP.moveForward(map.getSpace());
+                                mainPlayer.moveForward(map.getSpace());
                             }
 
                             if (state.getKey().equals("MV_BWD")) {
-                                mainP.moveBackward(map.getSpace());
+                                mainPlayer.moveBackward(map.getSpace());
                             }
 
                             if (state.getKey().equals("MV_LFT")) {
-                                mainP.moveLeft();
+                                mainPlayer.moveLeft();
                             }
 
                             if (state.getKey().equals("MV_RHT")) {
-                                mainP.moveRight();
+                                mainPlayer.moveRight();
                             }
 
                             if (state.getKey().equals("TN_LFT")) {
-                                mainP.turnLeft(map.getSpace());
+                                mainPlayer.turnLeft(map.getSpace());
                             }
 
                             if (state.getKey().equals("TN_RGT")) {
-                                mainP.turnRight(map.getSpace());
+                                mainPlayer.turnRight(map.getSpace());
                             }
 
                             if (state.getKey().equals("SHOT")) {
-                                this.stick.shoot();
-
-                                if (this.stick.isShooting() && (this.stick.currentFireTimes == 0)) {
-                                    synchronized (this.bullets) {
-                                        for (double c = -.025; c <= .025; c += .005) {
-                                            this.bullets.add(new Bullet(
-                                                    this.mainP.position,
-                                                    this.mainP.direction.rotate(c),
-                                                    new Sprite("src/resources/fire-ball.png")
-                                            ));
-                                        }
-                                    }
-                                }
+                                this.bullets.addAll(stick.shoot(mainPlayer.position, mainPlayer.direction));
                             }
 
                             if (state.getKey().equals("RELOAD")) {
@@ -168,53 +182,26 @@ public class Scene extends JFrame {
                 () -> {
                     this.stick.update();
 
-                    synchronized (this.bullets) {
-                        for (int i = 0; i < this.bullets.size(); i++) {
-                            Bullet bullet = this.bullets.get(i);
-                            if (bullet.isHited) this.bullets.remove(i);
-                            bullet.move(map.getSpace());
-                        }
+                    for (int i = 0; i < this.bullets.size(); i++) {
+                        Bullet bullet = this.bullets.get(i);
+                        if (bullet.isHited) this.bullets.remove(i);
                     }
 
-                    synchronized (this.enemies) {
-                        for (int j = 0; j < this.enemies.size(); j++) {
-                            Enemy enemy = this.enemies.get(j);
-                            if (!enemy.isAlive) this.enemies.remove(j);
-                        }
+                    for (int j = 0; j < this.enemies.size(); j++) {
+                        Enemy enemy = this.enemies.get(j);
+                        if (!enemy.isAlive) this.enemies.remove(j);
                     }
+
+                    BulletHitScanner.scan(this.bullets, this.enemies, sceneTemp.getHerz(), map);
                 }
         );
         renderTemp = new RateTimer(
                 90,
-                () -> {
-                    synchronized (this.bullets) {
-                        for (int i = 0; i < this.bullets.size(); i++) {
-                            Bullet bullet = this.bullets.get(i);
-                            Vector2d bVec = bullet.position;
-                            double bulletSpeed = Bullet.MOVE_SPEED / renderTemp.getHerz();
-
-                            bullet.move(map.getSpace(), bulletSpeed);
-
-                            synchronized (this.enemies) {
-                                for (int j = 0; j < this.enemies.size(); j++) {
-                                    Enemy enemy = this.enemies.get(j);
-                                    Vector2d eVec = new Vector2d(enemy.xPosition, enemy.yPosition);
-
-                                    if (eVec.subtract(bVec).getModule() <= Bullet.RADIUS + enemy.radius) {
-                                        enemy.isAlive = false;
-                                        bullet.isHited = true;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
                 () -> screen.render(
                         pixels,
-                        mainP.position,
-                        mainP.direction,
-                        mainP.plain,
+                        mainPlayer.position,
+                        mainPlayer.direction,
+                        mainPlayer.plain,
                         this.stick,
                         this.enemies,
                         this.bullets
@@ -252,8 +239,8 @@ public class Scene extends JFrame {
                 }},
                 0
                 );
-        this.sceneTemp.start();
         this.renderTemp.start();
+        this.sceneTemp.start();
     }
 
     public void render(Space2d map, String rateInfo) {

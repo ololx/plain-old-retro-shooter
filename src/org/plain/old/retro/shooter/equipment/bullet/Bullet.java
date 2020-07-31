@@ -1,4 +1,4 @@
-package org.plain.old.retro.shooter.equip;
+package org.plain.old.retro.shooter.equipment.bullet;
 
 import org.plain.old.retro.shooter.Sprite;
 import org.plain.old.retro.shooter.linear.Vector2d;
@@ -11,7 +11,7 @@ import org.plain.old.retro.shooter.linear.Vector2d;
  */
 public class Bullet {
 
-    public final static double MOVE_SPEED = .5;
+    public final static double MOVE_SPEED = 30;
 
     public final static double RADIUS = 0.01;
 
