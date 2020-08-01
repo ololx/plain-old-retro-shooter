@@ -159,13 +159,25 @@ public class Screen {
     }
 
     public int[] renderGun(int[] pixels, Sprite gun) {
-        int xStart = width / 2 - gun.getWidth() / 2;
-        int yStart = height - gun.getHeight();
 
-        for (int x = 0; x < gun.getWidth(); x++) {
-            for (int y = 0; y < gun.getHeight(); y++) {
-                int pixelColor = gun.getPixel(x, y);
-                if (pixelColor != 0) pixels[(x + xStart) + (y + yStart) * width] = gun.getPixel(x, y);
+        int gunWidth = (width / 4);
+        int drawXStart = (width / 2) - gunWidth / 2;
+        int drawXEnd = drawXStart + gunWidth;
+
+        int gunHeight = (height / 2);
+        int drawYStart = (height - gunHeight);
+        int drawYEnd = drawYStart + gunHeight;
+
+        double imgPixXSize = 1.0 * gun.getWidth() / gunWidth;
+        double imgPixYSize = 1.0 * gun.getHeight() / gunHeight;
+
+        for (int x = drawXStart; x < drawXEnd; x++) {
+            for (int y = drawYStart; y < drawYEnd; y++) {
+                int pixelColor = gun.getPixelSafty(
+                        (int) ((x - drawXStart) * imgPixXSize),
+                        (int) ((y - drawYStart) * imgPixYSize)
+                );
+                if (pixelColor != 0) pixels[x + y * width] = pixelColor;
             }
         }
 
