@@ -1,10 +1,9 @@
-package org.plain.old.retro.shooter.monitor;
+package org.plain.old.retro.shooter.engine.graphics;
 
-import org.plain.old.retro.shooter.Enemy;
-import org.plain.old.retro.shooter.Sprite;
-import org.plain.old.retro.shooter.equipment.bullet.Bullet;
-import org.plain.old.retro.shooter.equipment.weapon.BoomStick;
-import org.plain.old.retro.shooter.linear.Vector2d;
+import org.plain.old.retro.shooter.unit.Enemy;
+import org.plain.old.retro.shooter.unit.equipment.bullet.Bullet;
+import org.plain.old.retro.shooter.unit.equipment.weapon.BoomStick;
+import org.plain.old.retro.shooter.engine.linear.Vector2d;
 
 import java.awt.*;
 import java.util.HashMap;

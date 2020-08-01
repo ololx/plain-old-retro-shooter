@@ -1,4 +1,4 @@
-package org.plain.old.retro.shooter;
+package org.plain.old.retro.shooter.engine.graphics;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

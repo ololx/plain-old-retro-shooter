@@ -1,4 +1,4 @@
-package org.plain.old.retro.shooter.listener;
+package org.plain.old.retro.shooter.engine.listener;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;

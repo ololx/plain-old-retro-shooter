@@ -1,6 +1,6 @@
-package org.plain.old.retro.shooter;
+package org.plain.old.retro.shooter.unit;
 
-import org.plain.old.retro.shooter.linear.Vector2d;
+import org.plain.old.retro.shooter.engine.linear.Vector2d;
 
 /**
  * @project plain-old-retro-shooter

@@ -1,4 +1,4 @@
-package org.plain.old.retro.shooter.clock;
+package org.plain.old.retro.shooter.engine.clock;
 
 import java.util.Arrays;
 import java.util.Collections;

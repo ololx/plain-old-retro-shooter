@@ -1,9 +1,9 @@
-package org.plain.old.retro.shooter.equipment.weapon;
+package org.plain.old.retro.shooter.unit.equipment.weapon;
 
-import org.plain.old.retro.shooter.Sprite;
-import org.plain.old.retro.shooter.equipment.bullet.Bullet;
-import org.plain.old.retro.shooter.equipment.bullet.BulletFactory;
-import org.plain.old.retro.shooter.linear.Vector2d;
+import org.plain.old.retro.shooter.engine.graphics.Sprite;
+import org.plain.old.retro.shooter.unit.equipment.bullet.Bullet;
+import org.plain.old.retro.shooter.unit.equipment.bullet.BulletFactory;
+import org.plain.old.retro.shooter.engine.linear.Vector2d;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +103,7 @@ public class BoomStick {
         Vector<Bullet> bullets = new Vector();
         if (this.isShooting && (this.currentFireTimes == 0)) {
 
-            for (double c = 0; c < 6; c++) {
+            for (double c = 0; c < BULLETS_IN_SHOT; c++) {
                 bullets.add(BulletFactory.getInstance(position, direction.rotate(Math.random() * (.05) - (.025))));
             }
         }

@@ -1,4 +1,6 @@
-package org.plain.old.retro.shooter;
+package org.plain.old.retro.shooter.unit;
+
+import org.plain.old.retro.shooter.engine.graphics.Sprite;
 
 public class Enemy {
 

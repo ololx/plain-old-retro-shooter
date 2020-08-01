@@ -1,5 +1,7 @@
 package org.plain.old.retro.shooter;
 
+import org.plain.old.retro.shooter.engine.Scene;
+
 /**
  * The type Main.
  */

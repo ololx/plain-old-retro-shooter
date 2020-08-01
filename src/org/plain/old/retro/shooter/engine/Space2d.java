@@ -1,4 +1,4 @@
-package org.plain.old.retro.shooter;
+package org.plain.old.retro.shooter.engine;
 
 import java.util.Objects;
 

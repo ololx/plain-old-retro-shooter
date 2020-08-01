@@ -1,11 +1,13 @@
-package org.plain.old.retro.shooter;
+package org.plain.old.retro.shooter.engine;
 
-import org.plain.old.retro.shooter.clock.RateTimer;
-import org.plain.old.retro.shooter.equipment.bullet.Bullet;
-import org.plain.old.retro.shooter.equipment.weapon.BoomStick;
-import org.plain.old.retro.shooter.listener.KeyboardController;
-import org.plain.old.retro.shooter.monitor.Screen;
-import org.plain.old.retro.shooter.physics.BulletHitScanner;
+import org.plain.old.retro.shooter.engine.clock.RateTimer;
+import org.plain.old.retro.shooter.engine.graphics.Sprite;
+import org.plain.old.retro.shooter.unit.Enemy;
+import org.plain.old.retro.shooter.unit.equipment.bullet.Bullet;
+import org.plain.old.retro.shooter.unit.equipment.weapon.BoomStick;
+import org.plain.old.retro.shooter.engine.listener.KeyboardController;
+import org.plain.old.retro.shooter.engine.graphics.Screen;
+import org.plain.old.retro.shooter.engine.physics.BulletHitScanner;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,11 +32,8 @@ import java.util.Vector;
 public class Scene extends JFrame {
 
     public static final int SCENE_WIDTH = 1280;
+
     public static final int SCENE_HEIGHT = 720;
-
-    private double widthScalling;
-
-    private double heightScalling;
 
     private RateTimer sceneTemp;
 
@@ -122,12 +121,12 @@ public class Scene extends JFrame {
                 SCENE_WIDTH,
                 SCENE_HEIGHT,
                 new ArrayList<>(){{
-                    add(new Sprite("src/resources/room/wall-5.jpg"));
-                    add(new Sprite("src/resources/room/wall-6.jpg"));
-                    add(new Sprite("src/resources/room/wall-7.jpg"));
-                    add(new Sprite("src/resources/room/wall-8.jpg"));
-                    add(new Sprite("src/resources/room/ceiling-2.png"));
-                    add(new Sprite("src/resources/room/floor-2.jpg"));
+                    add(new Sprite("src/resources/room/wall-1.png"));
+                    add(new Sprite("src/resources/room/wall-2.png"));
+                    add(new Sprite("src/resources/room/wall-3.png"));
+                    add(new Sprite("src/resources/room/wall-4.png"));
+                    add(new Sprite("src/resources/room/ceiling.png"));
+                    add(new Sprite("src/resources/room/floor.png"));
                 }}
         );
         this.setSize(SCENE_WIDTH, SCENE_HEIGHT);
@@ -246,8 +245,6 @@ public class Scene extends JFrame {
     public void render(Space2d map, String rateInfo) {
         int height = this.getSize().height;
         int width = this.getSize().width;
-        this.widthScalling = width / SCENE_WIDTH;
-        this.heightScalling = height / SCENE_HEIGHT;
 
         BufferStrategy bs = getBufferStrategy();
 

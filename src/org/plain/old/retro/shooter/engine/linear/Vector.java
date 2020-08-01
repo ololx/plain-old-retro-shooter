@@ -1,4 +1,4 @@
-package org.plain.old.retro.shooter.linear;
+package org.plain.old.retro.shooter.engine.linear;
 
 /**
  * The interface Vector.
