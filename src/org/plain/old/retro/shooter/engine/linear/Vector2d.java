@@ -8,7 +8,9 @@ package org.plain.old.retro.shooter.engine.linear;
  * @created 01.07.2020 17:30
  */
 public class Vector2d implements Vector {
+
 	protected double x;
+
 	protected double y;
 
 	public Vector2d(double x, double y) {
@@ -56,6 +58,13 @@ public class Vector2d implements Vector {
 		return new Vector2d(
 				(this.x * Math.cos(angle) - this.y * Math.sin(angle)),
 				(this.x * Math.sin(angle) + this.y * Math.cos(angle))
+		);
+	}
+
+	public Vector2d rotate(RotationMatrix2d rotatiomMatrix) {
+		return new Vector2d(
+				(this.x * rotatiomMatrix.getX1() + this.y * rotatiomMatrix.getX2()),
+				(this.x * rotatiomMatrix.getY1() + this.y * rotatiomMatrix.getY2())
 		);
 	}
 
