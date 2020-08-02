@@ -103,13 +103,13 @@ public class Screen {
         return pixels;
     }
 
-    public int[] renderWall(int[] pixels, Vector2d pos, Vector2d dir) {
-        double angleStep = 1.20 / width;
-        double angle = 0.60;
+    public int[] renderWall(int[] pixels, Camera playerCamera) {
+        double angleStep = playerCamera.getAngle() / playerCamera.getPlain().getWidth();
+        double angle = playerCamera.getAngle() / 2;
 
         for (int x = 0; x < width; x++) {
-            Vector2d rayDir = dir.rotate(angle);
-            Vector2d rayPos = pos.clone();
+            Vector2d rayDir = playerCamera.direction.rotate(playerCamera.getRotationMatrix(x));
+            Vector2d rayPos = playerCamera.position.clone();
 
             boolean hit = false;
             double steps = 0.01;
@@ -122,7 +122,7 @@ public class Screen {
 
             angle -= angleStep;
 
-            double rayLength = Math.hypot(rayPos.getX() - pos.getX(), rayPos.getY() - pos.getY());
+            double rayLength = Math.hypot(rayPos.getX() - playerCamera.position.getX(), rayPos.getY() - playerCamera.position.getY());
             int wallHeight = (rayLength == 0) ? height : (int) ((int) (height / (rayLength * Math.cos(angle))));
 
             int drawStart = (int) (-wallHeight / 2 + height / 2);
@@ -133,8 +133,12 @@ public class Screen {
 
             int texNum = map[(int) rayPos.getX()][(int) rayPos.getY()] - 1;
 
-            double intersectionX = pos.getX() < rayPos.getX() ? Math.abs(rayPos.getX() - (int) rayPos.getX()) : 1 - Math.abs(rayPos.getX() - (int) rayPos.getX());
-            double intersectionY = pos.getY() < rayPos.getY() ? Math.abs(rayPos.getY() - (int) rayPos.getY()) : 1 - Math.abs(rayPos.getY() - (int) rayPos.getY());
+            double intersectionX = playerCamera.position.getX() < rayPos.getX()
+                    ? Math.abs(rayPos.getX() - (int) rayPos.getX())
+                    : 1 - Math.abs(rayPos.getX() - (int) rayPos.getX());
+            double intersectionY = playerCamera.position.getY() < rayPos.getY()
+                    ? Math.abs(rayPos.getY() - (int) rayPos.getY())
+                    : 1 - Math.abs(rayPos.getY() - (int) rayPos.getY());
             boolean horizontal = intersectionX < intersectionY ? true : false;
 
             double wallX = horizontal ? intersectionY  : intersectionX;
@@ -331,16 +335,16 @@ public class Screen {
     }
 
     public int[] render(int[] pixels,
-                        Vector2d pos,
-                        Vector2d dir,
-                        Vector2d plain,
+                        Camera playerCamera,
                         BoomStick gun,
                         Vector<Enemy> enemies,
                         Vector<Bullet> bullets) {
+        Vector2d pos = playerCamera.position;
+        Vector2d dir = playerCamera.direction;
 
         pixels = this.renderFloor(pixels, pos, dir);
         pixels = this.renderCeiling(pixels, pos, dir);
-        pixels = this.renderWall(pixels, pos, dir);
+        pixels = this.renderWall(pixels, playerCamera);
         pixels = this.renderEnemies(pixels, pos, dir, (Vector<Enemy>) enemies.clone());
         pixels = this.renderBullets(pixels, pos, dir, (Vector<Bullet>) bullets.clone());
         pixels = this.renderGun(pixels, gun.getSprite());

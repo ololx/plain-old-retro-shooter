@@ -1,6 +1,7 @@
 package org.plain.old.retro.shooter.engine;
 
 import org.plain.old.retro.shooter.engine.clock.RateTimer;
+import org.plain.old.retro.shooter.engine.graphics.Camera;
 import org.plain.old.retro.shooter.engine.graphics.Sprite;
 import org.plain.old.retro.shooter.unit.Enemy;
 import org.plain.old.retro.shooter.unit.equipment.bullet.Bullet;
@@ -113,7 +114,7 @@ public class Scene extends JFrame {
             add(new Enemy(14.5, 19.5, new Sprite("src/resources/enemy-3.png")));
             add(new Enemy(12.5, 10.5, new Sprite("src/resources/enemy-3.png")));
         }};
-        mainPlayer = new Camera(1, 2, 1, 0, 0, 0);
+        mainPlayer = new Camera(1, 2, 1, 0, SCENE_WIDTH, SCENE_HEIGHT, 1.20);
         image = new BufferedImage(SCENE_WIDTH, SCENE_HEIGHT, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
         screen = new Screen(
@@ -198,9 +199,7 @@ public class Scene extends JFrame {
                 90,
                 () -> screen.render(
                         pixels,
-                        mainPlayer.position,
-                        mainPlayer.direction,
-                        mainPlayer.plain,
+                        this.mainPlayer,
                         this.stick,
                         this.enemies,
                         this.bullets
