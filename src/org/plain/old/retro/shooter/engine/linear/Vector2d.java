@@ -63,7 +63,7 @@ public class Vector2d implements Vector {
 
 	public Vector2d rotate(RotationMatrix2d rotatiomMatrix) {
 		return new Vector2d(
-				(this.x * rotatiomMatrix.getX1() - this.y * rotatiomMatrix.getX2()),
+				(this.x * rotatiomMatrix.getX1() + this.y * rotatiomMatrix.getX2()),
 				(this.x * rotatiomMatrix.getY1() + this.y * rotatiomMatrix.getY2())
 		);
 	}

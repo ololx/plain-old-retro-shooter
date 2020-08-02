@@ -10,7 +10,7 @@ public class RotationMatrix2d extends Matrix2d {
 
     public RotationMatrix2d(double angle) {
         super(
-                Math.cos(angle), Math.sin(angle),
+                Math.cos(angle), -Math.sin(angle),
                 Math.sin(angle), Math.cos(angle)
         );
     }
