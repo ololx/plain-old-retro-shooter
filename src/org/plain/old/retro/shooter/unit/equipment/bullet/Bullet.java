@@ -17,11 +17,11 @@ public class Bullet {
 
     public boolean isHited = false;
 
-    public Vector2d position;
+    private Vector2d position;
 
-    public Vector2d direction;
+    private Vector2d direction;
 
-    public Vector2d movementVector;
+    private Vector2d movementVector;
 
     public double distanceToCamera;
 
@@ -61,6 +61,14 @@ public class Bullet {
 
     public Sprite getSprite() {
         return texture;
+    }
+
+    public Vector2d getPosition() {
+        return this.position;
+    }
+
+    public Vector2d getDirection() {
+        return this.direction;
     }
 
     @Override

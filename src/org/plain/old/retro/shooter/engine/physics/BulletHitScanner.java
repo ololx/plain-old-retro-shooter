@@ -1,9 +1,9 @@
 package org.plain.old.retro.shooter.engine.physics;
 
-import org.plain.old.retro.shooter.unit.Enemy;
 import org.plain.old.retro.shooter.engine.Space2d;
-import org.plain.old.retro.shooter.unit.equipment.bullet.Bullet;
 import org.plain.old.retro.shooter.engine.linear.Vector2d;
+import org.plain.old.retro.shooter.unit.Enemy;
+import org.plain.old.retro.shooter.unit.equipment.bullet.Bullet;
 
 import java.util.Vector;
 
@@ -29,11 +29,11 @@ public interface BulletHitScanner {
 
             for (int m = 0; m < hitScanStep; m++) {
                 bullet.move(map.getSpace(), bulletSpeed);
-                Vector2d bVec = bullet.position;
+                Vector2d bVec = bullet.getPosition();
 
                 for (int j = 0; j < enemies.size(); j++) {
                     Enemy enemy = enemies.get(j);
-                    Vector2d eVec = new Vector2d(enemy.xPosition, enemy.yPosition);
+                    Vector2d eVec = enemy.getPosition();
 
                     if (!enemy.isAlive) continue;
 

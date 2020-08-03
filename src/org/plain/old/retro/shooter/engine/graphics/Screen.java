@@ -1,9 +1,9 @@
 package org.plain.old.retro.shooter.engine.graphics;
 
+import org.plain.old.retro.shooter.engine.linear.Vector2d;
 import org.plain.old.retro.shooter.unit.Enemy;
 import org.plain.old.retro.shooter.unit.equipment.bullet.Bullet;
 import org.plain.old.retro.shooter.unit.equipment.weapon.BoomStick;
-import org.plain.old.retro.shooter.engine.linear.Vector2d;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -37,8 +37,8 @@ public class Screen {
     public int[] renderFloor(int[] pixels, Camera playerCamera) {
         int floorTexture = 5;
         double angle = playerCamera.getAngle() / 2;
-        Vector2d rayDirLeft = playerCamera.direction.rotate(playerCamera.getRotationMatrix(angle));
-        Vector2d rayDirRight = playerCamera.direction.rotate(playerCamera.getRotationMatrix(-angle));
+        Vector2d rayDirLeft = playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(angle));
+        Vector2d rayDirRight = playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(-angle));
 
         int drawStart = this.height / 2;
         int drawEnd = this.height;
@@ -48,8 +48,8 @@ public class Screen {
             double rowDistance = posZ / p;
             double floorStepX = rowDistance * (rayDirRight.getX() - rayDirLeft.getX()) / this.width;
             double floorStepY = rowDistance * (rayDirRight.getY() - rayDirLeft.getY()) / this.width;
-            double floorX = playerCamera.position.getX() + rowDistance * rayDirLeft.getX();
-            double floorY = playerCamera.position.getY() + rowDistance * rayDirLeft.getY();
+            double floorX = playerCamera.getPosition().getX() + rowDistance * rayDirLeft.getX();
+            double floorY = playerCamera.getPosition().getY() + rowDistance * rayDirLeft.getY();
 
             for (int x = 0; x < this.width; x++) {
                 int cellX = (int)(floorX);
@@ -71,8 +71,8 @@ public class Screen {
     public int[] renderCeiling(int[] pixels, Camera playerCamera) {
         int ceilingTexture = 4;
         double angle = playerCamera.getAngle() / 2;
-        Vector2d rayDirLeft = playerCamera.direction.rotate(playerCamera.getRotationMatrix(angle));
-        Vector2d rayDirRight = playerCamera.direction.rotate(playerCamera.getRotationMatrix(-angle));
+        Vector2d rayDirLeft = playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(angle));
+        Vector2d rayDirRight = playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(-angle));
         int drawStart = 0;
         int drawEnd = this.height / 2;
 
@@ -83,8 +83,8 @@ public class Screen {
             double ceilingStepX = rowDistance * (rayDirRight.getX() - rayDirLeft.getX()) / this.width;
             double ceilingStepY = rowDistance * (rayDirRight.getY() - rayDirLeft.getY()) / this.width;
 
-            double ceilingX = playerCamera.position.getX() + rowDistance * rayDirLeft.getX();
-            double ceilingY = playerCamera.position.getY() + rowDistance * rayDirLeft.getY();
+            double ceilingX = playerCamera.getPosition().getX() + rowDistance * rayDirLeft.getX();
+            double ceilingY = playerCamera.getPosition().getY() + rowDistance * rayDirLeft.getY();
 
             for (int x = 0; x < this.width; x++) {
                 int cellX = (int)(ceilingX);
@@ -108,8 +108,8 @@ public class Screen {
         double angle = playerCamera.getAngle() / 2;
 
         for (int x = 0; x < width; x++) {
-            Vector2d rayDir = playerCamera.direction.rotate(playerCamera.getRotationMatrix(x));
-            Vector2d rayPos = playerCamera.position.clone();
+            Vector2d rayDir = playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(x));
+            Vector2d rayPos = playerCamera.getPosition().clone();
 
             boolean hit = false;
             double steps = 0.01;
@@ -122,7 +122,7 @@ public class Screen {
 
             angle -= angleStep;
 
-            double rayLength = Math.hypot(rayPos.getX() - playerCamera.position.getX(), rayPos.getY() - playerCamera.position.getY());
+            double rayLength = Math.hypot(rayPos.getX() - playerCamera.getPosition().getX(), rayPos.getY() - playerCamera.getPosition().getY());
             int wallHeight = (rayLength == 0) ? height : (int) ((int) (height / (rayLength * Math.cos(angle))));
 
             int drawStart = (int) (-wallHeight / 2 + height / 2);
@@ -133,10 +133,10 @@ public class Screen {
 
             int texNum = map[(int) rayPos.getX()][(int) rayPos.getY()] - 1;
 
-            double intersectionX = playerCamera.position.getX() < rayPos.getX()
+            double intersectionX = playerCamera.getPosition().getX() < rayPos.getX()
                     ? Math.abs(rayPos.getX() - (int) rayPos.getX())
                     : 1 - Math.abs(rayPos.getX() - (int) rayPos.getX());
-            double intersectionY = playerCamera.position.getY() < rayPos.getY()
+            double intersectionY = playerCamera.getPosition().getY() < rayPos.getY()
                     ? Math.abs(rayPos.getY() - (int) rayPos.getY())
                     : 1 - Math.abs(rayPos.getY() - (int) rayPos.getY());
             boolean horizontal = intersectionX < intersectionY ? true : false;
@@ -217,24 +217,24 @@ public class Screen {
     public int[] renderEnemies(int[] pixels, Vector2d pos, Vector2d dir, Vector<Enemy> enemies) {
         enemies.stream()
                 .forEach(s -> s.distanceToCamera = Math.pow(
-                        Math.abs(pos.getX() - s.xPosition),
-                        Math.abs(pos.getY() - s.yPosition))
+                        Math.abs(pos.getX() - s.getPosition().getX()),
+                        Math.abs(pos.getY() - s.getPosition().getY()))
                 );
         enemies.sort((s1, s2) -> (s2.distanceToCamera > s1.distanceToCamera) ? 1 : -1 );
 
         double angleStep = width / 1.20;
         double angle = 0.60;
 
-        for (Enemy entity : enemies) {
-            Sprite sprite = entity.getSprite();
+        for (Enemy enemy : enemies) {
+            Sprite sprite = enemy.getSprite();
 
-            Vector2d enemyPos = new Vector2d(entity.xPosition, entity.yPosition);
+            Vector2d enemyPos = enemy.getPosition();
             Vector2d rayToEnemy = enemyPos.subtract(pos);
             double angleToEnemenyLeft = dir.rotate(angle).getAngle(rayToEnemy);
             double angleToEnemenyCenter = dir.getAngle(rayToEnemy);
             boolean isVisible = angleToEnemenyCenter <= angle && angleToEnemenyLeft  <= angle * 2 ? true : false;
 
-            if (!isVisible || !entity.isAlive) continue;
+            if (!isVisible || !enemy.isAlive) continue;
 
             double angles = angleStep * (angleToEnemenyLeft);
             double rayLength = Math.hypot(Math.abs(pos.getX() - enemyPos.getX()), Math.abs(pos.getY() - enemyPos.getY()));
@@ -285,7 +285,7 @@ public class Screen {
         for (Bullet entity : bullets) {
             Sprite sprite = entity.getSprite();
 
-            Vector2d bulletPos = entity.position;
+            Vector2d bulletPos = entity.getPosition();
             Vector2d rayToBullet = bulletPos.subtract(pos);
             double angleToBulletLeft = dir.rotate(angle).getAngle(rayToBullet);
             double angleToBulletCenter = dir.getAngle(rayToBullet);
@@ -339,8 +339,8 @@ public class Screen {
                         BoomStick gun,
                         Vector<Enemy> enemies,
                         Vector<Bullet> bullets) {
-        Vector2d pos = playerCamera.position;
-        Vector2d dir = playerCamera.direction;
+        Vector2d pos = playerCamera.getPosition();
+        Vector2d dir = playerCamera.getDirection();
 
         pixels = this.renderFloor(pixels, playerCamera);
         pixels = this.renderCeiling(pixels, playerCamera);

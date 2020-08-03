@@ -1,11 +1,11 @@
 package org.plain.old.retro.shooter.unit;
 
 import org.plain.old.retro.shooter.engine.graphics.Sprite;
+import org.plain.old.retro.shooter.engine.linear.Vector2d;
 
 public class Enemy {
 
-	public double xPosition;
-	public double yPosition;
+	private Vector2d position;
 
 	public double radius;
 
@@ -15,11 +15,14 @@ public class Enemy {
 
 	public Sprite texture;
 
-	public Enemy(double xPosition, double yPosition, Sprite texture) {
-		this.xPosition = xPosition;
-		this.yPosition = yPosition;
+	public Enemy(double x, double y, Sprite texture) {
+		this.position = new Vector2d(x, y);
 		this.texture = texture;
 		this.radius = 0.25;
+	}
+
+	public Vector2d getPosition() {
+		return this.position;
 	}
 
 	public Sprite getSprite() {

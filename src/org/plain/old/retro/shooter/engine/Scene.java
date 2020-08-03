@@ -2,13 +2,13 @@ package org.plain.old.retro.shooter.engine;
 
 import org.plain.old.retro.shooter.engine.clock.RateTimer;
 import org.plain.old.retro.shooter.engine.graphics.Camera;
+import org.plain.old.retro.shooter.engine.graphics.Screen;
 import org.plain.old.retro.shooter.engine.graphics.Sprite;
+import org.plain.old.retro.shooter.engine.listener.KeyboardController;
+import org.plain.old.retro.shooter.engine.physics.BulletHitScanner;
 import org.plain.old.retro.shooter.unit.Enemy;
 import org.plain.old.retro.shooter.unit.equipment.bullet.Bullet;
 import org.plain.old.retro.shooter.unit.equipment.weapon.BoomStick;
-import org.plain.old.retro.shooter.engine.listener.KeyboardController;
-import org.plain.old.retro.shooter.engine.graphics.Screen;
-import org.plain.old.retro.shooter.engine.physics.BulletHitScanner;
 
 import javax.swing.*;
 import java.awt.*;
@@ -170,7 +170,7 @@ public class Scene extends JFrame {
                             }
 
                             if (state.getKey().equals("SHOT")) {
-                                this.bullets.addAll(stick.shoot(mainPlayer.position, mainPlayer.direction));
+                                this.bullets.addAll(stick.shoot(mainPlayer.getPosition(), mainPlayer.getDirection()));
                             }
 
                             if (state.getKey().equals("RELOAD")) {
@@ -196,7 +196,7 @@ public class Scene extends JFrame {
                 }
         );
         renderTemp = new RateTimer(
-                15,
+                120,
                 () -> screen.render(
                         pixels,
                         this.mainPlayer,

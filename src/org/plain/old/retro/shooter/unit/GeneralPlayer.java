@@ -11,17 +11,17 @@ import org.plain.old.retro.shooter.engine.linear.Vector2d;
  */
 public class GeneralPlayer {
 
-    public final static double MOVE_SPEED = 0.10;
+    public static final double MOVE_SPEED = 0.10;
 
-    public final static double ROTATION_SPEED = 0.05;
+    public static final double ROTATION_SPEED = 0.05;
 
-    public Vector2d position;
+    private Vector2d position;
 
-    public Vector2d direction;
+    private Vector2d direction;
 
-    public Vector2d movementVector;
+    private Vector2d movementVector;
 
-    public RotationMatrix2d rotationMatrix;
+    private RotationMatrix2d rotationMatrix;
 
     public GeneralPlayer(double x, double y, double x2, double y2) {
         this(x, y, x2, y2, MOVE_SPEED, ROTATION_SPEED);
@@ -56,6 +56,14 @@ public class GeneralPlayer {
 
     public void moveRight() {
         direction = direction.rotate(-ROTATION_SPEED);
+    }
+
+    public Vector2d getPosition() {
+        return this.position;
+    }
+
+    public Vector2d getDirection() {
+        return this.direction;
     }
 
     private void shiftPosition(int[][] space, Vector2d shiftVector) {
