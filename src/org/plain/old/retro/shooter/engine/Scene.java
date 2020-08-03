@@ -255,8 +255,8 @@ public class Scene extends JFrame {
         Graphics g = bs.getDrawGraphics();
         g.drawImage(image, 0, 0, width, height,null);
         g.setColor(Color.GREEN);
-        g.setFont(g.getFont().deriveFont(50f));
-        g.drawString(rateInfo, 25, 75);
+        g.setFont(g.getFont().deriveFont(30f));
+        g.drawString(rateInfo, 15, 45);
         bs.show();
     }
 }

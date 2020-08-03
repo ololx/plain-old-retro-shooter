@@ -34,11 +34,11 @@ public class Screen {
         this.textures = textures;
     }
 
-    public int[] renderFloor(int[] pixels, Vector2d pos, Vector2d dir) {
+    public int[] renderFloor(int[] pixels, Camera playerCamera) {
         int floorTexture = 5;
-        double angle = 0.60;
-        Vector2d rayDirLeft = dir.rotate(angle);
-        Vector2d rayDirRight = dir.rotate(-angle);
+        double angle = playerCamera.getAngle() / 2;
+        Vector2d rayDirLeft = playerCamera.direction.rotate(playerCamera.getRotationMatrix(angle));
+        Vector2d rayDirRight = playerCamera.direction.rotate(playerCamera.getRotationMatrix(-angle));
 
         int drawStart = this.height / 2;
         int drawEnd = this.height;
@@ -48,8 +48,8 @@ public class Screen {
             double rowDistance = posZ / p;
             double floorStepX = rowDistance * (rayDirRight.getX() - rayDirLeft.getX()) / this.width;
             double floorStepY = rowDistance * (rayDirRight.getY() - rayDirLeft.getY()) / this.width;
-            double floorX = pos.getX() + rowDistance * rayDirLeft.getX();
-            double floorY = pos.getY() + rowDistance * rayDirLeft.getY();
+            double floorX = playerCamera.position.getX() + rowDistance * rayDirLeft.getX();
+            double floorY = playerCamera.position.getY() + rowDistance * rayDirLeft.getY();
 
             for (int x = 0; x < this.width; x++) {
                 int cellX = (int)(floorX);
@@ -68,11 +68,11 @@ public class Screen {
         return pixels;
     }
 
-    public int[] renderCeiling(int[] pixels, Vector2d pos, Vector2d dir) {
+    public int[] renderCeiling(int[] pixels, Camera playerCamera) {
         int ceilingTexture = 4;
-        double angle = 0.60;
-        Vector2d rayDirLeft = dir.rotate(angle);
-        Vector2d rayDirRight = dir.rotate(-angle);
+        double angle = playerCamera.getAngle() / 2;
+        Vector2d rayDirLeft = playerCamera.direction.rotate(playerCamera.getRotationMatrix(angle));
+        Vector2d rayDirRight = playerCamera.direction.rotate(playerCamera.getRotationMatrix(-angle));
         int drawStart = 0;
         int drawEnd = this.height / 2;
 
@@ -83,8 +83,8 @@ public class Screen {
             double ceilingStepX = rowDistance * (rayDirRight.getX() - rayDirLeft.getX()) / this.width;
             double ceilingStepY = rowDistance * (rayDirRight.getY() - rayDirLeft.getY()) / this.width;
 
-            double ceilingX = pos.getX() + rowDistance * rayDirLeft.getX();
-            double ceilingY = pos.getY() + rowDistance * rayDirLeft.getY();
+            double ceilingX = playerCamera.position.getX() + rowDistance * rayDirLeft.getX();
+            double ceilingY = playerCamera.position.getY() + rowDistance * rayDirLeft.getY();
 
             for (int x = 0; x < this.width; x++) {
                 int cellX = (int)(ceilingX);
@@ -342,8 +342,8 @@ public class Screen {
         Vector2d pos = playerCamera.position;
         Vector2d dir = playerCamera.direction;
 
-        pixels = this.renderFloor(pixels, pos, dir);
-        pixels = this.renderCeiling(pixels, pos, dir);
+        pixels = this.renderFloor(pixels, playerCamera);
+        pixels = this.renderCeiling(pixels, playerCamera);
         pixels = this.renderWall(pixels, playerCamera);
         pixels = this.renderEnemies(pixels, pos, dir, (Vector<Enemy>) enemies.clone());
         pixels = this.renderBullets(pixels, pos, dir, (Vector<Bullet>) bullets.clone());
