@@ -57,11 +57,14 @@ public class Camera extends GeneralPlayer {
 
         double angleStep = angle / plain.getWidth();
         double angleStart = angle / 2;
+
+        this.rotationsByAngles.put(angleStart, new RotationMatrix2d(angleStart));
+        this.rotationsByAngles.put(-angleStart, new RotationMatrix2d(-angleStart));
+
         for (int i = 0; i < plain.getWidth(); i++) {
             RotationMatrix2d rotationMatrix = new RotationMatrix2d(angleStart);
             this.rotationsByAngles.put(angleStart, rotationMatrix);
             this.rotationsByPixels.put(i, rotationMatrix);
-
             angleStart -= angleStep;
         }
     }
@@ -73,7 +76,7 @@ public class Camera extends GeneralPlayer {
     }
 
     public RotationMatrix2d getRotationMatrix(double angle) {
-        if (!this.rotationsByPixels.containsKey(angle)) return new RotationMatrix2d(0);
+        if (!this.rotationsByAngles.containsKey(angle)) return new RotationMatrix2d(0);
 
         return this.rotationsByAngles.get(angle);
     }

@@ -196,7 +196,7 @@ public class Scene extends JFrame {
                 }
         );
         renderTemp = new RateTimer(
-                90,
+                15,
                 () -> screen.render(
                         pixels,
                         this.mainPlayer,
