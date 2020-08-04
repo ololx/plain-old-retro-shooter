@@ -4,12 +4,12 @@ import java.util.List;
 
 /**
  * The type Clock rate.
- *
+ * <p>
  * @author Alexander A. Kropotin
  * @project plain -old-retro-shooter
- * @created 21.06.2020 19:16 <p>
+ * @created 21.06.2020 19:16
  */
-public class ClockRate {
+public class RateStep {
 
     /**
      * The constant NS_IN_SECOND.
@@ -44,8 +44,8 @@ public class ClockRate {
     /**
      * Instantiates a new Clock rate.
      */
-    public ClockRate() {
-        this(ClockRate.MAX_FREQUENCY);
+    public RateStep() {
+        this(RateStep.MAX_FREQUENCY);
     }
 
     /**
@@ -53,7 +53,7 @@ public class ClockRate {
      *
      * @param frequency the frequency
      */
-    public ClockRate(long frequency) {
+    public RateStep(long frequency) {
         this.frequency = frequency;
         this.rateTime = NS_IN_SECOND / this.frequency;
         this.previousMoment = System.nanoTime();
@@ -66,7 +66,7 @@ public class ClockRate {
             actions.forEach(p -> p.act());
         }
 
-        if (slp) this.sleep(currentMoment);
+        if (slp) this.sleep(currentMoment, slp);
     }
 
     private void beep() {
@@ -83,19 +83,14 @@ public class ClockRate {
         }
     }
 
-    private void sleep(long currentMoment) {
+    private void sleep(long currentMoment, boolean slp) {
         try {
             long timeOut = (currentMoment - System.nanoTime() + this.rateTime);
 
-            if (timeOut <= 0) return;
+            if (timeOut > 0 && slp) Thread.currentThread().sleep(timeOut / MS_IN_SECOND);
 
-            Thread.currentThread().sleep(timeOut / MS_IN_SECOND);
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public short getHerz() {
-        return this.herz;
     }
 }
