@@ -65,11 +65,15 @@ public class RateTimer implements Runnable {
 
     private List<Action> actions;
 
+    private ClockRate clockRate;
+
+    private boolean slp;
+
     /**
      * Instantiates a new Rate timer.
      */
     public RateTimer() {
-        this(DEFAULT_FREQUENCY);
+        this(DEFAULT_FREQUENCY, false);
     }
 
     /**
@@ -78,7 +82,7 @@ public class RateTimer implements Runnable {
      * @param actions the actions
      */
     public RateTimer(Action<?>... actions) {
-        this(DEFAULT_FREQUENCY, actions);
+        this(DEFAULT_FREQUENCY, false, actions);
     }
 
     /**
@@ -87,11 +91,13 @@ public class RateTimer implements Runnable {
      * @param frequency the frequency
      * @param actions   the actions
      */
-    public RateTimer(long frequency, Action<?>... actions) {
+    public RateTimer(long frequency, boolean slp, Action<?>... actions) {
         this.actions = actions != null ? Arrays.asList(actions) : Collections.EMPTY_LIST;
         this.frequency = frequency;
         this.rateTime = NS_IN_SECOND / this.frequency;
         this.herz = (short) frequency;
+        this.clockRate = new ClockRate(frequency);
+        this.slp = slp;
     }
 
     @Override
@@ -106,11 +112,16 @@ public class RateTimer implements Runnable {
             deltaMoment += (currentMoment - previousMoment) / rateTime;
             previousMoment = currentMoment;
 
-            if (deltaMoment >= 1) {
+            /*if (deltaMoment >= 1) {
                 this.actions.forEach(action -> action.act());
                 currentHerz++;
                 deltaMoment--;
-            }
+            }*/
+
+            currentHerz++;
+            deltaMoment--;
+
+            //this.clockRate.clock(this.actions, this.slp, currentMoment);
 
             if (System.nanoTime() - timer > NS_IN_SECOND) {
                 this.herz = currentHerz;

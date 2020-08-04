@@ -141,6 +141,7 @@ public class Scene extends JFrame {
         setVisible(true);
         this.sceneTemp = new RateTimer(
                 30,
+                true,
                 () -> {
                     for (Map.Entry<String, Boolean> state : controller.getState().entrySet()) {
 
@@ -196,7 +197,8 @@ public class Scene extends JFrame {
                 }
         );
         renderTemp = new RateTimer(
-                120,
+                30,
+                true,
                 () -> screen.render(
                         pixels,
                         this.mainPlayer,
