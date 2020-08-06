@@ -15,7 +15,7 @@ import java.util.Vector;
  */
 public interface BulletHitScanner {
 
-    static void scan(Vector<Bullet> bullets, Vector<Enemy> enemies, short hertz, Space2d map) {
+    static void scan(Vector<Bullet> bullets, Vector<Enemy> enemies, long hertz, Space2d map) {
         bullets = (Vector<Bullet>) bullets.clone();
         enemies = (Vector<Enemy>) enemies.clone();
 

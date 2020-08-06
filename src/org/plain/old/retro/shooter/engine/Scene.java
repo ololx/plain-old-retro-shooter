@@ -1,6 +1,8 @@
 package org.plain.old.retro.shooter.engine;
 
-import org.plain.old.retro.shooter.engine.clock.RateTimer;
+import org.plain.old.retro.shooter.engine.clock.Clock;
+import org.plain.old.retro.shooter.engine.clock.HighIntensiveClock;
+import org.plain.old.retro.shooter.engine.clock.LowIntensiveClock;
 import org.plain.old.retro.shooter.engine.graphics.Camera;
 import org.plain.old.retro.shooter.engine.graphics.Screen;
 import org.plain.old.retro.shooter.engine.graphics.Sprite;
@@ -36,9 +38,9 @@ public class Scene extends JFrame {
 
     public static final int SCENE_HEIGHT = 720;
 
-    private RateTimer sceneTemp;
+    private Clock sceneTemp;
 
-    private RateTimer renderTemp;
+    private Clock renderTemp;
 
     private Camera mainPlayer;
 
@@ -139,7 +141,7 @@ public class Scene extends JFrame {
         setBackground(Color.black);
         setLocationRelativeTo(null);
         setVisible(true);
-        this.sceneTemp = new RateTimer(
+        this.sceneTemp = new LowIntensiveClock(
                 30,
                 () -> {
                     for (Map.Entry<String, Boolean> state : controller.getState().entrySet()) {
@@ -192,10 +194,10 @@ public class Scene extends JFrame {
                         if (!enemy.isAlive) this.enemies.remove(j);
                     }
 
-                    BulletHitScanner.scan(this.bullets, this.enemies, sceneTemp.getHerz(), map);
+                    BulletHitScanner.scan(this.bullets, this.enemies, sceneTemp.getFrequency(), map);
                 }
         );
-        renderTemp = new RateTimer(
+        renderTemp = new LowIntensiveClock(
                 50,
                 () -> screen.render(
                         pixels,
@@ -206,8 +208,8 @@ public class Scene extends JFrame {
                 ),
                 () -> this.render(map, String.format(
                         "UPS: %s \n FPS: %s",
-                        sceneTemp.getHerz(),
-                        renderTemp.getHerz())
+                        sceneTemp.getFrequency(),
+                        renderTemp.getFrequency())
                 )
         );
     }
