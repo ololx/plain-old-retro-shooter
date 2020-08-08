@@ -2,6 +2,7 @@ package org.plain.old.retro.shooter.engine.graphics;
 
 import org.plain.old.retro.shooter.engine.linear.Vector2d;
 import org.plain.old.retro.shooter.unit.Enemy;
+import org.plain.old.retro.shooter.unit.Unit;
 import org.plain.old.retro.shooter.unit.equipment.bullet.Bullet;
 import org.plain.old.retro.shooter.unit.equipment.weapon.BoomStick;
 
@@ -10,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @project plain-old-retro-shooter
@@ -214,87 +217,35 @@ public class Screen {
         return pixels;
     }
 
-    public int[] renderEnemies(int[] pixels, Vector2d pos, Vector2d dir, Vector<Enemy> enemies) {
-        enemies.stream()
-                .forEach(s -> s.distanceToCamera = Math.pow(
-                        Math.abs(pos.getX() - s.getPosition().getX()),
-                        Math.abs(pos.getY() - s.getPosition().getY()))
-                );
-        enemies.sort((s1, s2) -> (s2.distanceToCamera > s1.distanceToCamera) ? 1 : -1 );
+    public int[] renderUnit(int[] pixels, Camera playerCamera, List<Unit> units) {
+        units = units.stream()
+                .map(s -> {
+                    s.calculateDistanceToCurrentObject(playerCamera.getPosition());
+                    return s;
+                })
+                .sorted((s1, s2) -> (s2.getDistanceToCurrentObject() > s1.getDistanceToCurrentObject()) ? 1 : -1 )
+                .collect(Collectors.toList());
 
-        double angleStep = width / 1.20;
-        double angle = 0.60;
+        double angleStep = playerCamera.getPlain().getWidth() / playerCamera.getAngle();
+        double angle = playerCamera.getAngle() / 2;
 
-        for (Enemy enemy : enemies) {
-            Sprite sprite = enemy.getSprite();
+        for (Unit unit : units) {
+            Sprite sprite = unit.getSprite();
+            Vector2d unitPos = unit.getPosition();
+            Vector2d rayToUnit = unitPos.subtract(playerCamera.getPosition());
+            double angleToUnitLeft = playerCamera.getDirection()
+                    .rotate(angle)
+                    .getAngle(rayToUnit);
+            double angleToUnitCenter = playerCamera.getDirection().getAngle(rayToUnit);
+            boolean isVisible = angleToUnitCenter <= angle && angleToUnitLeft  <= angle * 2 ? true : false;
 
-            Vector2d enemyPos = enemy.getPosition();
-            Vector2d rayToEnemy = enemyPos.subtract(pos);
-            double angleToEnemenyLeft = dir.rotate(angle).getAngle(rayToEnemy);
-            double angleToEnemenyCenter = dir.getAngle(rayToEnemy);
-            boolean isVisible = angleToEnemenyCenter <= angle && angleToEnemenyLeft  <= angle * 2 ? true : false;
+            if (!isVisible || !unit.isExist()) continue;
 
-            if (!isVisible || !enemy.isAlive) continue;
-
-            double angles = angleStep * (angleToEnemenyLeft);
-            double rayLength = Math.hypot(Math.abs(pos.getX() - enemyPos.getX()), Math.abs(pos.getY() - enemyPos.getY()));
-
-            int enemyHeight = (rayLength == 0) ? sprite.getHeight() : (int) ((int) (sprite.getHeight() / (rayLength)));
-            if (enemyHeight > sprite.getHeight()) enemyHeight = sprite.getHeight();
-
-            int enemyWidth = (rayLength == 0) ? sprite.getWidth() : (int) ((int) (sprite.getWidth() / (rayLength)));
-            if (enemyWidth > sprite.getWidth()) enemyWidth = sprite.getWidth();
-
-            int drawYStart = (int) (-enemyHeight / 2 + height / 2);
-            if (drawYStart < 0) drawYStart = 0;
-
-            int drawYEnd = (int) (enemyHeight / 2 + height / 2);
-            if (drawYEnd >= height) drawYEnd = height;
-
-            double imgPixYSize = 1.0 * sprite.getHeight() / enemyHeight;
-            int drawXStart = (int)angles - (enemyWidth / 2);
-            int drawXEnd = (int) drawXStart + (enemyWidth);
-            double imgPixXSize = 1.0 * sprite.getWidth() / enemyWidth;
-
-            int texXOffset = 0;
-            if (drawXStart < 0) {
-                texXOffset = -drawXStart;
-                drawXStart = 0;
-            }
-
-            for (int y = drawYStart; y < drawYEnd; y++) {
-                int texY = (int)((y - drawYStart) * imgPixYSize);
-                for (int x = drawXStart; x < drawXEnd; x++) {
-                    int color = sprite.getPixelSafty((int) ((x - drawXStart + texXOffset) * imgPixXSize), texY);
-
-                    if (this.rayLengths.get(x) == null || this.rayLengths.get(x) <= rayLength) continue;
-
-                    if (color != 0) pixels[x + y * width] = color;
-                }
-            }
-        }
-
-        return pixels;
-    }
-
-    public int[] renderBullets(int[] pixels, Vector2d pos, Vector2d dir, Vector<Bullet> bullets) {
-
-        double angleStep = width / 1.20;
-        double angle = 0.60;
-
-        for (Bullet entity : bullets) {
-            Sprite sprite = entity.getSprite();
-
-            Vector2d bulletPos = entity.getPosition();
-            Vector2d rayToBullet = bulletPos.subtract(pos);
-            double angleToBulletLeft = dir.rotate(angle).getAngle(rayToBullet);
-            double angleToBulletCenter = dir.getAngle(rayToBullet);
-            boolean isVisible = angleToBulletCenter <= angle && angleToBulletLeft  <= angle * 2 ? true : false;
-
-            if (!isVisible || entity.isHited) continue;
-
-            double angles = angleStep * (angleToBulletLeft);
-            double rayLength = Math.hypot(Math.abs(pos.getX() - bulletPos.getX()), Math.abs(pos.getY() - bulletPos.getY()));
+            double angles = angleStep * (angleToUnitLeft);
+            double rayLength = Math.hypot(
+                    Math.abs(playerCamera.getPosition().getX() - unitPos.getX()),
+                    Math.abs(playerCamera.getPosition().getY() - unitPos.getY())
+            );
 
             int enemyHeight = (rayLength == 0) ? sprite.getHeight() : (int) ((int) (sprite.getHeight() / (rayLength)));
             if (enemyHeight > sprite.getHeight()) enemyHeight = sprite.getHeight();
@@ -339,14 +290,14 @@ public class Screen {
                         BoomStick gun,
                         Vector<Enemy> enemies,
                         Vector<Bullet> bullets) {
-        Vector2d pos = playerCamera.getPosition();
-        Vector2d dir = playerCamera.getDirection();
+        Vector<Unit> units = new Vector<>();
+        units.addAll(enemies);
+        units.addAll(bullets);
 
         pixels = this.renderFloor(pixels, playerCamera);
         pixels = this.renderCeiling(pixels, playerCamera);
         pixels = this.renderWall(pixels, playerCamera);
-        pixels = this.renderEnemies(pixels, pos, dir, (Vector<Enemy>) enemies.clone());
-        pixels = this.renderBullets(pixels, pos, dir, (Vector<Bullet>) bullets.clone());
+        pixels = this.renderUnit(pixels, playerCamera, units);
         pixels = this.renderGun(pixels, gun.getSprite());
 
         return pixels;

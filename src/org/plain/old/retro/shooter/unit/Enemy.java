@@ -3,30 +3,14 @@ package org.plain.old.retro.shooter.unit;
 import org.plain.old.retro.shooter.engine.graphics.Sprite;
 import org.plain.old.retro.shooter.engine.linear.Vector2d;
 
-public class Enemy {
+public class Enemy extends AbstractUnit {
 
-	private Vector2d position;
-
-	public double radius;
-
-	public double distanceToCamera;
-
-	public boolean isAlive = true;
-
-	public Sprite texture;
+	public static final double DEFAULT_RADIUS = 0.25d;
 
 	public Enemy(double x, double y, Sprite texture) {
-		this.position = new Vector2d(x, y);
-		this.texture = texture;
-		this.radius = 0.25;
+		this(x, y, DEFAULT_RADIUS, texture);
 	}
-
-	public Vector2d getPosition() {
-		return this.position;
+	public Enemy(double x, double y, double radius, Sprite texture) {
+		super(x, y, radius, texture);
 	}
-
-	public Sprite getSprite() {
-		return texture;
-	}
-
 }

@@ -2,6 +2,7 @@ package org.plain.old.retro.shooter.unit.equipment.bullet;
 
 import org.plain.old.retro.shooter.engine.graphics.Sprite;
 import org.plain.old.retro.shooter.engine.linear.Vector2d;
+import org.plain.old.retro.shooter.unit.AbstractUnit;
 
 /**
  * @project plain-old-retro-shooter
@@ -9,31 +10,18 @@ import org.plain.old.retro.shooter.engine.linear.Vector2d;
  * <p>
  * @author Alexander A. Kropotin
  */
-public class Bullet {
+public class Bullet extends AbstractUnit {
 
     public final static double MOVE_SPEED = 30;
 
-    public final static double RADIUS = 0.01;
-
-    public boolean isHited = false;
-
-    private Vector2d position;
+    public final static double DEFAULT_RADIUS = 0.01;
 
     private Vector2d direction;
 
     private Vector2d movementVector;
 
-    public double distanceToCamera;
-
-    public Sprite texture;
-
-    public Bullet(Vector2d position, Vector2d direction, Sprite texture) {
-        this(position.getX(), position.getY(), direction.getX(), direction.getY(), MOVE_SPEED);
-        this.texture = texture;
-    }
-
-    public Bullet(double x, double y, double x2, double y2, double moveStep) {
-        this.position = new Vector2d(x, y);
+    public Bullet(double x, double y, double x2, double y2, double moveStep, double radius, Sprite texture) {
+        super(x, y, radius, texture);
         this.direction = new Vector2d(x2, y2);
         this.movementVector = new Vector2d(moveStep, moveStep);
     }
@@ -48,7 +36,7 @@ public class Bullet {
 
     private void shiftPosition(int[][] space, Vector2d shiftVector) {
         if (space[(int) shiftVector.getX()][(int) shiftVector.getY()] == 0) this.position = shiftVector;
-        else this.isHited = true;
+        else this.destroy();
     }
 
     private Vector2d getStepPosition(Vector2d direction) {

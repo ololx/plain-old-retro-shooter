@@ -5,6 +5,7 @@ import org.plain.old.retro.shooter.engine.linear.Vector2d;
 import org.plain.old.retro.shooter.unit.Enemy;
 import org.plain.old.retro.shooter.unit.equipment.bullet.Bullet;
 
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -25,7 +26,7 @@ public interface BulletHitScanner {
         for (int i = 0; i < bullets.size(); i++) {
             Bullet bullet = bullets.get(i);
 
-            if (bullet.isHited) continue;
+            if (!bullet.isExist()) continue;
 
             for (int m = 0; m < hitScanStep; m++) {
                 bullet.move(map.getSpace(), bulletSpeed);
@@ -35,11 +36,11 @@ public interface BulletHitScanner {
                     Enemy enemy = enemies.get(j);
                     Vector2d eVec = enemy.getPosition();
 
-                    if (!enemy.isAlive) continue;
+                    if (!enemy.isExist()) continue;
 
-                    if (eVec.subtract(bVec).getModule() <= Bullet.RADIUS + enemy.radius) {
-                        enemy.isAlive = false;
-                        bullet.isHited = true;
+                    if (eVec.subtract(bVec).getModule() <= Bullet.DEFAULT_RADIUS + enemy.getRadius()) {
+                        enemy.destroy();
+                        bullet.destroy();
                         break;
                     }
                 }

@@ -14,6 +14,14 @@ public interface BulletFactory {
     Sprite SPRITE = new Sprite("src/resources/fire-ball.png", 0.25, 0.25);
 
     static Bullet getInstance(Vector2d position, Vector2d direction) {
-        return new Bullet(position, direction, SPRITE);
+        return new Bullet(
+                position.getX(),
+                position.getY(),
+                direction.getX(),
+                direction.getY(),
+                Bullet.MOVE_SPEED,
+                Bullet.DEFAULT_RADIUS,
+                SPRITE
+        );
     }
 }

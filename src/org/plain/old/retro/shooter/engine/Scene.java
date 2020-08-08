@@ -18,10 +18,8 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
+import java.util.List;
 
 /**
  * The type Game.
@@ -186,19 +184,19 @@ public class Scene extends JFrame {
 
                     for (int i = 0; i < this.bullets.size(); i++) {
                         Bullet bullet = this.bullets.get(i);
-                        if (bullet.isHited) this.bullets.remove(i);
+                        if (!bullet.isExist()) this.bullets.remove(i);
                     }
 
                     for (int j = 0; j < this.enemies.size(); j++) {
                         Enemy enemy = this.enemies.get(j);
-                        if (!enemy.isAlive) this.enemies.remove(j);
+                        if (!enemy.isExist()) this.enemies.remove(j);
                     }
 
                     BulletHitScanner.scan(this.bullets, this.enemies, sceneTemp.getFrequency(), map);
                 }
         );
         renderTemp = new LowIntensiveClock(
-                50,
+                70,
                 () -> screen.render(
                         pixels,
                         this.mainPlayer,
