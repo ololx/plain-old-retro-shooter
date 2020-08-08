@@ -242,27 +242,24 @@ public class Screen {
             if (!isVisible || !unit.isExist()) continue;
 
             double angles = angleStep * (angleToUnitLeft);
-            double rayLength = Math.hypot(
-                    Math.abs(playerCamera.getPosition().getX() - unitPos.getX()),
-                    Math.abs(playerCamera.getPosition().getY() - unitPos.getY())
-            );
+            double rayLength = unit.getDistanceToCurrentObject();
 
-            int enemyHeight = (rayLength == 0) ? sprite.getHeight() : (int) ((int) (sprite.getHeight() / (rayLength)));
-            if (enemyHeight > sprite.getHeight()) enemyHeight = sprite.getHeight();
+            int unitHeight = (rayLength == 0) ? sprite.getHeight() : (int) ((int) (sprite.getHeight() / (rayLength)));
+            if (unitHeight > sprite.getHeight()) unitHeight = sprite.getHeight();
 
-            int enemyWidth = (rayLength == 0) ? sprite.getWidth() : (int) ((int) (sprite.getWidth() / (rayLength)));
-            if (enemyWidth > sprite.getWidth()) enemyWidth = sprite.getWidth();
+            int unitWidth = (rayLength == 0) ? sprite.getWidth() : (int) ((int) (sprite.getWidth() / (rayLength)));
+            if (unitWidth > sprite.getWidth()) unitWidth = sprite.getWidth();
 
-            int drawYStart = (int) (-enemyHeight / 2 + height / 2);
+            int drawYStart = (int) (-unitHeight / 2 + height / 2);
             if (drawYStart < 0) drawYStart = 0;
 
-            int drawYEnd = (int) (enemyHeight / 2 + height / 2);
+            int drawYEnd = (int) (unitHeight / 2 + height / 2);
             if (drawYEnd >= height) drawYEnd = height;
 
-            double imgPixYSize = 1.0 * sprite.getHeight() / enemyHeight;
-            int drawXStart = (int)angles - (enemyWidth / 2);
-            int drawXEnd = (int) drawXStart + (enemyWidth);
-            double imgPixXSize = 1.0 * sprite.getWidth() / enemyWidth;
+            double imgPixYSize = 1.0 * sprite.getHeight() / unitHeight;
+            int drawXStart = (int)angles - (unitWidth / 2);
+            int drawXEnd = (int) drawXStart + (unitWidth);
+            double imgPixXSize = 1.0 * sprite.getWidth() / unitWidth;
 
             int texXOffset = 0;
             if (drawXStart < 0) {
