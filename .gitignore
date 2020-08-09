@@ -1,20 +1,26 @@
-# compiled class files
-*.class
-target/*
+# Package Files
+*.jaк
+
+# Builds
 out/*
+*.class
 
-# package files
-*.jar
+#Log Files
+*.log
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# Virtual machine crash logs
 hs_err_pid*
 
-# intelliJ IDEA files
+# Builds
+target/*
+*.class
+
+# IntelliJ IDEA Files
 .idea/*
 *.iml
 
-# all hidden files
+# All Hidden
 .*
 
-#exclude
+# Exclusions FIiles
 !.gitignore

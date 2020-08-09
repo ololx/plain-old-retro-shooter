@@ -234,7 +234,7 @@ public class Screen {
             Vector2d unitPos = unit.getPosition();
             Vector2d rayToUnit = unitPos.subtract(playerCamera.getPosition());
             double angleToUnitLeft = playerCamera.getDirection()
-                    .rotate(angle)
+                    .rotate(playerCamera.getRotationMatrix(angle))
                     .getAngle(rayToUnit);
             double angleToUnitCenter = playerCamera.getDirection().getAngle(rayToUnit);
             boolean isVisible = angleToUnitCenter <= angle && angleToUnitLeft  <= angle * 2 ? true : false;

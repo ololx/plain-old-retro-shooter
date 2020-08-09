@@ -32,9 +32,9 @@ import java.util.List;
  */
 public class Scene extends JFrame {
 
-    public static final int SCENE_WIDTH = 1280;
+    public static final int SCENE_WIDTH = 1024;
 
-    public static final int SCENE_HEIGHT = 720;
+    public static final int SCENE_HEIGHT = 600;
 
     private Clock sceneTemp;
 
@@ -196,7 +196,7 @@ public class Scene extends JFrame {
                 }
         );
         renderTemp = new LowIntensiveClock(
-                70,
+                100,
                 () -> screen.render(
                         pixels,
                         this.mainPlayer,
