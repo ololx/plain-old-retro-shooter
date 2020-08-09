@@ -1,7 +1,6 @@
 package org.plain.old.retro.shooter.engine;
 
 import org.plain.old.retro.shooter.engine.clock.Clock;
-import org.plain.old.retro.shooter.engine.clock.HighIntensiveClock;
 import org.plain.old.retro.shooter.engine.clock.LowIntensiveClock;
 import org.plain.old.retro.shooter.engine.graphics.Camera;
 import org.plain.old.retro.shooter.engine.graphics.Screen;
@@ -18,8 +17,10 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.util.*;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  * The type Game.
