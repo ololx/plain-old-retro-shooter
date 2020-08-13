@@ -21,7 +21,9 @@ public class GeneralPlayer {
 
     private Vector2d movementVector;
 
-    private RotationMatrix2d rotationMatrix;
+    private RotationMatrix2d leftRotationMatrix;
+
+    private RotationMatrix2d rightRotationMatrix;
 
     public GeneralPlayer(double x, double y, double x2, double y2) {
         this(x, y, x2, y2, MOVE_SPEED, ROTATION_SPEED);
@@ -31,7 +33,8 @@ public class GeneralPlayer {
         this.position = new Vector2d(x, y);
         this.direction = new Vector2d(x2, y2);
         this.movementVector = new Vector2d(moveStep, moveStep);
-        this.rotationMatrix = new RotationMatrix2d(rotationStep);
+        this.leftRotationMatrix = new RotationMatrix2d(rotationStep);
+        this.rightRotationMatrix = new RotationMatrix2d(-rotationStep);
     }
 
     public void moveForward(int[][] space) {
@@ -51,11 +54,11 @@ public class GeneralPlayer {
     }
 
     public void moveLeft() {
-        direction = direction.rotate(ROTATION_SPEED);
+        direction = direction.rotate(this.leftRotationMatrix);
     }
 
     public void moveRight() {
-        direction = direction.rotate(-ROTATION_SPEED);
+        direction = direction.rotate(this.rightRotationMatrix);
     }
 
     public Vector2d getPosition() {

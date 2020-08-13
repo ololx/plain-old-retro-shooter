@@ -43,10 +43,10 @@ public class Screen {
         Vector2d rayDirLeft = playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(angle));
         Vector2d rayDirRight = playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(-angle));
 
-        int drawStart = this.height / 2;
+        int drawStart = ((this.height) >> 1);
         int drawEnd = this.height;
         for (int y = drawStart; y < drawEnd; y++) {
-            int p = y - this.height / 2;
+            int p = y - ((this.height) >> 1);
             double posZ = 0.5 * this.height;
             double rowDistance = posZ / p;
             double floorStepX = rowDistance * (rayDirRight.getX() - rayDirLeft.getX()) / this.width;
@@ -77,10 +77,10 @@ public class Screen {
         Vector2d rayDirLeft = playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(angle));
         Vector2d rayDirRight = playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(-angle));
         int drawStart = 0;
-        int drawEnd = this.height / 2;
+        int drawEnd = ((this.height) >> 1);
 
         for (int y = drawStart; y < drawEnd; y++) {
-            int p = this.height / 2 - y;
+            int p = ((this.height) >> 1) - y;
             double posZ = 0.5 * this.height;
             double rowDistance = posZ / p;
             double ceilingStepX = rowDistance * (rayDirRight.getX() - rayDirLeft.getX()) / this.width;
@@ -128,10 +128,10 @@ public class Screen {
             double rayLength = Math.hypot(rayPos.getX() - playerCamera.getPosition().getX(), rayPos.getY() - playerCamera.getPosition().getY());
             int wallHeight = (rayLength == 0) ? height : (int) ((int) (height / (rayLength * Math.cos(angle))));
 
-            int drawStart = (int) (-wallHeight / 2 + height / 2);
+            int drawStart = (int) (-wallHeight / 2 + (height >> 1));
             if (drawStart < 0) drawStart = 0;
 
-            int drawEnd = (int) (wallHeight / 2 + height / 2);
+            int drawEnd = (int) (wallHeight / 2 + (height >> 1));
             if (drawEnd >= height) drawEnd = height;
 
             int texNum = map[(int) rayPos.getX()][(int) rayPos.getY()] - 1;
@@ -151,7 +151,7 @@ public class Screen {
             if (horizontal && rayDir.getY() < 0) texX = (textures.get(texNum).getWidth()) - texX - 1;
 
             double imgPixYSize = 1.0 * textures.get(texNum).getHeight() / wallHeight;
-            int imgPixYStart = height >= wallHeight ? 0 : (int) (((wallHeight / 2) - (height / 2)) * imgPixYSize);
+            int imgPixYStart = height >= wallHeight ? 0 : (int) (((wallHeight / 2) - (height >> 1)) * imgPixYSize);
 
             for (int y = drawStart; y < drawEnd; y++) {
                 int texY = imgPixYStart + (int)(((y - drawStart) * imgPixYSize));
@@ -167,11 +167,11 @@ public class Screen {
 
     public int[] renderGun(int[] pixels, Sprite gun) {
 
-        int gunWidth = (width / 4);
-        int drawXStart = (width / 2) - gunWidth / 2;
+        int gunWidth = (width >> 2);
+        int drawXStart = (width >> 1) - (gunWidth >> 1);
         int drawXEnd = drawXStart + gunWidth;
 
-        int gunHeight = (height / 2);
+        int gunHeight = (height >> 1);
         int drawYStart = (height - gunHeight);
         int drawYEnd = drawYStart + gunHeight;
 
@@ -188,26 +188,26 @@ public class Screen {
             }
         }
 
-        int aimXStart = (width / 2) - (width / 100);
-        int aimXEnd = (width / 2) + (width / 100);
-        int aimXEmptyStart = (width / 2) - (width / 300);
-        int aimXEmptyEnd = (width / 2) + (width / 300);
+        int aimXStart = (width >> 1) - ((width / 25) >> 2);
+        int aimXEnd = (width >> 1) + ((width / 25) >> 2);
+        int aimXEmptyStart = (width >> 1) - ((width / 75) >> 2);
+        int aimXEmptyEnd = (width >> 1) + ((width / 75) >> 2);
 
         for (int x = aimXStart; x <= aimXEnd; x++) {
-            for (int y = (height / 2) - 2; y <= (height / 2) + 2; y++) {
+            for (int y = (height >> 1) - 2; y <= (height >> 1) + 2; y++) {
                 if (x <= aimXEmptyEnd && x >= aimXEmptyStart) continue;
 
                 pixels[x + y * width] = Color.yellow.getRGB();
             }
         }
 
-        int aimYStart = (height / 2) - ((aimXEnd - aimXStart) / 2);
+        int aimYStart = (height >> 1) - ((aimXEnd - aimXStart) / 2);
         int aimYEnd = aimYStart + (aimXEnd - aimXStart);
-        int aimYEmptyStart = (height / 2) - (width / 300);
-        int aimYEmptyEnd = (height / 2) + (width / 300);
+        int aimYEmptyStart = (height >> 1) - ((width / 75) >> 2);
+        int aimYEmptyEnd = (height >> 1) + ((width / 75) >> 2);
 
         for (int y = aimYStart; y <= aimYEnd; y++) {
-            for (int x = (width / 2) - 2; x <= (width / 2) + 2; x++) {
+            for (int x = (width >> 1) - 2; x <= (width >> 1) + 2; x++) {
                 if (y <= aimYEmptyEnd && y >= aimYEmptyStart) continue;
 
                 pixels[x + y * width] = Color.yellow.getRGB();
@@ -234,7 +234,7 @@ public class Screen {
             Vector2d unitPos = unit.getPosition();
             Vector2d rayToUnit = unitPos.subtract(playerCamera.getPosition());
             double angleToUnitLeft = playerCamera.getDirection()
-                    .rotate(playerCamera.getRotationMatrix(angle))
+                    .rotate(playerCamera.getRotationMatrix(0))
                     .getAngle(rayToUnit);
             double angleToUnitCenter = playerCamera.getDirection().getAngle(rayToUnit);
             boolean isVisible = angleToUnitCenter <= angle && angleToUnitLeft  <= angle * 2 ? true : false;
@@ -250,10 +250,10 @@ public class Screen {
             int unitWidth = (rayLength == 0) ? sprite.getWidth() : (int) ((int) (sprite.getWidth() / (rayLength)));
             if (unitWidth > sprite.getWidth()) unitWidth = sprite.getWidth();
 
-            int drawYStart = (int) (-unitHeight / 2 + height / 2);
+            int drawYStart = (int) (-unitHeight / 2 + (height >> 1));
             if (drawYStart < 0) drawYStart = 0;
 
-            int drawYEnd = (int) (unitHeight / 2 + height / 2);
+            int drawYEnd = (int) (unitHeight / 2 + (height >> 1));
             if (drawYEnd >= height) drawYEnd = height;
 
             double imgPixYSize = 1.0 * sprite.getHeight() / unitHeight;

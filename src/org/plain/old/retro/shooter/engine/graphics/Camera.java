@@ -46,6 +46,8 @@ public class Camera extends GeneralPlayer {
 
     private final Map<Integer, RotationMatrix2d> rotationsByPixels = new HashMap<>();
 
+    private final RotationMatrix2d[] rotations;
+
     private final CameraPlane plain;
 
     private final double angle;
@@ -55,6 +57,8 @@ public class Camera extends GeneralPlayer {
         this.plain = new CameraPlane(width, height);
         this.angle = angle;
 
+        rotations = new RotationMatrix2d[plain.getWidth()];
+
         double angleStep = angle / plain.getWidth();
         double angleStart = angle / 2;
 
@@ -63,16 +67,15 @@ public class Camera extends GeneralPlayer {
 
         for (int i = 0; i < plain.getWidth(); i++) {
             RotationMatrix2d rotationMatrix = new RotationMatrix2d(angleStart);
+            this.rotations[i] = rotationMatrix;
             this.rotationsByAngles.put(angleStart, rotationMatrix);
             this.rotationsByPixels.put(i, rotationMatrix);
             angleStart -= angleStep;
         }
     }
 
-    public RotationMatrix2d getRotationMatrix(int pixel) {
-        if (!this.rotationsByPixels.containsKey(pixel)) return new RotationMatrix2d(0);
-
-        return this.rotationsByPixels.get(pixel);
+    public RotationMatrix2d getRotationMatrix(int index) {
+        return this.rotations[index < this.plain.getWidth() ? index : this.plain.getWidth() - 1];
     }
 
     public RotationMatrix2d getRotationMatrix(double angle) {
