@@ -7,9 +7,11 @@ import org.plain.old.retro.shooter.engine.graphics.Screen;
 import org.plain.old.retro.shooter.engine.graphics.Sprite;
 import org.plain.old.retro.shooter.engine.listener.KeyboardController;
 import org.plain.old.retro.shooter.engine.physics.BulletHitScanner;
-import org.plain.old.retro.shooter.unit.Enemy;
-import org.plain.old.retro.shooter.unit.equipment.bullet.Bullet;
-import org.plain.old.retro.shooter.unit.equipment.weapon.BoomStick;
+import org.plain.old.retro.shooter.engine.unit.Enemy;
+import org.plain.old.retro.shooter.engine.unit.Player;
+import org.plain.old.retro.shooter.engine.unit.equipment.bullet.Bullet;
+import org.plain.old.retro.shooter.engine.unit.equipment.weapon.BoomStick;
+import org.plain.old.retro.shooter.multi.DedicatedClient;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,6 +43,8 @@ public class Scene extends JFrame {
 
     private Clock renderTemp;
 
+    private Clock serverTemp;
+
     private Camera mainPlayer;
 
     private BufferedImage image;
@@ -53,11 +57,17 @@ public class Scene extends JFrame {
 
     private Vector<Bullet> bullets = new Vector<>();
 
+    private Vector<Player> players = new Vector<>();
+
+    DedicatedClient client;
+
     //TODO: Refactor It when main entities will be completed - it's just for tests
     /**
      * Instantiates a new Game.
+     * @param client
      */
-    public Scene() {
+    public Scene(DedicatedClient client) {
+        this.client = client;
         Space2d map = new Space2d(
                 new int[][]{
                         {1,1,1,1,1,1,1,1,2,2,2,2,2,2,2},
@@ -115,6 +125,9 @@ public class Scene extends JFrame {
             add(new Enemy(14.5, 19.5, new Sprite("src/resources/enemy-3.png")));
             add(new Enemy(12.5, 10.5, new Sprite("src/resources/enemy-3.png")));
         }};
+        this.players = new Vector<>(){{
+            add(new Player(1, 1, new Sprite("src/resources/player.png")));
+        }};
         mainPlayer = new Camera(1, 2, 1, 0, SCENE_WIDTH, SCENE_HEIGHT, 1.20);
         image = new BufferedImage(SCENE_WIDTH, SCENE_HEIGHT, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
@@ -140,6 +153,7 @@ public class Scene extends JFrame {
         setBackground(Color.black);
         setLocationRelativeTo(null);
         setVisible(true);
+
         this.sceneTemp = new LowIntensiveClock(
                 30,
                 () -> {
@@ -197,19 +211,40 @@ public class Scene extends JFrame {
                 }
         );
         renderTemp = new LowIntensiveClock(
-                100,
+                60,
                 () -> screen.render(
                         pixels,
                         this.mainPlayer,
                         this.stick,
                         this.enemies,
-                        this.bullets
+                        this.bullets,
+                        this.players
                 ),
-                () -> this.render(map, String.format(
-                        "UPS: %s \n FPS: %s",
-                        sceneTemp.getFrequency(),
-                        renderTemp.getFrequency())
+                () -> this.render(
+                        map, String.format(
+                                "UPS: %s \n FPS: %s \n NETPS: %s",
+                                sceneTemp.getFrequency(),
+                                renderTemp.getFrequency(),
+                                serverTemp.getFrequency()
+                                )
                 )
+        );
+
+        serverTemp = new LowIntensiveClock(
+                renderTemp.getFrequency() << 1,
+                () -> {
+                    this.client.connect();
+                    String requestMessage = mainPlayer.getMessage();
+                    String responseMessage = this.client.sendMessage(requestMessage);
+                    String[] coords = null;
+                    if (responseMessage != null && (coords = responseMessage.split("&")).length > 1) {
+                        this.players.get(0).setPosition(
+                                Double.valueOf(coords[0]),
+                                Double.valueOf(coords[1])
+                        );
+                    }
+                    this.client.disconnect();
+                }
         );
     }
 
@@ -240,6 +275,7 @@ public class Scene extends JFrame {
                 );
         this.renderTemp.start();
         this.sceneTemp.start();
+        this.serverTemp.start();
     }
 
     public void render(Space2d map, String rateInfo) {

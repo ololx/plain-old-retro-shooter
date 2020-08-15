@@ -1,10 +1,11 @@
 package org.plain.old.retro.shooter.engine.graphics;
 
 import org.plain.old.retro.shooter.engine.linear.Vector2d;
-import org.plain.old.retro.shooter.unit.Enemy;
-import org.plain.old.retro.shooter.unit.Unit;
-import org.plain.old.retro.shooter.unit.equipment.bullet.Bullet;
-import org.plain.old.retro.shooter.unit.equipment.weapon.BoomStick;
+import org.plain.old.retro.shooter.engine.unit.Enemy;
+import org.plain.old.retro.shooter.engine.unit.Player;
+import org.plain.old.retro.shooter.engine.unit.Unit;
+import org.plain.old.retro.shooter.engine.unit.equipment.bullet.Bullet;
+import org.plain.old.retro.shooter.engine.unit.equipment.weapon.BoomStick;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -12,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @project plain-old-retro-shooter
@@ -123,12 +123,18 @@ public class Screen {
 
             }
 
-            angle -= angleStep;
+
 
             double rayLength = Math.hypot(rayPos.getX() - playerCamera.getPosition().getX(), rayPos.getY() - playerCamera.getPosition().getY());
             int wallHeight = (rayLength == 0) ? height : (int) ((int) (height / (rayLength * Math.cos(angle))));
 
+<<<<<<< HEAD
             int drawStart = (int) (-wallHeight / 2 + (height >> 1));
+=======
+            angle -= angleStep;
+
+            int drawStart = (int) (-wallHeight / 2 + height / 2);
+>>>>>>> feature_multiplayer_init
             if (drawStart < 0) drawStart = 0;
 
             int drawEnd = (int) (wallHeight / 2 + (height >> 1));
@@ -142,9 +148,9 @@ public class Screen {
             double intersectionY = playerCamera.getPosition().getY() < rayPos.getY()
                     ? Math.abs(rayPos.getY() - (int) rayPos.getY())
                     : 1 - Math.abs(rayPos.getY() - (int) rayPos.getY());
-            boolean horizontal = intersectionX < intersectionY ? true : false;
+            boolean horizontal = intersectionX <= intersectionY ? true : false;
 
-            double wallX = horizontal ? intersectionY  : intersectionX;
+            double wallX = horizontal ? intersectionY : intersectionX;
             wallX -= Math.floor(wallX);
             int texX = (int)(wallX * (textures.get(texNum).getWidth()));
             if (!horizontal && rayDir.getX() > 0) texX = (textures.get(texNum).getWidth()) - texX - 1;
@@ -286,10 +292,12 @@ public class Screen {
                         Camera playerCamera,
                         BoomStick gun,
                         Vector<Enemy> enemies,
-                        Vector<Bullet> bullets) {
+                        Vector<Bullet> bullets,
+                        Vector<Player> players) {
         Vector<Unit> units = new Vector<>();
         units.addAll(enemies);
         units.addAll(bullets);
+        units.addAll(players);
 
         pixels = this.renderFloor(pixels, playerCamera);
         pixels = this.renderCeiling(pixels, playerCamera);

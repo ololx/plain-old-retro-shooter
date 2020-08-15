@@ -1,4 +1,4 @@
-package org.plain.old.retro.shooter.unit;
+package org.plain.old.retro.shooter.engine.unit;
 
 import org.plain.old.retro.shooter.engine.linear.RotationMatrix2d;
 import org.plain.old.retro.shooter.engine.linear.Vector2d;
@@ -84,5 +84,9 @@ public class GeneralPlayer {
     @Override
     public String toString() {
         return "POS: " + this.position.toString() + " DIR: " + direction.toString();
+    }
+
+    public String getMessage() {
+        return this.position.getX() + "&" + this.position.getY();
     }
 }

@@ -1,7 +1,7 @@
 package org.plain.old.retro.shooter.engine.graphics;
 
 import org.plain.old.retro.shooter.engine.linear.RotationMatrix2d;
-import org.plain.old.retro.shooter.unit.GeneralPlayer;
+import org.plain.old.retro.shooter.engine.unit.GeneralPlayer;
 
 import java.util.HashMap;
 import java.util.Map;
