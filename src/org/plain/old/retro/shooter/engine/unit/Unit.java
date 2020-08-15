@@ -1,4 +1,4 @@
-package org.plain.old.retro.shooter.unit;
+package org.plain.old.retro.shooter.engine.unit;
 
 import org.plain.old.retro.shooter.engine.graphics.Sprite;
 import org.plain.old.retro.shooter.engine.linear.Vector2d;

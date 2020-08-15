@@ -2,7 +2,7 @@
 
 The Plain Old Retro Shooter is a 2.5D FPS game engine based on the raycasting technology.
 
-[![status](https://img.shields.io/badge/status-active-active?style=flat-square)](BADGES_GUIDE.md#status) [![version](https://img.shields.io/badge/version-0.1.0--alpha-informational?style=flat-square)](BADGES_GUIDE.md#version) [![stable](https://img.shields.io/badge/stable-no-important?style=flat-square)](BADGES_GUIDE.md#stable) [![build](https://img.shields.io/badge/build-passing-success?style=flat-square)](BADGES_GUIDE.md#build) [![oss lifecycle](https://img.shields.io/badge/oss_lifecycle-active-important?style=flat-square)](BADGES_GUIDE.md#oss-lifecycle) [![maintenance](https://img.shields.io/badge/maintenance-yes-informational?style=flat-square)](BADGES_GUIDE.md#maintenance) [![latest release date](https://img.shields.io/badge/latest_release_date-August_09,_2020-informational?style=flat-square)](BADGES_GUIDE.md#release-date) [![last commit](https://img.shields.io/badge/last_commit-August_09,_2020-informational?style=flat-square)](BADGES_GUIDE.md#commit-date)
+[![status](https://img.shields.io/badge/status-active-active?style=flat-square)](BADGES_GUIDE.md#status) [![version](https://img.shields.io/badge/version-0.1.0--alpha.2-informational?style=flat-square)](BADGES_GUIDE.md#version) [![stable](https://img.shields.io/badge/stable-no-important?style=flat-square)](BADGES_GUIDE.md#stable) [![build](https://img.shields.io/badge/build-passing-success?style=flat-square)](BADGES_GUIDE.md#build) [![oss lifecycle](https://img.shields.io/badge/oss_lifecycle-active-important?style=flat-square)](BADGES_GUIDE.md#oss-lifecycle) [![maintenance](https://img.shields.io/badge/maintenance-yes-informational?style=flat-square)](BADGES_GUIDE.md#maintenance) [![latest release date](https://img.shields.io/badge/latest_release_date-August_15,_2020-informational?style=flat-square)](BADGES_GUIDE.md#release-date) [![last commit](https://img.shields.io/badge/last_commit-August_15,_2020-informational?style=flat-square)](BADGES_GUIDE.md#commit-date)
 
 [![license](https://img.shields.io/badge/license-MIT-informational?style=flat-square)](LICENSE) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
@@ -33,11 +33,15 @@ Game engines are far ahead. However, the good old tube shooters in pseudo-3D are
 
 The demonstration shows the one small scene with enemies, shooting and player moving in 1024x600 render resolution on a 5k resolution of monitor (58-76 fps).
 
-<img src="https://github.com/ololx/plain-old-retro-shooter/blob/assets/plain-old-retro-shooter-demo-1.gif?raw=true" width="1280"/>
+<img src="https://github.com/ololx/plain-old-retro-shooter/blob/assets/plain-old-retro-shooter-demo-1.gif?raw=true" width="640"/>
+
+The demonstration shows the multiplayer scene with  2 players.
+
+<img src="https://github.com/ololx/plain-old-retro-shooter/blob/assets/plain-old-retro-shooter-demo-2.gif?raw=true" width="640"/>
 
 ## 🎚 Features
 
-- The MVP of a simple 2.5D fps engine based on raycasting algorithm.  
+- The MVP of a simple 2.5D fps engine based on raycasting algorithm;
 
 ### To Do
 
@@ -59,7 +63,7 @@ Before using it, make sure that follows software are installed on the local mach
 
 If any of the listed software is not installed, then it can be installed by instruction as described below.
 
-1. #### Oracle JDK 8+
+1. #### Oracle JDK 9+
 
    - Install Oracle JDK 9+ according to instructions from an [official](https://www.oracle.com/java/technologies/javase-downloads.html) instruction.
 

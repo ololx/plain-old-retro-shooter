@@ -10,6 +10,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Refactor old project classes via game dev patterns implemetation.
 
+## [0.1.0-alpha.2] - 2020-08-15
+
+### Added
+
+- The dedicated server and client based on dockets for multiplayer matches in features.
+
 ## [0.1.0-alpha] - 2020-08-09
 
 ### Added

@@ -1,4 +1,4 @@
-package org.plain.old.retro.shooter.unit;
+package org.plain.old.retro.shooter.engine.unit;
 
 import org.plain.old.retro.shooter.engine.graphics.Sprite;
 import org.plain.old.retro.shooter.engine.linear.Vector2d;
@@ -58,5 +58,9 @@ public class AbstractUnit implements Unit {
 
     public double getDistanceToCurrentObject() {
         return this.distanceToObject;
+    }
+
+    public void setPosition(double x, double y) {
+        this.position = new Vector2d(x, y);
     }
 }
