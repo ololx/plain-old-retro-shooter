@@ -128,13 +128,7 @@ public class Screen {
             double rayLength = Math.hypot(rayPos.getX() - playerCamera.getPosition().getX(), rayPos.getY() - playerCamera.getPosition().getY());
             int wallHeight = (rayLength == 0) ? height : (int) ((int) (height / (rayLength * Math.cos(angle))));
 
-<<<<<<< HEAD
             int drawStart = (int) (-wallHeight / 2 + (height >> 1));
-=======
-            angle -= angleStep;
-
-            int drawStart = (int) (-wallHeight / 2 + height / 2);
->>>>>>> feature_multiplayer_init
             if (drawStart < 0) drawStart = 0;
 
             int drawEnd = (int) (wallHeight / 2 + (height >> 1));
