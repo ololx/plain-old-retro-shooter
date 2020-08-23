@@ -118,7 +118,8 @@ public class Screen {
             while (!hit) {
                 rayPos = rayPos.add(rayDir.multiply(steps));
 
-                if (map[(int) rayPos.getX()][(int) rayPos.getY()] != 0) hit = true;
+                if ((int) rayPos.getX() < map.length || (int) rayPos.getY() < map.length) hit = true;
+                else if (map[(int) rayPos.getX()][(int) rayPos.getY()] != 0) hit = true;
 
             }
 

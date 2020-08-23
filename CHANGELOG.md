@@ -10,6 +10,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Refactor old project classes via game dev patterns implemetation.
 
+## [0.1.1-alpha.2] - 2020-08-23
+
+### Fixed
+
+- The fish eye effect during the walls render.
+
 ## [0.1.0-alpha.2] - 2020-08-15
 
 ### Added
