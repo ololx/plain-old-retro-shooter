@@ -1,7 +1,7 @@
 package org.plain.old.retro.shooter.engine.unit;
 
-import org.plain.old.retro.shooter.engine.linear.RotationMatrix2d;
-import org.plain.old.retro.shooter.engine.linear.Vector2d;
+import org.plain.old.retro.shooter.calculus.linear.RotationMatrix2d;
+import org.plain.old.retro.shooter.calculus.linear.Vector2d;
 
 /**
  * @project plain-old-retro-shooter

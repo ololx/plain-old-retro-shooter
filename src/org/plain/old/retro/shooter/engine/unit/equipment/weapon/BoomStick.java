@@ -1,7 +1,7 @@
 package org.plain.old.retro.shooter.engine.unit.equipment.weapon;
 
 import org.plain.old.retro.shooter.engine.graphics.Sprite;
-import org.plain.old.retro.shooter.engine.linear.Vector2d;
+import org.plain.old.retro.shooter.calculus.linear.Vector2d;
 import org.plain.old.retro.shooter.engine.unit.equipment.bullet.Bullet;
 import org.plain.old.retro.shooter.engine.unit.equipment.bullet.BulletFactory;
 

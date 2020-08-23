@@ -1,7 +1,7 @@
 package org.plain.old.retro.shooter.engine.graphics;
 
-import org.plain.old.retro.shooter.engine.linear.Matrix2d;
-import org.plain.old.retro.shooter.engine.linear.Vector2d;
+import org.plain.old.retro.shooter.calculus.linear.Matrix2d;
+import org.plain.old.retro.shooter.calculus.linear.Vector2d;
 import org.plain.old.retro.shooter.engine.unit.Enemy;
 import org.plain.old.retro.shooter.engine.unit.Player;
 import org.plain.old.retro.shooter.engine.unit.Unit;
@@ -125,10 +125,10 @@ public class Screen {
             double rayLength = Math.hypot(rayPos.getX() - playerCamera.getPosition().getX(), rayPos.getY() - playerCamera.getPosition().getY());
             int wallHeight = (rayLength == 0) ? height : (int) ((int) (height / (rayLength * rayRot.getX1())));
 
-            int drawStart = (int) (-wallHeight / 2 + (height >> 1));
+            int drawStart = (int) (-(wallHeight >> 1) + (height >> 1));
             if (drawStart < 0) drawStart = 0;
 
-            int drawEnd = (int) (wallHeight / 2 + (height >> 1));
+            int drawEnd = (int) ((wallHeight >> 1) + (height >> 1));
             if (drawEnd >= height) drawEnd = height;
 
             int texNum = map[(int) rayPos.getX()][(int) rayPos.getY()] - 1;
@@ -148,7 +148,7 @@ public class Screen {
             if (horizontal && rayDir.getY() < 0) texX = (textures.get(texNum).getWidth()) - texX - 1;
 
             double imgPixYSize = 1.0 * textures.get(texNum).getHeight() / wallHeight;
-            int imgPixYStart = height >= wallHeight ? 0 : (int) (((wallHeight / 2) - (height >> 1)) * imgPixYSize);
+            int imgPixYStart = height >= wallHeight ? 0 : (int) ((((wallHeight >> 1)) - (height >> 1)) * imgPixYSize);
 
             for (int y = drawStart; y < drawEnd; y++) {
                 int texY = imgPixYStart + (int)(((y - drawStart) * imgPixYSize));
