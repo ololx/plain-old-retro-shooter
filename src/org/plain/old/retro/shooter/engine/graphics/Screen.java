@@ -1,5 +1,6 @@
 package org.plain.old.retro.shooter.engine.graphics;
 
+import org.plain.old.retro.shooter.engine.linear.Matrix2d;
 import org.plain.old.retro.shooter.engine.linear.Vector2d;
 import org.plain.old.retro.shooter.engine.unit.Enemy;
 import org.plain.old.retro.shooter.engine.unit.Player;
@@ -107,11 +108,9 @@ public class Screen {
     }
 
     public int[] renderWall(int[] pixels, Camera playerCamera) {
-        double angleStep = playerCamera.getAngle() / playerCamera.getPlain().getWidth();
-        double angle = playerCamera.getAngle() / 2;
-
         for (int x = 0; x < width; x++) {
-            Vector2d rayDir = playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(x));
+            Matrix2d rayRot = playerCamera.getRotationMatrix(x);
+            Vector2d rayDir = playerCamera.getDirection().rotate(rayRot);
             Vector2d rayPos = playerCamera.getPosition().clone();
 
             boolean hit = false;
@@ -123,10 +122,8 @@ public class Screen {
 
             }
 
-
-
             double rayLength = Math.hypot(rayPos.getX() - playerCamera.getPosition().getX(), rayPos.getY() - playerCamera.getPosition().getY());
-            int wallHeight = (rayLength == 0) ? height : (int) ((int) (height / (rayLength * Math.cos(angle))));
+            int wallHeight = (rayLength == 0) ? height : (int) ((int) (height / (rayLength * rayRot.getX1())));
 
             int drawStart = (int) (-wallHeight / 2 + (height >> 1));
             if (drawStart < 0) drawStart = 0;
