@@ -1,6 +1,7 @@
 package org.plain.old.retro.shooter.engine.graphics;
 
-import org.plain.old.retro.shooter.engine.linear.Vector2d;
+import org.plain.old.retro.shooter.calculus.linear.Matrix2d;
+import org.plain.old.retro.shooter.calculus.linear.Vector2d;
 import org.plain.old.retro.shooter.engine.unit.Enemy;
 import org.plain.old.retro.shooter.engine.unit.Player;
 import org.plain.old.retro.shooter.engine.unit.Unit;
@@ -107,11 +108,9 @@ public class Screen {
     }
 
     public int[] renderWall(int[] pixels, Camera playerCamera) {
-        double angleStep = playerCamera.getAngle() / playerCamera.getPlain().getWidth();
-        double angle = playerCamera.getAngle() / 2;
-
         for (int x = 0; x < width; x++) {
-            Vector2d rayDir = playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(x));
+            Matrix2d rayRot = playerCamera.getRotationMatrix(x);
+            Vector2d rayDir = playerCamera.getDirection().rotate(rayRot);
             Vector2d rayPos = playerCamera.getPosition().clone();
 
             boolean hit = false;
@@ -119,19 +118,18 @@ public class Screen {
             while (!hit) {
                 rayPos = rayPos.add(rayDir.multiply(steps));
 
-                if (map[(int) rayPos.getX()][(int) rayPos.getY()] != 0) hit = true;
+                if ((int) rayPos.getX() < map.length || (int) rayPos.getY() < map.length) hit = true;
+                else if (map[(int) rayPos.getX()][(int) rayPos.getY()] != 0) hit = true;
 
             }
 
-
-
             double rayLength = Math.hypot(rayPos.getX() - playerCamera.getPosition().getX(), rayPos.getY() - playerCamera.getPosition().getY());
-            int wallHeight = (rayLength == 0) ? height : (int) ((int) (height / (rayLength * Math.cos(angle))));
+            int wallHeight = (rayLength == 0) ? height : (int) ((int) (height / (rayLength * rayRot.getX1())));
 
-            int drawStart = (int) (-wallHeight / 2 + (height >> 1));
+            int drawStart = (int) (-(wallHeight >> 1) + (height >> 1));
             if (drawStart < 0) drawStart = 0;
 
-            int drawEnd = (int) (wallHeight / 2 + (height >> 1));
+            int drawEnd = (int) ((wallHeight >> 1) + (height >> 1));
             if (drawEnd >= height) drawEnd = height;
 
             int texNum = map[(int) rayPos.getX()][(int) rayPos.getY()] - 1;
@@ -151,7 +149,7 @@ public class Screen {
             if (horizontal && rayDir.getY() < 0) texX = (textures.get(texNum).getWidth()) - texX - 1;
 
             double imgPixYSize = 1.0 * textures.get(texNum).getHeight() / wallHeight;
-            int imgPixYStart = height >= wallHeight ? 0 : (int) (((wallHeight / 2) - (height >> 1)) * imgPixYSize);
+            int imgPixYStart = height >= wallHeight ? 0 : (int) ((((wallHeight >> 1)) - (height >> 1)) * imgPixYSize);
 
             for (int y = drawStart; y < drawEnd; y++) {
                 int texY = imgPixYStart + (int)(((y - drawStart) * imgPixYSize));

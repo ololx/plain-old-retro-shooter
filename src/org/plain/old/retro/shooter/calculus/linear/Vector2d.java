@@ -1,4 +1,4 @@
-package org.plain.old.retro.shooter.engine.linear;
+package org.plain.old.retro.shooter.calculus.linear;
 
 /**
  * The type Vector2d.
@@ -61,10 +61,10 @@ public class Vector2d implements Vector {
 		);
 	}
 
-	public Vector2d rotate(RotationMatrix2d rotatiomMatrix) {
+	public Vector2d rotate(Matrix2d matrix) {
 		return new Vector2d(
-				(this.x * rotatiomMatrix.getX1() + this.y * rotatiomMatrix.getX2()),
-				(this.x * rotatiomMatrix.getY1() + this.y * rotatiomMatrix.getY2())
+				(this.x * matrix.getX1() + this.y * matrix.getX2()),
+				(this.x * matrix.getY1() + this.y * matrix.getY2())
 		);
 	}
 

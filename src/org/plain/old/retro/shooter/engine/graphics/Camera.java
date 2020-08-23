@@ -1,6 +1,7 @@
 package org.plain.old.retro.shooter.engine.graphics;
 
-import org.plain.old.retro.shooter.engine.linear.RotationMatrix2d;
+import org.plain.old.retro.shooter.calculus.SimpleMath;
+import org.plain.old.retro.shooter.calculus.linear.RotationMatrix2d;
 import org.plain.old.retro.shooter.engine.unit.GeneralPlayer;
 
 import java.util.HashMap;
@@ -75,11 +76,12 @@ public class Camera extends GeneralPlayer {
     }
 
     public RotationMatrix2d getRotationMatrix(int index) {
-        return this.rotations[index < this.plain.getWidth() ? index : this.plain.getWidth() - 1];
+        return this.rotations[SimpleMath.min(this.plain.getWidth() - 1, index)];
     }
 
     public RotationMatrix2d getRotationMatrix(double angle) {
-        if (!this.rotationsByAngles.containsKey(angle)) return new RotationMatrix2d(0);
+        RotationMatrix2d matrix = null;
+        if ((this.rotationsByAngles.get(angle)) == null) return new RotationMatrix2d(0);
 
         return this.rotationsByAngles.get(angle);
     }
