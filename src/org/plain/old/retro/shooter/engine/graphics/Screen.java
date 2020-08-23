@@ -1,5 +1,6 @@
 package org.plain.old.retro.shooter.engine.graphics;
 
+import org.plain.old.retro.shooter.calculus.SimpleMath;
 import org.plain.old.retro.shooter.calculus.linear.Matrix2d;
 import org.plain.old.retro.shooter.calculus.linear.Vector2d;
 import org.plain.old.retro.shooter.engine.unit.Enemy;
@@ -116,11 +117,10 @@ public class Screen {
             boolean hit = false;
             double steps = 0.01;
             while (!hit) {
-                rayPos = rayPos.add(rayDir.multiply(steps));
-
-                if ((int) rayPos.getX() < map.length || (int) rayPos.getY() < map.length) hit = true;
+                if ((int) rayPos.getX() > map.length || (int) rayPos.getY() > map[0].length) hit = true;
                 else if (map[(int) rayPos.getX()][(int) rayPos.getY()] != 0) hit = true;
 
+                rayPos = rayPos.add(rayDir.multiply(steps));
             }
 
             double rayLength = Math.hypot(rayPos.getX() - playerCamera.getPosition().getX(), rayPos.getY() - playerCamera.getPosition().getY());
@@ -132,7 +132,7 @@ public class Screen {
             int drawEnd = (int) ((wallHeight >> 1) + (height >> 1));
             if (drawEnd >= height) drawEnd = height;
 
-            int texNum = map[(int) rayPos.getX()][(int) rayPos.getY()] - 1;
+            int texNum = SimpleMath.max(map[(int) rayPos.getX()][(int) rayPos.getY()] - 1, 0);
 
             double intersectionX = playerCamera.getPosition().getX() < rayPos.getX()
                     ? Math.abs(rayPos.getX() - (int) rayPos.getX())
