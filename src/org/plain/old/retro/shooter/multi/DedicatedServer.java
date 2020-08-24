@@ -1,9 +1,8 @@
 package org.plain.old.retro.shooter.multi;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import org.plain.old.retro.shooter.engine.unit.Player;
+
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
@@ -18,15 +17,21 @@ public class DedicatedServer {
 
     static class ServerFlow extends Thread {
 
-        private String requestMessage = null;
+        //private String requestMessage = null;
 
-        private BufferedReader in = null;
+        //private BufferedReader in = null;
 
-        private PrintWriter out = null;
+        //private PrintWriter out = null;
 
         private final Socket producerSocket;
 
         private final Set<Socket> consumerSockets;
+
+        private Object requestMessage = null;
+
+        private ObjectInputStream in = null;
+
+        private ObjectOutputStream out = null;
 
         public ServerFlow(Socket producerSocket, Set<Socket> consumerSockets) {
             Objects.requireNonNull(producerSocket);
@@ -36,10 +41,10 @@ public class DedicatedServer {
         }
 
         public void run() {
-            List<PrintWriter> writers = new ArrayList<>();
+            List<ObjectOutputStream> writers = new ArrayList<>();
 
             try {
-                in = new BufferedReader(new InputStreamReader(producerSocket.getInputStream()));
+                in = new ObjectInputStream(producerSocket.getInputStream());
 
                 synchronized (consumerSockets) {
                     consumerSockets
@@ -47,7 +52,8 @@ public class DedicatedServer {
                             .filter(v -> !v.equals(producerSocket))
                             .forEach(v -> {
                                 try {
-                                    writers.add(new PrintWriter(v.getOutputStream()));
+                                    ObjectOutputStream writer = new ObjectOutputStream(v.getOutputStream());
+                                    writers.add(writer);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -58,21 +64,20 @@ public class DedicatedServer {
             }
 
             try {
-                requestMessage = in.readLine();
-                while (requestMessage.compareTo("") != 1) {
-                    for (PrintWriter sc : writers) {
-                        sc.println(requestMessage);
+                while ((requestMessage = in.readObject()) != null) {
+
+                    for (ObjectOutputStream sc : writers) {
+                        sc.writeObject(requestMessage);
                         sc.flush();
                         sc.close();
                     }
-
-                    requestMessage = in.readLine();
                 }
             } catch (IOException e) {
                 System.err.println("IO Error/ Client " + this.getName() + " terminated abruptly - " + e.getMessage());
             } catch (NullPointerException e) {
-                requestMessage = this.getName(); //reused String line for getting thread name
                 System.err.println("Client " + this.getName() + " is closed - " + e.getMessage());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             } finally {
                 try {
                     System.out.println("Connection closing...");

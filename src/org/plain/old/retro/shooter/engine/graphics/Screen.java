@@ -10,10 +10,8 @@ import org.plain.old.retro.shooter.engine.unit.equipment.bullet.Bullet;
 import org.plain.old.retro.shooter.engine.unit.equipment.weapon.BoomStick;
 
 import java.awt.*;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Vector;
 import java.util.stream.Collectors;
 
 /**
@@ -285,7 +283,7 @@ public class Screen {
                         BoomStick gun,
                         Vector<Enemy> enemies,
                         Vector<Bullet> bullets,
-                        Vector<Player> players) {
+                        Collection<Unit> players) {
         Vector<Unit> units = new Vector<>();
         units.addAll(enemies);
         units.addAll(bullets);

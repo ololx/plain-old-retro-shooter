@@ -4,6 +4,7 @@ import org.plain.old.retro.shooter.calculus.SimpleMath;
 import org.plain.old.retro.shooter.calculus.linear.RotationMatrix2d;
 import org.plain.old.retro.shooter.engine.unit.GeneralPlayer;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +16,7 @@ import java.util.Map;
  */
 public class Camera extends GeneralPlayer {
 
-    public class CameraPlane {
+    public class CameraPlane implements Serializable {
 
         private int width;
 

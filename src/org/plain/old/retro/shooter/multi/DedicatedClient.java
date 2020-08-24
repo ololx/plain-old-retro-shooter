@@ -1,6 +1,8 @@
 package org.plain.old.retro.shooter.multi;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Objects;
@@ -43,24 +45,24 @@ public class DedicatedClient {
         }
     }
 
-    public String sendMessage(Object requestMessage) {
-        PrintWriter out = null;
-        Scanner in = null;
-        String responseMessage = null;
+    public Object sendMessage(Object requestMessage) {
+        ObjectOutputStream out = null;
+        ObjectInputStream in = null;
+        Object responseMessage = null;
 
         try {
-            out = new PrintWriter(socket.getOutputStream(), true);
-            out.println(requestMessage);
-            in = new Scanner(socket.getInputStream());
+            out = new ObjectOutputStream(socket.getOutputStream());
+            out.writeObject(requestMessage);
+            out.flush();
+            in = new ObjectInputStream(socket.getInputStream());
 
-            if (in.hasNextLine()) {
-                responseMessage = in.nextLine().toUpperCase();
-                System.out.println(responseMessage);
+            if ((responseMessage = in.readObject()) != null) {
+                //System.out.println(responseMessage);
             }
 
             in.close();
             out.close();
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 

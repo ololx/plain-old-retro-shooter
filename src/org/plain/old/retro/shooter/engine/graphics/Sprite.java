@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -13,7 +14,7 @@ import java.util.Objects;
  * <p>
  * @author Alexander A. Kropotin
  */
-public class Sprite {
+public class Sprite implements Serializable {
 
     private int[][] pixels;
 
