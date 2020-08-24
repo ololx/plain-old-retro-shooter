@@ -5,6 +5,7 @@ import org.plain.old.retro.shooter.calculus.linear.Vector2d;
 import org.plain.old.retro.shooter.engine.unit.Enemy;
 import org.plain.old.retro.shooter.engine.unit.equipment.bullet.Bullet;
 
+import java.util.Collection;
 import java.util.Vector;
 
 /**

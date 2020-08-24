@@ -1,6 +1,7 @@
 package org.plain.old.retro.shooter.engine;
 
 import org.plain.old.retro.shooter.engine.clock.Clock;
+import org.plain.old.retro.shooter.engine.clock.HighIntensiveClock;
 import org.plain.old.retro.shooter.engine.clock.LowIntensiveClock;
 import org.plain.old.retro.shooter.engine.graphics.Camera;
 import org.plain.old.retro.shooter.engine.graphics.Screen;
@@ -22,6 +23,8 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 /**
  * The type Game.
@@ -181,8 +184,7 @@ public class Scene extends JFrame {
                             }
 
                             if (state.getKey().equals("SHOT")) {
-                                Vector<Bullet> bullet = stick.shoot(mainPlayer.getPosition(), mainPlayer.getDirection());
-                                this.bullets.addAll(bullet);
+                                this.bullets.addAll(stick.shoot(mainPlayer.getPosition(), mainPlayer.getDirection()));
                             }
 
                             if (state.getKey().equals("RELOAD")) {
@@ -194,9 +196,11 @@ public class Scene extends JFrame {
                 () -> {
                     this.stick.update();
 
-                    for (int i = 0; i < this.bullets.size(); i++) {
-                        Bullet bullet = this.bullets.get(i);
-                        if (!bullet.isExist()) this.bullets.remove(i);
+                    synchronized (bullets) {
+                        for (int i = 0; i < this.bullets.size(); i++) {
+                            Bullet bullet = this.bullets.get(i);
+                            if (!bullet.isExist()) this.bullets.remove(i);
+                        }
                     }
 
                     for (int j = 0; j < this.enemies.size(); j++) {
@@ -214,7 +218,7 @@ public class Scene extends JFrame {
                         this.mainPlayer,
                         this.stick,
                         this.enemies,
-                        this.bullets,
+                        (Collection<Bullet>) this.bullets.clone(),
                         this.otherUnits.values()
                 ),
                 () -> this.render(
@@ -228,18 +232,34 @@ public class Scene extends JFrame {
         );
 
         serverTemp = new LowIntensiveClock(
-                renderTemp.getFrequency() << 1,
+                sceneTemp.getFrequency(),
                 () -> {
+
+                    Set<Object> responseMessages = new HashSet<>();
                     this.client.connect();
                     Object requestMessage = mainPlayer;
                     Object responseMessage = this.client.sendMessage(requestMessage);
-
-                    if (responseMessage == null) return;
-                    //synchronized (otherUnits) {
-                        this.otherUnits.put(((RegisterEntity) responseMessage).getUid(), (Unit) responseMessage);
-                    //}
-
                     this.client.disconnect();
+                    if (responseMessage != null) responseMessages.add(responseMessage);
+
+                    Set<Bullet> requestBullets = new HashSet<>();
+                    requestBullets.addAll(this.bullets);
+
+                    for (Bullet bullet : requestBullets) {
+                        this.client.connect();
+                        responseMessage = this.client.sendMessage(bullet);
+                        if (responseMessage != null) responseMessages.add(responseMessage);
+                        this.client.disconnect();
+                    }
+
+                    for (Object unit : responseMessages) {
+                        if (unit instanceof Bullet && !this.bullets.contains(((unit)))) {
+                            this.bullets.add((Bullet) unit);
+                        } else {
+                            this.otherUnits.put(((RegisterEntity) unit).getUid(), (Unit) unit);
+                        }
+                    }
+
                 }
         );
     }

@@ -282,7 +282,7 @@ public class Screen {
                         Camera playerCamera,
                         BoomStick gun,
                         Vector<Enemy> enemies,
-                        Vector<Bullet> bullets,
+                        Collection<Bullet> bullets,
                         Collection<Unit> players) {
         Vector<Unit> units = new Vector<>();
         units.addAll(enemies);

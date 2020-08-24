@@ -57,7 +57,7 @@ public class DedicatedClient {
             in = new ObjectInputStream(socket.getInputStream());
 
             if ((responseMessage = in.readObject()) != null) {
-                //System.out.println(responseMessage);
+                System.out.println(responseMessage);
             }
 
             in.close();
