@@ -4,6 +4,7 @@ import org.plain.old.retro.shooter.engine.graphics.Sprite;
 import org.plain.old.retro.shooter.calculus.linear.Vector2d;
 import org.plain.old.retro.shooter.engine.unit.AbstractUnit;
 import org.plain.old.retro.shooter.engine.unit.RegisterEntity;
+import org.plain.old.retro.shooter.engine.unit.Unit;
 
 import java.util.UUID;
 
@@ -13,13 +14,11 @@ import java.util.UUID;
  * <p>
  * @author Alexander A. Kropotin
  */
-public class Bullet extends AbstractUnit implements RegisterEntity {
+public class Bullet extends AbstractUnit {
 
     public final static double MOVE_SPEED = 30;
 
     public final static double DEFAULT_RADIUS = 0.01;
-
-    private final UUID uid = UUID.randomUUID();
 
     private Vector2d direction;
 
@@ -67,10 +66,5 @@ public class Bullet extends AbstractUnit implements RegisterEntity {
     @Override
     public String toString() {
         return "POS: " + this.position.toString() + " DIR: " + direction.toString();
-    }
-
-    @Override
-    public UUID getUid() {
-        return this.uid;
     }
 }

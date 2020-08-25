@@ -12,13 +12,11 @@ import java.util.UUID;
  * <p>
  * @author Alexander A. Kropotin
  */
-public class GeneralPlayer extends AbstractUnit implements RegisterEntity {
+public class GeneralPlayer extends AbstractUnit {
 
     public static final double MOVE_SPEED = 0.10;
 
     public static final double ROTATION_SPEED = 0.05;
-
-    private final UUID uid = UUID.randomUUID();
 
     //private Vector2d position;
 
@@ -94,10 +92,5 @@ public class GeneralPlayer extends AbstractUnit implements RegisterEntity {
 
     public String getMessage() {
         return this.position.getX() + "&" + this.position.getY();
-    }
-
-    @Override
-    public UUID getUid() {
-        return this.uid;
     }
 }

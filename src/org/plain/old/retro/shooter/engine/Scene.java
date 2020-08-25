@@ -1,7 +1,6 @@
 package org.plain.old.retro.shooter.engine;
 
 import org.plain.old.retro.shooter.engine.clock.Clock;
-import org.plain.old.retro.shooter.engine.clock.HighIntensiveClock;
 import org.plain.old.retro.shooter.engine.clock.LowIntensiveClock;
 import org.plain.old.retro.shooter.engine.graphics.Camera;
 import org.plain.old.retro.shooter.engine.graphics.Screen;
@@ -9,7 +8,6 @@ import org.plain.old.retro.shooter.engine.graphics.Sprite;
 import org.plain.old.retro.shooter.engine.listener.KeyboardController;
 import org.plain.old.retro.shooter.engine.physics.BulletHitScanner;
 import org.plain.old.retro.shooter.engine.unit.Enemy;
-import org.plain.old.retro.shooter.engine.unit.Player;
 import org.plain.old.retro.shooter.engine.unit.RegisterEntity;
 import org.plain.old.retro.shooter.engine.unit.Unit;
 import org.plain.old.retro.shooter.engine.unit.equipment.bullet.Bullet;
@@ -23,8 +21,8 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.atomic.AtomicReferenceArray;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * The type Game.
@@ -45,7 +43,7 @@ public class Scene extends JFrame {
 
     private Clock renderTemp;
 
-    private Clock serverTemp;
+    private Clock clientTemp;
 
     private Camera mainPlayer;
 
@@ -55,13 +53,15 @@ public class Scene extends JFrame {
 
     private BoomStick stick;
 
-    private Vector<Enemy> enemies;
+    private ConcurrentSkipListSet<Enemy> enemies;
 
-    private Vector<Bullet> bullets = new Vector<>();
+    private ConcurrentSkipListSet<Bullet> tempBullets = new ConcurrentSkipListSet<>();
 
-    private Map<UUID, Unit> otherUnits = new HashMap<>();
+    private ConcurrentSkipListSet<Bullet> bullets = new ConcurrentSkipListSet<>();
 
-    DedicatedClient client;
+    private ConcurrentSkipListMap<UUID, Unit> otherUnits = new ConcurrentSkipListMap<>();
+
+    private DedicatedClient client;
 
     //TODO: Refactor It when main entities will be completed - it's just for tests
     /**
@@ -116,7 +116,7 @@ public class Scene extends JFrame {
             put(KeyEvent.VK_SPACE, "SHOT");
             put(KeyEvent.VK_R, "RELOAD");
         }});
-        this.enemies = new Vector<>(){{
+        this.enemies = new ConcurrentSkipListSet<>(){{
             add(new Enemy(7.5, 7.5, new Sprite("src/resources/enemy-1.png")));
             add(new Enemy(25.5, 3.5, new Sprite("src/resources/enemy-1.png")));
             add(new Enemy(21.5, 7.5, new Sprite("src/resources/enemy-1.png")));
@@ -184,7 +184,9 @@ public class Scene extends JFrame {
                             }
 
                             if (state.getKey().equals("SHOT")) {
-                                this.bullets.addAll(stick.shoot(mainPlayer.getPosition(), mainPlayer.getDirection()));
+                                Vector<Bullet> bullets = stick.shoot(mainPlayer.getPosition(), mainPlayer.getDirection());
+                                this.bullets.addAll(bullets);
+                                this.tempBullets.addAll(bullets);
                             }
 
                             if (state.getKey().equals("RELOAD")) {
@@ -197,15 +199,15 @@ public class Scene extends JFrame {
                     this.stick.update();
 
                     synchronized (bullets) {
-                        for (int i = 0; i < this.bullets.size(); i++) {
-                            Bullet bullet = this.bullets.get(i);
-                            if (!bullet.isExist()) this.bullets.remove(i);
+                        for (Bullet bullet : bullets) {
+                            if (!bullet.isExist()) this.bullets.remove(bullet);
                         }
                     }
 
-                    for (int j = 0; j < this.enemies.size(); j++) {
-                        Enemy enemy = this.enemies.get(j);
-                        if (!enemy.isExist()) this.enemies.remove(j);
+                    synchronized (bullets) {
+                        for (Enemy enemy : enemies) {
+                            if (!enemy.isExist()) this.enemies.remove(enemy);
+                        }
                     }
 
                     BulletHitScanner.scan(this.bullets, this.enemies, sceneTemp.getFrequency(), map);
@@ -218,7 +220,7 @@ public class Scene extends JFrame {
                         this.mainPlayer,
                         this.stick,
                         this.enemies,
-                        (Collection<Bullet>) this.bullets.clone(),
+                        this.bullets,
                         this.otherUnits.values()
                 ),
                 () -> this.render(
@@ -226,12 +228,12 @@ public class Scene extends JFrame {
                                 "UPS: %s \n FPS: %s \n NETPS: %s",
                                 sceneTemp.getFrequency(),
                                 renderTemp.getFrequency(),
-                                serverTemp.getFrequency()
+                                clientTemp.getFrequency()
                                 )
                 )
         );
 
-        serverTemp = new LowIntensiveClock(
+        clientTemp = new LowIntensiveClock(
                 sceneTemp.getFrequency(),
                 () -> {
 
@@ -242,18 +244,16 @@ public class Scene extends JFrame {
                     this.client.disconnect();
                     if (responseMessage != null) responseMessages.add(responseMessage);
 
-                    Set<Bullet> requestBullets = new HashSet<>();
-                    requestBullets.addAll(this.bullets);
-
-                    for (Bullet bullet : requestBullets) {
+                    for (Bullet bullet : tempBullets) {
                         this.client.connect();
                         responseMessage = this.client.sendMessage(bullet);
                         if (responseMessage != null) responseMessages.add(responseMessage);
                         this.client.disconnect();
                     }
+                    tempBullets.clear();
 
                     for (Object unit : responseMessages) {
-                        if (unit instanceof Bullet && !this.bullets.contains(((unit)))) {
+                        if (unit instanceof Bullet && !this.bullets.contains((unit))) {
                             this.bullets.add((Bullet) unit);
                         } else {
                             this.otherUnits.put(((RegisterEntity) unit).getUid(), (Unit) unit);
@@ -291,7 +291,7 @@ public class Scene extends JFrame {
                 );
         this.renderTemp.start();
         this.sceneTemp.start();
-        this.serverTemp.start();
+        this.clientTemp.start();
     }
 
     public void render(Space2d map, String rateInfo) {
