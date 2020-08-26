@@ -1,5 +1,6 @@
-package org.plain.old.retro.shooter.engine;
+package org.plain.old.retro.shooter;
 
+import org.plain.old.retro.shooter.engine.Space2d;
 import org.plain.old.retro.shooter.engine.clock.Clock;
 import org.plain.old.retro.shooter.engine.clock.LowIntensiveClock;
 import org.plain.old.retro.shooter.engine.graphics.Camera;
@@ -12,7 +13,7 @@ import org.plain.old.retro.shooter.engine.unit.RegisterEntity;
 import org.plain.old.retro.shooter.engine.unit.Unit;
 import org.plain.old.retro.shooter.engine.unit.equipment.bullet.Bullet;
 import org.plain.old.retro.shooter.engine.unit.equipment.weapon.BoomStick;
-import org.plain.old.retro.shooter.multi.DedicatedClient;
+import org.plain.old.retro.shooter.multi.Client;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,12 +27,13 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * The type Game.
+ * <p>
  * This is a main scene class, which is runnable and
  * will manage all scene logics (such as fps, screen update && e.t.c.)
- *
+ * <p>
  * @author Alexander A. Kropotin
  * @project plain -old-retro-shooter
- * @created 19.06.2020 08:58 <p>
+ * @created 19.06.2020 08:58
  */
 public class Scene extends JFrame {
 
@@ -48,7 +50,9 @@ public class Scene extends JFrame {
     private Camera mainPlayer;
 
     private BufferedImage image;
+
     public int[] pixels;
+
     public Screen screen;
 
     private BoomStick stick;
@@ -61,14 +65,14 @@ public class Scene extends JFrame {
 
     private ConcurrentSkipListMap<UUID, Unit> otherUnits = new ConcurrentSkipListMap<>();
 
-    private DedicatedClient client;
+    private Client client;
 
     //TODO: Refactor It when main entities will be completed - it's just for tests
     /**
      * Instantiates a new Game.
      * @param client
      */
-    public Scene(DedicatedClient client) {
+    public Scene(Client client) {
         this.client = client;
         Space2d map = new Space2d(
                 new int[][]{

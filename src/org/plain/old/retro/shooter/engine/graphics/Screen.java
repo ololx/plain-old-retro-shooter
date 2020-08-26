@@ -1,17 +1,18 @@
 package org.plain.old.retro.shooter.engine.graphics;
 
-import org.plain.old.retro.shooter.calculus.SimpleMath;
-import org.plain.old.retro.shooter.calculus.linear.Matrix2d;
-import org.plain.old.retro.shooter.calculus.linear.Vector2d;
+import org.plain.old.retro.shooter.engine.calculus.SimpleMath;
+import org.plain.old.retro.shooter.engine.calculus.linear.Matrix2d;
+import org.plain.old.retro.shooter.engine.calculus.linear.Vector2d;
 import org.plain.old.retro.shooter.engine.unit.Enemy;
-import org.plain.old.retro.shooter.engine.unit.Player;
 import org.plain.old.retro.shooter.engine.unit.Unit;
 import org.plain.old.retro.shooter.engine.unit.equipment.bullet.Bullet;
 import org.plain.old.retro.shooter.engine.unit.equipment.weapon.BoomStick;
 
 import java.awt.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Collectors;
 

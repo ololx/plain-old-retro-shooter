@@ -3,10 +3,8 @@ package org.plain.old.retro.shooter.multi;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Objects;
-import java.util.Scanner;
 
 /**
  * @project plain-old-retro-shooter
@@ -14,7 +12,7 @@ import java.util.Scanner;
  * <p>
  * @author Alexander A. Kropotin
  */
-public class DedicatedClient {
+public class Client {
 
     private final String ip;
 
@@ -22,7 +20,7 @@ public class DedicatedClient {
 
     private Socket socket;
 
-    public DedicatedClient(String ip, int port) {
+    public Client(String ip, int port) {
         Objects.requireNonNull(ip);
         Objects.requireNonNull(port);
         this.ip = ip;

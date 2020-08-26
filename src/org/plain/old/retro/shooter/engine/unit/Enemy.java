@@ -2,8 +2,6 @@ package org.plain.old.retro.shooter.engine.unit;
 
 import org.plain.old.retro.shooter.engine.graphics.Sprite;
 
-import java.util.UUID;
-
 public class Enemy extends AbstractUnit {
 
 	public static final double DEFAULT_RADIUS = 0.25d;

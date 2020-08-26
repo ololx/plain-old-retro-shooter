@@ -10,6 +10,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Refactor old project classes via game dev patterns implemetation.
 
+## [0.2.2-alpha.2] - 2020-08-26
+
+### Changed
+
+- Add split server into internal and dedicated services for running the game multiplayer:
+  - server and clients separately;
+  - main client (with server) and clients. 
+
+### Fixed
+
+- The concurrent units access.
+
 ## [0.1.1-alpha.2] - 2020-08-23
 
 ### Fixed

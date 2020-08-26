@@ -1,12 +1,8 @@
 package org.plain.old.retro.shooter.engine.unit.equipment.bullet;
 
+import org.plain.old.retro.shooter.engine.calculus.linear.Vector2d;
 import org.plain.old.retro.shooter.engine.graphics.Sprite;
-import org.plain.old.retro.shooter.calculus.linear.Vector2d;
 import org.plain.old.retro.shooter.engine.unit.AbstractUnit;
-import org.plain.old.retro.shooter.engine.unit.RegisterEntity;
-import org.plain.old.retro.shooter.engine.unit.Unit;
-
-import java.util.UUID;
 
 /**
  * @project plain-old-retro-shooter

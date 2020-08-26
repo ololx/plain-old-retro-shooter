@@ -1,7 +1,7 @@
 package org.plain.old.retro.shooter.engine.graphics;
 
-import org.plain.old.retro.shooter.calculus.SimpleMath;
-import org.plain.old.retro.shooter.calculus.linear.RotationMatrix2d;
+import org.plain.old.retro.shooter.engine.calculus.SimpleMath;
+import org.plain.old.retro.shooter.engine.calculus.linear.RotationMatrix2d;
 import org.plain.old.retro.shooter.engine.unit.GeneralPlayer;
 
 import java.io.Serializable;
