@@ -1,7 +1,9 @@
 package org.plain.old.retro.shooter.engine.unit;
 
+import org.plain.old.retro.shooter.engine.calculus.linear.Vector2d;
 import org.plain.old.retro.shooter.engine.graphics.Sprite;
-import org.plain.old.retro.shooter.calculus.linear.Vector2d;
+
+import java.io.Serializable;
 
 /**
  * @project plain-old-retro-shooter
@@ -9,7 +11,7 @@ import org.plain.old.retro.shooter.calculus.linear.Vector2d;
  * <p>
  * @author Alexander A. Kropotin
  */
-public interface Unit {
+public interface Unit extends Serializable {
 
     Vector2d getPosition();
 

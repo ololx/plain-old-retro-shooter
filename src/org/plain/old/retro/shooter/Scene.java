@@ -1,5 +1,6 @@
-package org.plain.old.retro.shooter.engine;
+package org.plain.old.retro.shooter;
 
+import org.plain.old.retro.shooter.engine.Space2d;
 import org.plain.old.retro.shooter.engine.clock.Clock;
 import org.plain.old.retro.shooter.engine.clock.LowIntensiveClock;
 import org.plain.old.retro.shooter.engine.graphics.Camera;
@@ -8,10 +9,11 @@ import org.plain.old.retro.shooter.engine.graphics.Sprite;
 import org.plain.old.retro.shooter.engine.listener.KeyboardController;
 import org.plain.old.retro.shooter.engine.physics.BulletHitScanner;
 import org.plain.old.retro.shooter.engine.unit.Enemy;
-import org.plain.old.retro.shooter.engine.unit.Player;
+import org.plain.old.retro.shooter.engine.unit.RegisterEntity;
+import org.plain.old.retro.shooter.engine.unit.Unit;
 import org.plain.old.retro.shooter.engine.unit.equipment.bullet.Bullet;
 import org.plain.old.retro.shooter.engine.unit.equipment.weapon.BoomStick;
-import org.plain.old.retro.shooter.multi.DedicatedClient;
+import org.plain.old.retro.shooter.multi.Client;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,19 +21,19 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * The type Game.
+ * <p>
  * This is a main scene class, which is runnable and
  * will manage all scene logics (such as fps, screen update && e.t.c.)
- *
+ * <p>
  * @author Alexander A. Kropotin
  * @project plain -old-retro-shooter
- * @created 19.06.2020 08:58 <p>
+ * @created 19.06.2020 08:58
  */
 public class Scene extends JFrame {
 
@@ -43,30 +45,34 @@ public class Scene extends JFrame {
 
     private Clock renderTemp;
 
-    private Clock serverTemp;
+    private Clock clientTemp;
 
     private Camera mainPlayer;
 
     private BufferedImage image;
+
     public int[] pixels;
+
     public Screen screen;
 
     private BoomStick stick;
 
-    private Vector<Enemy> enemies;
+    private ConcurrentSkipListSet<Enemy> enemies;
 
-    private Vector<Bullet> bullets = new Vector<>();
+    private ConcurrentSkipListSet<Bullet> tempBullets = new ConcurrentSkipListSet<>();
 
-    private Vector<Player> players = new Vector<>();
+    private ConcurrentSkipListSet<Bullet> bullets = new ConcurrentSkipListSet<>();
 
-    DedicatedClient client;
+    private ConcurrentSkipListMap<UUID, Unit> otherUnits = new ConcurrentSkipListMap<>();
+
+    private Client client;
 
     //TODO: Refactor It when main entities will be completed - it's just for tests
     /**
      * Instantiates a new Game.
      * @param client
      */
-    public Scene(DedicatedClient client) {
+    public Scene(Client client) {
         this.client = client;
         Space2d map = new Space2d(
                 new int[][]{
@@ -114,7 +120,7 @@ public class Scene extends JFrame {
             put(KeyEvent.VK_SPACE, "SHOT");
             put(KeyEvent.VK_R, "RELOAD");
         }});
-        this.enemies = new Vector<>(){{
+        this.enemies = new ConcurrentSkipListSet<>(){{
             add(new Enemy(7.5, 7.5, new Sprite("src/resources/enemy-1.png")));
             add(new Enemy(25.5, 3.5, new Sprite("src/resources/enemy-1.png")));
             add(new Enemy(21.5, 7.5, new Sprite("src/resources/enemy-1.png")));
@@ -124,9 +130,6 @@ public class Scene extends JFrame {
             add(new Enemy(5.5, 10.5, new Sprite("src/resources/enemy-3.png")));
             add(new Enemy(14.5, 19.5, new Sprite("src/resources/enemy-3.png")));
             add(new Enemy(12.5, 10.5, new Sprite("src/resources/enemy-3.png")));
-        }};
-        this.players = new Vector<>(){{
-            add(new Player(1, 1, new Sprite("src/resources/player.png")));
         }};
         mainPlayer = new Camera(1, 2, 1, 0, SCENE_WIDTH, SCENE_HEIGHT, 1.20);
         image = new BufferedImage(SCENE_WIDTH, SCENE_HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -185,7 +188,9 @@ public class Scene extends JFrame {
                             }
 
                             if (state.getKey().equals("SHOT")) {
-                                this.bullets.addAll(stick.shoot(mainPlayer.getPosition(), mainPlayer.getDirection()));
+                                Vector<Bullet> bullets = stick.shoot(mainPlayer.getPosition(), mainPlayer.getDirection());
+                                this.bullets.addAll(bullets);
+                                this.tempBullets.addAll(bullets);
                             }
 
                             if (state.getKey().equals("RELOAD")) {
@@ -197,14 +202,16 @@ public class Scene extends JFrame {
                 () -> {
                     this.stick.update();
 
-                    for (int i = 0; i < this.bullets.size(); i++) {
-                        Bullet bullet = this.bullets.get(i);
-                        if (!bullet.isExist()) this.bullets.remove(i);
+                    synchronized (bullets) {
+                        for (Bullet bullet : bullets) {
+                            if (!bullet.isExist()) this.bullets.remove(bullet);
+                        }
                     }
 
-                    for (int j = 0; j < this.enemies.size(); j++) {
-                        Enemy enemy = this.enemies.get(j);
-                        if (!enemy.isExist()) this.enemies.remove(j);
+                    synchronized (bullets) {
+                        for (Enemy enemy : enemies) {
+                            if (!enemy.isExist()) this.enemies.remove(enemy);
+                        }
                     }
 
                     BulletHitScanner.scan(this.bullets, this.enemies, sceneTemp.getFrequency(), map);
@@ -218,32 +225,45 @@ public class Scene extends JFrame {
                         this.stick,
                         this.enemies,
                         this.bullets,
-                        this.players
+                        this.otherUnits.values()
                 ),
                 () -> this.render(
                         map, String.format(
                                 "UPS: %s \n FPS: %s \n NETPS: %s",
                                 sceneTemp.getFrequency(),
                                 renderTemp.getFrequency(),
-                                serverTemp.getFrequency()
+                                clientTemp.getFrequency()
                                 )
                 )
         );
 
-        serverTemp = new LowIntensiveClock(
-                renderTemp.getFrequency() << 1,
+        clientTemp = new LowIntensiveClock(
+                sceneTemp.getFrequency(),
                 () -> {
+
+                    Set<Object> responseMessages = new HashSet<>();
                     this.client.connect();
-                    String requestMessage = mainPlayer.getMessage();
-                    String responseMessage = this.client.sendMessage(requestMessage);
-                    String[] coords = null;
-                    if (responseMessage != null && (coords = responseMessage.split("&")).length > 1) {
-                        this.players.get(0).setPosition(
-                                Double.valueOf(coords[0]),
-                                Double.valueOf(coords[1])
-                        );
-                    }
+                    Object requestMessage = mainPlayer;
+                    Object responseMessage = this.client.sendMessage(requestMessage);
                     this.client.disconnect();
+                    if (responseMessage != null) responseMessages.add(responseMessage);
+
+                    for (Bullet bullet : tempBullets) {
+                        this.client.connect();
+                        responseMessage = this.client.sendMessage(bullet);
+                        if (responseMessage != null) responseMessages.add(responseMessage);
+                        this.client.disconnect();
+                    }
+                    tempBullets.clear();
+
+                    for (Object unit : responseMessages) {
+                        if (unit instanceof Bullet && !this.bullets.contains((unit))) {
+                            this.bullets.add((Bullet) unit);
+                        } else {
+                            this.otherUnits.put(((RegisterEntity) unit).getUid(), (Unit) unit);
+                        }
+                    }
+
                 }
         );
     }
@@ -275,7 +295,7 @@ public class Scene extends JFrame {
                 );
         this.renderTemp.start();
         this.sceneTemp.start();
-        this.serverTemp.start();
+        this.clientTemp.start();
     }
 
     public void render(Space2d map, String rateInfo) {

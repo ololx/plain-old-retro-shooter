@@ -2,9 +2,13 @@ package org.plain.old.retro.shooter.engine.unit;
 
 import org.plain.old.retro.shooter.engine.graphics.Sprite;
 
-public class Player extends AbstractUnit {
+import java.util.UUID;
+
+public class Player extends AbstractUnit implements RegisterEntity {
 
 	public static final double DEFAULT_RADIUS = 0.25d;
+
+	private final UUID uid = UUID.randomUUID();
 
 	public Player(double x, double y, Sprite texture) {
 		this(x, y, DEFAULT_RADIUS, texture);
@@ -15,5 +19,10 @@ public class Player extends AbstractUnit {
 
 	public String getMessage() {
 		return this.position.getX() + "&" + this.position.getY();
+	}
+
+	@Override
+	public UUID getUid() {
+		return this.uid;
 	}
 }

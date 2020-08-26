@@ -1,4 +1,6 @@
-package org.plain.old.retro.shooter.calculus.linear;
+package org.plain.old.retro.shooter.engine.calculus.linear;
+
+import java.io.Serializable;
 
 /**
  * The interface Vector.
@@ -7,5 +9,5 @@ package org.plain.old.retro.shooter.calculus.linear;
  * @project plain -old-retro-shooter
  * @created 01.07.2020 17:30
  */
-interface Vector {
+interface Vector extends Serializable {
 }

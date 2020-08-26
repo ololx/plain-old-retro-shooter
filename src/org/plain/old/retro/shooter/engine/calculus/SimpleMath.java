@@ -1,4 +1,4 @@
-package org.plain.old.retro.shooter.calculus;
+package org.plain.old.retro.shooter.engine.calculus;
 
 /**
  * @project plain-old-retro-shooter

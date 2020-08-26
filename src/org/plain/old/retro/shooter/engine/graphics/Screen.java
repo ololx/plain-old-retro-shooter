@@ -1,18 +1,19 @@
 package org.plain.old.retro.shooter.engine.graphics;
 
-import org.plain.old.retro.shooter.calculus.linear.Matrix2d;
-import org.plain.old.retro.shooter.calculus.linear.Vector2d;
+import org.plain.old.retro.shooter.engine.calculus.SimpleMath;
+import org.plain.old.retro.shooter.engine.calculus.linear.Matrix2d;
+import org.plain.old.retro.shooter.engine.calculus.linear.Vector2d;
 import org.plain.old.retro.shooter.engine.unit.Enemy;
-import org.plain.old.retro.shooter.engine.unit.Player;
 import org.plain.old.retro.shooter.engine.unit.Unit;
 import org.plain.old.retro.shooter.engine.unit.equipment.bullet.Bullet;
 import org.plain.old.retro.shooter.engine.unit.equipment.weapon.BoomStick;
 
 import java.awt.*;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Collectors;
 
 /**
@@ -116,11 +117,10 @@ public class Screen {
             boolean hit = false;
             double steps = 0.01;
             while (!hit) {
-                rayPos = rayPos.add(rayDir.multiply(steps));
-
-                if ((int) rayPos.getX() < map.length || (int) rayPos.getY() < map.length) hit = true;
+                if ((int) rayPos.getX() > map.length || (int) rayPos.getY() > map[0].length) hit = true;
                 else if (map[(int) rayPos.getX()][(int) rayPos.getY()] != 0) hit = true;
 
+                rayPos = rayPos.add(rayDir.multiply(steps));
             }
 
             double rayLength = Math.hypot(rayPos.getX() - playerCamera.getPosition().getX(), rayPos.getY() - playerCamera.getPosition().getY());
@@ -132,7 +132,7 @@ public class Screen {
             int drawEnd = (int) ((wallHeight >> 1) + (height >> 1));
             if (drawEnd >= height) drawEnd = height;
 
-            int texNum = map[(int) rayPos.getX()][(int) rayPos.getY()] - 1;
+            int texNum = SimpleMath.max(map[(int) rayPos.getX()][(int) rayPos.getY()] - 1, 0);
 
             double intersectionX = playerCamera.getPosition().getX() < rayPos.getX()
                     ? Math.abs(rayPos.getX() - (int) rayPos.getX())
@@ -215,8 +215,8 @@ public class Screen {
         return pixels;
     }
 
-    public int[] renderUnit(int[] pixels, Camera playerCamera, List<Unit> units) {
-        units = units.stream()
+    public int[] renderUnit(int[] pixels, Camera playerCamera, ConcurrentSkipListSet<Unit> units) {
+        List<Unit> renderedUnits = units.stream()
                 .map(s -> {
                     s.calculateDistanceToCurrentObject(playerCamera.getPosition());
                     return s;
@@ -248,14 +248,14 @@ public class Screen {
             int unitWidth = (rayLength == 0) ? sprite.getWidth() : (int) ((int) (sprite.getWidth() / (rayLength)));
             if (unitWidth > sprite.getWidth()) unitWidth = sprite.getWidth();
 
-            int drawYStart = (int) (-unitHeight / 2 + (height >> 1));
+            int drawYStart = (int) (-(unitHeight >> 1) + (height >> 1));
             if (drawYStart < 0) drawYStart = 0;
 
-            int drawYEnd = (int) (unitHeight / 2 + (height >> 1));
+            int drawYEnd = (int) ((unitHeight >> 1) + (height >> 1));
             if (drawYEnd >= height) drawYEnd = height;
 
             double imgPixYSize = 1.0 * sprite.getHeight() / unitHeight;
-            int drawXStart = (int)angles - (unitWidth / 2);
+            int drawXStart = (int)angles - (unitWidth >> 1);
             int drawXEnd = (int) drawXStart + (unitWidth);
             double imgPixXSize = 1.0 * sprite.getWidth() / unitWidth;
 
@@ -283,10 +283,10 @@ public class Screen {
     public int[] render(int[] pixels,
                         Camera playerCamera,
                         BoomStick gun,
-                        Vector<Enemy> enemies,
-                        Vector<Bullet> bullets,
-                        Vector<Player> players) {
-        Vector<Unit> units = new Vector<>();
+                        ConcurrentSkipListSet<Enemy> enemies,
+                        ConcurrentSkipListSet<Bullet> bullets,
+                        Collection<Unit> players) {
+        ConcurrentSkipListSet<Unit> units = new ConcurrentSkipListSet<>();
         units.addAll(enemies);
         units.addAll(bullets);
         units.addAll(players);

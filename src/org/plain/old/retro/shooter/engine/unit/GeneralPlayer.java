@@ -1,7 +1,8 @@
 package org.plain.old.retro.shooter.engine.unit;
 
-import org.plain.old.retro.shooter.calculus.linear.RotationMatrix2d;
-import org.plain.old.retro.shooter.calculus.linear.Vector2d;
+import org.plain.old.retro.shooter.engine.calculus.linear.RotationMatrix2d;
+import org.plain.old.retro.shooter.engine.calculus.linear.Vector2d;
+import org.plain.old.retro.shooter.engine.graphics.Sprite;
 
 /**
  * @project plain-old-retro-shooter
@@ -9,13 +10,13 @@ import org.plain.old.retro.shooter.calculus.linear.Vector2d;
  * <p>
  * @author Alexander A. Kropotin
  */
-public class GeneralPlayer {
+public class GeneralPlayer extends AbstractUnit {
 
     public static final double MOVE_SPEED = 0.10;
 
     public static final double ROTATION_SPEED = 0.05;
 
-    private Vector2d position;
+    //private Vector2d position;
 
     private Vector2d direction;
 
@@ -30,7 +31,8 @@ public class GeneralPlayer {
     }
 
     public GeneralPlayer(double x, double y, double x2, double y2, double moveStep, double rotationStep) {
-        this.position = new Vector2d(x, y);
+        super(x, y, 0.2d, new Sprite("src/resources/player.png"));
+        //this.position = new Vector2d(x, y);
         this.direction = new Vector2d(x2, y2);
         this.movementVector = new Vector2d(moveStep, moveStep);
         this.leftRotationMatrix = new RotationMatrix2d(rotationStep);

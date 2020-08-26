@@ -1,11 +1,11 @@
 package org.plain.old.retro.shooter.engine.physics;
 
 import org.plain.old.retro.shooter.engine.Space2d;
-import org.plain.old.retro.shooter.calculus.linear.Vector2d;
+import org.plain.old.retro.shooter.engine.calculus.linear.Vector2d;
 import org.plain.old.retro.shooter.engine.unit.Enemy;
 import org.plain.old.retro.shooter.engine.unit.equipment.bullet.Bullet;
 
-import java.util.Vector;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * @project plain-old-retro-shooter
@@ -15,24 +15,18 @@ import java.util.Vector;
  */
 public interface BulletHitScanner {
 
-    static void scan(Vector<Bullet> bullets, Vector<Enemy> enemies, long hertz, Space2d map) {
-        bullets = (Vector<Bullet>) bullets.clone();
-        enemies = (Vector<Enemy>) enemies.clone();
-
+    static void scan(ConcurrentSkipListSet<Bullet> bullets, ConcurrentSkipListSet<Enemy> enemies, long hertz, Space2d map) {
         double hitScanStep = (100 * Bullet.MOVE_SPEED);
         double bulletSpeed = (Bullet.MOVE_SPEED / hertz) / hitScanStep;
 
-        for (int i = 0; i < bullets.size(); i++) {
-            Bullet bullet = bullets.get(i);
-
+        for (Bullet bullet : bullets) {
             if (!bullet.isExist()) continue;
 
             for (int m = 0; m < hitScanStep; m++) {
                 bullet.move(map.getSpace(), bulletSpeed);
                 Vector2d bVec = bullet.getPosition();
 
-                for (int j = 0; j < enemies.size(); j++) {
-                    Enemy enemy = enemies.get(j);
+                for (Enemy enemy : enemies) {
                     Vector2d eVec = enemy.getPosition();
 
                     if (!enemy.isExist()) continue;
