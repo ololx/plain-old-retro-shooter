@@ -10,6 +10,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Refactor old project classes via game dev patterns implemetation.
 
+## [0.2.3-alpha.2] - 2020-08-30
+
+### Fixed
+
+- The render order for units on screen.
+
 ## [0.2.2-alpha.2] - 2020-08-26
 
 ### Changed
