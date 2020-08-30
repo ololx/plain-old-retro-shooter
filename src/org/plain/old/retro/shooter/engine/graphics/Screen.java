@@ -9,10 +9,9 @@ import org.plain.old.retro.shooter.engine.unit.equipment.bullet.Bullet;
 import org.plain.old.retro.shooter.engine.unit.equipment.weapon.BoomStick;
 
 import java.awt.*;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Collectors;
 
@@ -215,8 +214,8 @@ public class Screen {
         return pixels;
     }
 
-    public int[] renderUnit(int[] pixels, Camera playerCamera, ConcurrentSkipListSet<Unit> units) {
-        List<Unit> renderedUnits = units.stream()
+    public int[] renderUnit(int[] pixels, Camera playerCamera, List<Unit> units) {
+        units = units.stream()
                 .map(s -> {
                     s.calculateDistanceToCurrentObject(playerCamera.getPosition());
                     return s;
@@ -286,15 +285,18 @@ public class Screen {
                         ConcurrentSkipListSet<Enemy> enemies,
                         ConcurrentSkipListSet<Bullet> bullets,
                         Collection<Unit> players) {
-        ConcurrentSkipListSet<Unit> units = new ConcurrentSkipListSet<>();
-        units.addAll(enemies);
-        units.addAll(bullets);
-        units.addAll(players);
-
         pixels = this.renderFloor(pixels, playerCamera);
         pixels = this.renderCeiling(pixels, playerCamera);
         pixels = this.renderWall(pixels, playerCamera);
-        pixels = this.renderUnit(pixels, playerCamera, units);
+        pixels = this.renderUnit(
+                pixels,
+                playerCamera,
+                    new ArrayList<>(){{
+                        addAll(enemies);
+                        addAll(bullets);
+                        addAll(players);
+                    }}
+                );
         pixels = this.renderGun(pixels, gun.getSprite());
 
         return pixels;

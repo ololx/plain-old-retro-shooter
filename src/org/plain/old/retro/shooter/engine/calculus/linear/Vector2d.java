@@ -112,4 +112,12 @@ public class Vector2d implements Vector {
 	public Vector2d clone() {
 		return new Vector2d(this.getX(), this.getY());
 	}
+
+	private double getScaled(double value, int scale) {
+		return Math.round(value * scale) / scale;
+	}
+
+	private double getScaled(double value) {
+		return this.getScaled(value, 100);
+	}
 }
