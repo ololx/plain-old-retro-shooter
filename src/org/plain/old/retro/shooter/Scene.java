@@ -218,7 +218,7 @@ public class Scene extends JFrame {
                 }
         );
         renderTemp = new LowIntensiveClock(
-                60,
+                120,
                 () -> screen.render(
                         pixels,
                         this.mainPlayer,
@@ -238,7 +238,7 @@ public class Scene extends JFrame {
         );
 
         clientTemp = new LowIntensiveClock(
-                sceneTemp.getFrequency(),
+                sceneTemp.getFrequency() << 2,
                 () -> {
 
                     Set<Object> responseMessages = new HashSet<>();
