@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
  */
 public class Screen {
 
+    int even = 0;
     private int[][] map;
     private int width;
     private int height;
@@ -46,7 +47,7 @@ public class Screen {
 
         int drawStart = ((this.height) >> 1);
         int drawEnd = this.height;
-        for (int y = drawStart; y < drawEnd; y++) {
+        for (int y = drawStart + even; y < drawEnd - even; y+= 1 + even) {
             int p = y - ((this.height) >> 1);
             double posZ = 0.5 * this.height;
             double rowDistance = posZ / p;
@@ -55,7 +56,7 @@ public class Screen {
             double floorX = playerCamera.getPosition().getX() + rowDistance * rayDirLeft.getX();
             double floorY = playerCamera.getPosition().getY() + rowDistance * rayDirLeft.getY();
 
-            for (int x = 0; x < this.width; x++) {
+            for (int x = even; x < this.width - even; x+= 1 + even) {
                 int cellX = (int)(floorX);
                 int cellY = (int)(floorY);
                 int tx = (int)(textures.get(floorTexture).getWidth() * Math.abs(floorX - cellX));
@@ -80,7 +81,7 @@ public class Screen {
         int drawStart = 0;
         int drawEnd = ((this.height) >> 1);
 
-        for (int y = drawStart; y < drawEnd; y++) {
+        for (int y = drawStart + even; y < drawEnd - even; y+= 1 + even) {
             int p = ((this.height) >> 1) - y;
             double posZ = 0.5 * this.height;
             double rowDistance = posZ / p;
@@ -90,7 +91,7 @@ public class Screen {
             double ceilingX = playerCamera.getPosition().getX() + rowDistance * rayDirLeft.getX();
             double ceilingY = playerCamera.getPosition().getY() + rowDistance * rayDirLeft.getY();
 
-            for (int x = 0; x < this.width; x++) {
+            for (int x = even; x < this.width - even; x+= 1 + even) {
                 int cellX = (int)(ceilingX);
                 int cellY = (int)(ceilingY);
                 int tx = (int)(textures.get(ceilingTexture).getWidth() * Math.abs(ceilingX - cellX));
@@ -108,7 +109,7 @@ public class Screen {
     }
 
     public int[] renderWall(int[] pixels, Camera playerCamera) {
-        for (int x = 0; x < width; x++) {
+        for (int x = even; x < width - even; x+= 1 + even) {
             Matrix2d rayRot = playerCamera.getRotationMatrix(x);
             Vector2d rayDir = playerCamera.getDirection().rotate(rayRot);
             Vector2d rayPos = playerCamera.getPosition().clone();
@@ -150,7 +151,7 @@ public class Screen {
             double imgPixYSize = 1.0 * textures.get(texNum).getHeight() / wallHeight;
             int imgPixYStart = height >= wallHeight ? 0 : (int) ((((wallHeight >> 1)) - (height >> 1)) * imgPixYSize);
 
-            for (int y = drawStart; y < drawEnd; y++) {
+            for (int y = drawStart + even; y < drawEnd - even; y+= 1 + even) {
                 int texY = imgPixYStart + (int)(((y - drawStart) * imgPixYSize));
                 int color = textures.get(texNum).getPixelSafty(texX, texY);
                 pixels[x + y * width] = color;
@@ -175,39 +176,13 @@ public class Screen {
         double imgPixXSize = 1.0 * gun.getWidth() / gunWidth;
         double imgPixYSize = 1.0 * gun.getHeight() / gunHeight;
 
-        for (int x = drawXStart; x < drawXEnd; x++) {
-            for (int y = drawYStart; y < drawYEnd; y++) {
+        for (int x = drawXStart + even; x < drawXEnd - even; x+= 1 + even) {
+            for (int y = drawYStart + even; y < drawYEnd - even; y+= 1 + even) {
                 int pixelColor = gun.getPixelSafty(
                         (int) ((x - drawXStart) * imgPixXSize),
                         (int) ((y - drawYStart) * imgPixYSize)
                 );
                 if (pixelColor != 0) pixels[x + y * width] = pixelColor;
-            }
-        }
-
-        int aimXStart = (width >> 1) - ((width / 25) >> 2);
-        int aimXEnd = (width >> 1) + ((width / 25) >> 2);
-        int aimXEmptyStart = (width >> 1) - ((width / 75) >> 2);
-        int aimXEmptyEnd = (width >> 1) + ((width / 75) >> 2);
-
-        for (int x = aimXStart; x <= aimXEnd; x++) {
-            for (int y = (height >> 1) - 2; y <= (height >> 1) + 2; y++) {
-                if (x <= aimXEmptyEnd && x >= aimXEmptyStart) continue;
-
-                pixels[x + y * width] = Color.yellow.getRGB();
-            }
-        }
-
-        int aimYStart = (height >> 1) - ((aimXEnd - aimXStart) / 2);
-        int aimYEnd = aimYStart + (aimXEnd - aimXStart);
-        int aimYEmptyStart = (height >> 1) - ((width / 75) >> 2);
-        int aimYEmptyEnd = (height >> 1) + ((width / 75) >> 2);
-
-        for (int y = aimYStart; y <= aimYEnd; y++) {
-            for (int x = (width >> 1) - 2; x <= (width >> 1) + 2; x++) {
-                if (y <= aimYEmptyEnd && y >= aimYEmptyStart) continue;
-
-                pixels[x + y * width] = Color.yellow.getRGB();
             }
         }
 
@@ -264,9 +239,9 @@ public class Screen {
                 drawXStart = 0;
             }
 
-            for (int y = drawYStart; y < drawYEnd; y++) {
+            for (int y = drawYStart + even; y < drawYEnd - even; y+= 1 + even) {
                 int texY = (int)((y - drawYStart) * imgPixYSize);
-                for (int x = drawXStart; x < drawXEnd; x++) {
+                for (int x = drawXStart + even; x < drawXEnd - even; x+= 1 + even) {
                     int color = sprite.getPixelSafty((int) ((x - drawXStart + texXOffset) * imgPixXSize), texY);
 
                     if (this.rayLengths.get(x) == null || this.rayLengths.get(x) <= rayLength) continue;
@@ -277,6 +252,24 @@ public class Screen {
         }
 
         return pixels;
+    }
+
+    public int[] render(int[] pixels,
+                        Camera playerCamera,
+                        BoomStick gun,
+                        ConcurrentSkipListSet<Enemy> enemies,
+                        ConcurrentSkipListSet<Bullet> bullets,
+                        Collection<Unit> players,
+                        int flicker) {
+        this.even ^= 1;
+        return this.render(
+                pixels,
+                playerCamera,
+                gun,
+                enemies,
+                bullets,
+                players
+        );
     }
 
     public int[] render(int[] pixels,
