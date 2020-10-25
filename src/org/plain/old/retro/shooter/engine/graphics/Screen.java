@@ -23,6 +23,61 @@ import java.util.stream.Collectors;
  */
 public class Screen {
 
+    public static class Ray {
+
+        private final Vector2d position;
+
+        private final Vector2d direction;
+
+        private final double lendth;
+
+        public Ray(Vector2d position, Vector2d direction, double lendth) {
+            this.position = position;
+            this.direction = direction;
+            this.lendth = lendth;
+        }
+
+        public Vector2d getPosition() {
+            return this.position;
+        }
+
+        public Vector2d getDirection() {
+            return this.direction;
+        }
+
+        public double getLength() {
+            return this.lendth;
+        }
+    }
+
+    public static class Rays {
+
+        private List<Ray> rays;
+
+        private double maxRayLength;
+
+        {
+            this.rays = new ArrayList<>();
+            this.maxRayLength = 0;
+        }
+
+        public void setRay(int index, Ray ray) {
+            this.rays.add(index, ray);
+        }
+
+        public Ray getRay(int index) {
+            return this.rays.size() > index ? this.rays.get(index) : null;
+        }
+
+        public double getMaxRayLength() {
+            return this.maxRayLength;
+        }
+
+        public void setMaxRayLength(double maxRayLength) {
+            this.maxRayLength = maxRayLength;
+        }
+    }
+
     int even = 0;
     private int[][] map;
     private int width;
@@ -32,24 +87,35 @@ public class Screen {
 
     private Map<Integer, Double> rayLengths = new HashMap<>();
 
+    private Rays raysCasted;
+
     public Screen(int[][] map, int width, int height, List<Sprite> textures) {
         this.map = map;
         this.width = width;
         this.height = height;
         this.textures = textures;
+        this.raysCasted = new Rays();
+    }
+
+    public Screen(int[][] map, int width, int height, List<Sprite> textures, Camera playerCamera) {
+        this.map = map;
+        this.width = width;
+        this.height = height;
+        this.textures = textures;
+        this.raysCasted = new Rays();
+        this.rayCast(playerCamera);
     }
 
     public int[] renderFloor(int[] pixels, Camera playerCamera) {
         int floorTexture = 5;
-        double angle = playerCamera.getAngle() / 2;
-        Vector2d rayDirLeft = playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(angle));
-        Vector2d rayDirRight = playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(-angle));
+        Vector2d rayDirLeft = this.raysCasted.getRay(0).getDirection();//playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(angle));
+        Vector2d rayDirRight = this.raysCasted.getRay(width - 1).getDirection();//playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(-angle));
 
         int drawStart = ((this.height) >> 1);
         int drawEnd = this.height;
         for (int y = drawStart + even; y < drawEnd - even; y+= 1 + even) {
-            int p = y - ((this.height) >> 1);
-            double posZ = 0.5 * this.height;
+            double posZ = drawStart;
+            int p = (int) y - drawStart;
             double rowDistance = posZ / p;
             double floorStepX = rowDistance * (rayDirRight.getX() - rayDirLeft.getX()) / this.width;
             double floorStepY = rowDistance * (rayDirRight.getY() - rayDirLeft.getY()) / this.width;
@@ -75,15 +141,14 @@ public class Screen {
 
     public int[] renderCeiling(int[] pixels, Camera playerCamera) {
         int ceilingTexture = 4;
-        double angle = playerCamera.getAngle() / 2;
-        Vector2d rayDirLeft = playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(angle));
-        Vector2d rayDirRight = playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(-angle));
+        Vector2d rayDirLeft = this.raysCasted.getRay(0).getDirection();//playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(angle));
+        Vector2d rayDirRight = this.raysCasted.getRay(width - 1).getDirection();//playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(-angle));
+
         int drawStart = 0;
         int drawEnd = ((this.height) >> 1);
-
         for (int y = drawStart + even; y < drawEnd - even; y+= 1 + even) {
-            int p = ((this.height) >> 1) - y;
-            double posZ = 0.5 * this.height;
+            double posZ = drawEnd;
+            int p = (int) drawEnd - y;
             double rowDistance = posZ / p;
             double ceilingStepX = rowDistance * (rayDirRight.getX() - rayDirLeft.getX()) / this.width;
             double ceilingStepY = rowDistance * (rayDirRight.getY() - rayDirLeft.getY()) / this.width;
@@ -108,7 +173,9 @@ public class Screen {
         return pixels;
     }
 
-    public int[] renderWall(int[] pixels, Camera playerCamera) {
+    public void rayCast(Camera playerCamera) {
+        double maxRayLEngth = 0;
+        Rays rys = new Rays();
         for (int x = even; x < width - even; x+= 1 + even) {
             Matrix2d rayRot = playerCamera.getRotationMatrix(x);
             Vector2d rayDir = playerCamera.getDirection().rotate(rayRot);
@@ -123,7 +190,27 @@ public class Screen {
                 rayPos = rayPos.add(rayDir.multiply(steps));
             }
 
-            double rayLength = Math.hypot(rayPos.getX() - playerCamera.getPosition().getX(), rayPos.getY() - playerCamera.getPosition().getY());
+            double rayLength = Math.hypot(
+                    rayPos.getX() - playerCamera.getPosition().getX(),
+                    rayPos.getY() - playerCamera.getPosition().getY()
+            );
+
+            rys.setRay(x, new Ray(rayPos, rayDir, rayLength));
+
+            maxRayLEngth = rayLength > maxRayLEngth ? rayLength : maxRayLEngth;
+        }
+        rys.setMaxRayLength(maxRayLEngth);
+        this.raysCasted = rys;
+        //this.raysCasted.setMaxRayLength(maxRayLEngth);
+    }
+
+    public int[] renderWall(int[] pixels, Camera playerCamera) {
+        for (int x = even; x < width - even; x+= 1 + even) {
+            Matrix2d rayRot = playerCamera.getRotationMatrix(x);
+            Vector2d rayPos = this.raysCasted.getRay(x).getPosition();
+            Vector2d rayDir = this.raysCasted.getRay(x).getDirection();
+            double rayLength = this.raysCasted.getRay(x).getLength();
+
             int wallHeight = (rayLength == 0) ? height : (int) ((int) (height / (rayLength * rayRot.getX1())));
 
             int drawStart = (int) (-(wallHeight >> 1) + (height >> 1));
@@ -134,13 +221,13 @@ public class Screen {
 
             int texNum = SimpleMath.max(map[(int) rayPos.getX()][(int) rayPos.getY()] - 1, 0);
 
-            double intersectionX = playerCamera.getPosition().getX() < rayPos.getX()
+            double intersectionX = playerCamera.getPosition().getX() <= rayPos.getX()
                     ? Math.abs(rayPos.getX() - (int) rayPos.getX())
                     : 1 - Math.abs(rayPos.getX() - (int) rayPos.getX());
-            double intersectionY = playerCamera.getPosition().getY() < rayPos.getY()
+            double intersectionY = playerCamera.getPosition().getY() <= rayPos.getY()
                     ? Math.abs(rayPos.getY() - (int) rayPos.getY())
                     : 1 - Math.abs(rayPos.getY() - (int) rayPos.getY());
-            boolean horizontal = intersectionX <= intersectionY ? true : false;
+            boolean horizontal = intersectionX * 0.001 < intersectionY * 0.001 ? true : false;
 
             double wallX = horizontal ? intersectionY : intersectionX;
             wallX -= Math.floor(wallX);
@@ -156,8 +243,6 @@ public class Screen {
                 int color = textures.get(texNum).getPixelSafty(texX, texY);
                 pixels[x + y * width] = color;
             }
-
-            this.rayLengths.put(x, rayLength);
         }
 
         return pixels;
@@ -244,7 +329,7 @@ public class Screen {
                 for (int x = drawXStart + even; x < drawXEnd - even; x+= 1 + even) {
                     int color = sprite.getPixelSafty((int) ((x - drawXStart + texXOffset) * imgPixXSize), texY);
 
-                    if (this.rayLengths.get(x) == null || this.rayLengths.get(x) <= rayLength) continue;
+                    if (this.raysCasted.getRay(x) == null || this.raysCasted.getRay(x).getLength() <= rayLength) continue;
 
                     if (color != 0) pixels[x + y * width] = color;
                 }
@@ -278,6 +363,7 @@ public class Screen {
                         ConcurrentSkipListSet<Enemy> enemies,
                         ConcurrentSkipListSet<Bullet> bullets,
                         Collection<Unit> players) {
+        //this.rayCast(playerCamera);
         pixels = this.renderFloor(pixels, playerCamera);
         pixels = this.renderCeiling(pixels, playerCamera);
         pixels = this.renderWall(pixels, playerCamera);
