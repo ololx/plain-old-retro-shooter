@@ -44,6 +44,8 @@ public class Camera extends GeneralPlayer {
         }
     }
 
+    private double z;
+
     private final Map<Double, RotationMatrix2d> rotationsByAngles = new HashMap<>();
 
     private final Map<Integer, RotationMatrix2d> rotationsByPixels = new HashMap<>();
@@ -53,6 +55,10 @@ public class Camera extends GeneralPlayer {
     private final CameraPlane plain;
 
     private final double angle;
+
+    {
+        z = 0.0;
+    }
 
     public Camera(double x, double y, double x2, double y2, int width, int height, double angle) {
         super(x, y, x2, y2);
@@ -93,5 +99,21 @@ public class Camera extends GeneralPlayer {
 
     public Double getAngle() {
         return this.angle;
+    }
+
+    public void up() {
+        this.z += this.z < 0.5 ? 0.1 : 0.0;
+    }
+
+    public void down() {
+        this.z -= this.z > -0.5 ? 0.1 : 0.0;
+    }
+
+    public double getZ() {
+        return this.z;
+    }
+
+    public double getHorizont() {
+        return this.z * this.getPlain().getHeight();
     }
 }

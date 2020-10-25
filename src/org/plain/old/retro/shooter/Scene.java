@@ -37,9 +37,9 @@ import java.util.concurrent.ConcurrentSkipListSet;
  */
 public class Scene extends JFrame {
 
-    public static final int SCENE_WIDTH = 1024;
+    public static final int SCENE_WIDTH = 1024;//2560;
 
-    public static final int SCENE_HEIGHT = 600;
+    public static final int SCENE_HEIGHT = 768;//1440;
 
     private Clock sceneTemp;
 
@@ -117,6 +117,8 @@ public class Scene extends JFrame {
             put(KeyEvent.VK_D, "TN_RGT");
             put(KeyEvent.VK_LEFT, "MV_LFT");
             put(KeyEvent.VK_RIGHT, "MV_RHT");
+            put(KeyEvent.VK_UP, "MV_UP");
+            put(KeyEvent.VK_DOWN, "MV_DOWN");
             put(KeyEvent.VK_SPACE, "SHOT");
             put(KeyEvent.VK_R, "RELOAD");
         }});
@@ -131,7 +133,7 @@ public class Scene extends JFrame {
             add(new Enemy(14.5, 19.5, new Sprite("src/resources/enemy-3.png")));
             add(new Enemy(12.5, 10.5, new Sprite("src/resources/enemy-3.png")));
         }};
-        mainPlayer = new Camera(1, 2, 1, 0, SCENE_WIDTH, SCENE_HEIGHT, 1.20);
+        mainPlayer = new Camera(1, 2, 1, 0, SCENE_WIDTH, SCENE_HEIGHT, 0.9);
         image = new BufferedImage(SCENE_WIDTH, SCENE_HEIGHT, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
         screen = new Screen(
@@ -145,7 +147,8 @@ public class Scene extends JFrame {
                     add(new Sprite("src/resources/room/wall-4.png"));
                     add(new Sprite("src/resources/room/ceiling.png"));
                     add(new Sprite("src/resources/room/floor.png"));
-                }}
+                }},
+                mainPlayer
         );
         this.setSize(SCENE_WIDTH, SCENE_HEIGHT);
         addKeyListener(controller);
@@ -177,6 +180,14 @@ public class Scene extends JFrame {
 
                             if (state.getKey().equals("MV_RHT")) {
                                 mainPlayer.moveRight();
+                            }
+
+                            if (state.getKey().equals("MV_UP")) {
+                                mainPlayer.up();
+                            }
+
+                            if (state.getKey().equals("MV_DOWN")) {
+                                mainPlayer.down();
                             }
 
                             if (state.getKey().equals("TN_LFT")) {
@@ -215,6 +226,9 @@ public class Scene extends JFrame {
                     }
 
                     BulletHitScanner.scan(this.bullets, this.enemies, sceneTemp.getFrequency(), map);
+                },
+                () -> {
+                    screen.rayCast(this.mainPlayer);
                 }
         );
         renderTemp = new LowIntensiveClock(
@@ -238,7 +252,7 @@ public class Scene extends JFrame {
         );
 
         clientTemp = new LowIntensiveClock(
-                sceneTemp.getFrequency() << 2,
+                sceneTemp.getFrequency(),
                 () -> {
 
                     Set<Object> responseMessages = new HashSet<>();
@@ -305,7 +319,7 @@ public class Scene extends JFrame {
         BufferStrategy bs = getBufferStrategy();
 
         if (bs == null) {
-            createBufferStrategy(3);
+            createBufferStrategy(2);
             return;
         }
 
