@@ -111,7 +111,7 @@ public class Screen {
         Vector2d rayDirLeft = this.raysCasted.getRay(0).getDirection();//playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(angle));
         Vector2d rayDirRight = this.raysCasted.getRay(width - 1).getDirection();//playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(-angle));
 
-        int drawStart = ((this.height) >> 1);
+        int drawStart = (int) (((this.height) >> 1) + playerCamera.getHorizont());
         int drawEnd = this.height;
         for (int y = drawStart + even; y < drawEnd - even; y+= 1 + even) {
             double posZ = drawStart;
@@ -145,7 +145,7 @@ public class Screen {
         Vector2d rayDirRight = this.raysCasted.getRay(width - 1).getDirection();//playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(-angle));
 
         int drawStart = 0;
-        int drawEnd = ((this.height) >> 1);
+        int drawEnd = (int) (((this.height) >> 1) + playerCamera.getHorizont());
         for (int y = drawStart + even; y < drawEnd - even; y+= 1 + even) {
             double posZ = drawEnd;
             int p = (int) drawEnd - y;
@@ -211,12 +211,12 @@ public class Screen {
             Vector2d rayDir = this.raysCasted.getRay(x).getDirection();
             double rayLength = this.raysCasted.getRay(x).getLength();
 
-            int wallHeight = (rayLength == 0) ? height : (int) ((int) (height / (rayLength * rayRot.getX1())));
+            int wallHeight = (rayLength == 0) ? height : (int) ((height / (rayLength * rayRot.getX1())));
 
-            int drawStart = (int) (-(wallHeight >> 1) + (height >> 1));
+            int drawStart = (int) (-(wallHeight >> 1) + (height >> 1) + playerCamera.getHorizont());
             if (drawStart < 0) drawStart = 0;
 
-            int drawEnd = (int) ((wallHeight >> 1) + (height >> 1));
+            int drawEnd = (int) ((wallHeight >> 1) + (height >> 1) + playerCamera.getHorizont());
             if (drawEnd >= height) drawEnd = height;
 
             int texNum = SimpleMath.max(map[(int) rayPos.getX()][(int) rayPos.getY()] - 1, 0);
@@ -307,10 +307,10 @@ public class Screen {
             int unitWidth = (rayLength == 0) ? sprite.getWidth() : (int) ((int) (sprite.getWidth() / (rayLength)));
             if (unitWidth > sprite.getWidth()) unitWidth = sprite.getWidth();
 
-            int drawYStart = (int) (-(unitHeight >> 1) + (height >> 1));
+            int drawYStart = (int) (-(unitHeight >> 1) + (height >> 1) + playerCamera.getHorizont());
             if (drawYStart < 0) drawYStart = 0;
 
-            int drawYEnd = (int) ((unitHeight >> 1) + (height >> 1));
+            int drawYEnd = (int) ((unitHeight >> 1) + (height >> 1) + playerCamera.getHorizont());
             if (drawYEnd >= height) drawYEnd = height;
 
             double imgPixYSize = 1.0 * sprite.getHeight() / unitHeight;

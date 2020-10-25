@@ -117,6 +117,8 @@ public class Scene extends JFrame {
             put(KeyEvent.VK_D, "TN_RGT");
             put(KeyEvent.VK_LEFT, "MV_LFT");
             put(KeyEvent.VK_RIGHT, "MV_RHT");
+            put(KeyEvent.VK_UP, "MV_UP");
+            put(KeyEvent.VK_DOWN, "MV_DOWN");
             put(KeyEvent.VK_SPACE, "SHOT");
             put(KeyEvent.VK_R, "RELOAD");
         }});
@@ -178,6 +180,14 @@ public class Scene extends JFrame {
 
                             if (state.getKey().equals("MV_RHT")) {
                                 mainPlayer.moveRight();
+                            }
+
+                            if (state.getKey().equals("MV_UP")) {
+                                mainPlayer.up();
+                            }
+
+                            if (state.getKey().equals("MV_DOWN")) {
+                                mainPlayer.down();
                             }
 
                             if (state.getKey().equals("TN_LFT")) {
