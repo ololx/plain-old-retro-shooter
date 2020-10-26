@@ -102,11 +102,11 @@ public class Camera extends GeneralPlayer {
     }
 
     public void up() {
-        this.z += this.z < 0.5 ? 0.1 : 0.0;
+        this.z += this.z < 0.45 ? 0.25 : 0.0;
     }
 
     public void down() {
-        this.z -= this.z > -0.5 ? 0.1 : 0.0;
+        this.z -= this.z > -0.25 ? 0.25 : 0.0;
     }
 
     public double getZ() {

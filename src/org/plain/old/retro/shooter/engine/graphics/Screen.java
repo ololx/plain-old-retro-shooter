@@ -111,7 +111,7 @@ public class Screen {
 
         int drawStart = (int) (((this.height) >> 1) + playerCamera.getHorizont());
         int drawEnd = this.height;
-        for (int y = drawStart + even; y < drawEnd - even; y+= 1 + even) {
+        for (int y = drawStart; y < drawEnd; y++) {
             double posZ = drawStart;
             int p = (int) y - drawStart;
             double rowDistance = posZ / p;
@@ -147,7 +147,7 @@ public class Screen {
 
         int drawStart = 0;
         int drawEnd = (int) (((this.height) >> 1) + playerCamera.getHorizont());
-        for (int y = drawStart + even; y < drawEnd - even; y+= 1 + even) {
+        for (int y = drawStart; y < drawEnd; y++) {
             double posZ = drawEnd;
             int p = (int) drawEnd - y;
             double rowDistance = posZ / p;
