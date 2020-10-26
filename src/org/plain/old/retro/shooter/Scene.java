@@ -133,7 +133,7 @@ public class Scene extends JFrame {
             add(new Enemy(14.5, 19.5, new Sprite("src/resources/enemy-3.png")));
             add(new Enemy(12.5, 10.5, new Sprite("src/resources/enemy-3.png")));
         }};
-        mainPlayer = new Camera(1, 2, 1, 0, SCENE_WIDTH, SCENE_HEIGHT, 0.9);
+        mainPlayer = new Camera(1, 2, 1, 0, SCENE_WIDTH, SCENE_HEIGHT, 0.6);
         image = new BufferedImage(SCENE_WIDTH, SCENE_HEIGHT, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
         screen = new Screen(

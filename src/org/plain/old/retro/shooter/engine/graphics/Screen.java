@@ -79,8 +79,12 @@ public class Screen {
     }
 
     int even = 0;
+
+    boolean flick = false;
     private int[][] map;
+
     private int width;
+
     private int height;
 
     private List<Sprite> textures;
@@ -89,13 +93,7 @@ public class Screen {
 
     private Rays raysCasted;
 
-    public Screen(int[][] map, int width, int height, List<Sprite> textures) {
-        this.map = map;
-        this.width = width;
-        this.height = height;
-        this.textures = textures;
-        this.raysCasted = new Rays();
-    }
+    boolean[] screenMask;
 
     public Screen(int[][] map, int width, int height, List<Sprite> textures, Camera playerCamera) {
         this.map = map;
@@ -123,16 +121,19 @@ public class Screen {
             double floorY = playerCamera.getPosition().getY() + rowDistance * rayDirLeft.getY();
 
             for (int x = even; x < this.width - even; x+= 1 + even) {
-                int cellX = (int)(floorX);
-                int cellY = (int)(floorY);
-                int tx = (int)(textures.get(floorTexture).getWidth() * Math.abs(floorX - cellX));
-                int ty = (int)(textures.get(floorTexture).getHeight() * Math.abs(floorY - cellY));
+                double cellX = Math.abs(floorX - (int)(floorX));
+                double cellY = Math.abs(floorY - (int)(floorY));
+                floorX += floorStepX;
+                floorY += floorStepY;
+
+                if (this.screenMask[x + y * width]) continue;
+                else this.screenMask[x + y * width] = true;
+
+                int tx = (int)(textures.get(floorTexture).getWidth() * cellX);
+                int ty = (int)(textures.get(floorTexture).getHeight() * cellY);
                 int colorFloor = textures.get(floorTexture).getPixelSafty(tx, ty);
 
                 pixels[x + y * width] = colorFloor;
-
-                floorX += floorStepX;
-                floorY += floorStepY;
             }
         }
 
@@ -157,16 +158,19 @@ public class Screen {
             double ceilingY = playerCamera.getPosition().getY() + rowDistance * rayDirLeft.getY();
 
             for (int x = even; x < this.width - even; x+= 1 + even) {
-                int cellX = (int)(ceilingX);
-                int cellY = (int)(ceilingY);
-                int tx = (int)(textures.get(ceilingTexture).getWidth() * Math.abs(ceilingX - cellX));
-                int ty = (int)(textures.get(ceilingTexture).getHeight() * Math.abs(ceilingY - cellY));
+                double cellX = Math.abs(ceilingX - (int)(ceilingX));
+                double cellY = Math.abs(ceilingY - (int)(ceilingY));
+                ceilingX += ceilingStepX;
+                ceilingY += ceilingStepY;
+
+                if (this.screenMask[x + y * width]) continue;
+                else this.screenMask[x + y * width] = true;
+
+                int tx = (int)(textures.get(ceilingTexture).getWidth() * cellX);
+                int ty = (int)(textures.get(ceilingTexture).getHeight() * cellY);
                 int colorCeiling = textures.get(ceilingTexture).getPixelSafty(tx, ty);
 
                 pixels[x + y * width] = colorCeiling;
-
-                ceilingX += ceilingStepX;
-                ceilingY += ceilingStepY;
             }
         }
 
@@ -201,7 +205,7 @@ public class Screen {
         }
         rys.setMaxRayLength(maxRayLEngth);
         this.raysCasted = rys;
-        //this.raysCasted.setMaxRayLength(maxRayLEngth);
+        this.raysCasted.setMaxRayLength(maxRayLEngth);
     }
 
     public int[] renderWall(int[] pixels, Camera playerCamera) {
@@ -239,6 +243,9 @@ public class Screen {
             int imgPixYStart = height >= wallHeight ? 0 : (int) ((((wallHeight >> 1)) - (height >> 1)) * imgPixYSize);
 
             for (int y = drawStart + even; y < drawEnd - even; y+= 1 + even) {
+                if (this.screenMask[x + y * width]) continue;
+                else this.screenMask[x + y * width] = true;
+
                 int texY = imgPixYStart + (int)(((y - drawStart) * imgPixYSize));
                 int color = textures.get(texNum).getPixelSafty(texX, texY);
                 pixels[x + y * width] = color;
@@ -363,10 +370,12 @@ public class Screen {
                         ConcurrentSkipListSet<Enemy> enemies,
                         ConcurrentSkipListSet<Bullet> bullets,
                         Collection<Unit> players) {
-        //this.rayCast(playerCamera);
+        this.screenMask = new boolean[pixels.length];
+        if (this.flick) this.even ^= 1;
+
+        pixels = this.renderWall(pixels, playerCamera);
         pixels = this.renderFloor(pixels, playerCamera);
         pixels = this.renderCeiling(pixels, playerCamera);
-        pixels = this.renderWall(pixels, playerCamera);
         pixels = this.renderUnit(
                 pixels,
                 playerCamera,
@@ -379,5 +388,9 @@ public class Screen {
         pixels = this.renderGun(pixels, gun.getSprite());
 
         return pixels;
+    }
+
+    public void clickFlick() {
+        this.flick ^= true;
     }
 }
