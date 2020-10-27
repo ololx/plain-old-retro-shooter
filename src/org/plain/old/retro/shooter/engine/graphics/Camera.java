@@ -56,14 +56,21 @@ public class Camera extends GeneralPlayer {
 
     private final double angle;
 
+    private double distanceToPlain;
+
     {
         z = 0.0;
+    }
+
+    public Camera(double x, double y, double x2, double y2, int width, int height, int angle) {
+        this(x, y, x2, y2, width, height, Math.toRadians(angle));
     }
 
     public Camera(double x, double y, double x2, double y2, int width, int height, double angle) {
         super(x, y, x2, y2);
         this.plain = new CameraPlane(width, height);
         this.angle = angle;
+        this.distanceToPlain = (width / 2) / Math.tan(angle / 2);
 
         rotations = new RotationMatrix2d[plain.getWidth()];
 
@@ -115,5 +122,9 @@ public class Camera extends GeneralPlayer {
 
     public double getHorizont() {
         return this.z * this.getPlain().getHeight();
+    }
+
+    public double getDistanceToPlain() {
+        return this.distanceToPlain;
     }
 }

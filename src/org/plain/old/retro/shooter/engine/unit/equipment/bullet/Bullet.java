@@ -24,6 +24,7 @@ public class Bullet extends AbstractUnit {
         super(x, y, radius, texture);
         this.direction = new Vector2d(x2, y2);
         this.movementVector = new Vector2d(moveStep, moveStep);
+        this.aligement = ALIGNEMENT.CENTER;
     }
 
     public void move(int[][] space) {

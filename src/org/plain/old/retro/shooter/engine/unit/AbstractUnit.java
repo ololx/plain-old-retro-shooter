@@ -5,6 +5,8 @@ import org.plain.old.retro.shooter.engine.graphics.Sprite;
 
 import java.util.UUID;
 
+import static org.plain.old.retro.shooter.engine.unit.Unit.ALIGNEMENT.BOTTOM;
+
 /**
  * @project plain-old-retro-shooter
  * @created 08.08.2020 17:53
@@ -12,6 +14,8 @@ import java.util.UUID;
  * @author Alexander A. Kropotin
  */
 public class AbstractUnit implements Unit, RegisterEntity, Comparable<RegisterEntity>  {
+
+    protected ALIGNEMENT aligement = BOTTOM;
 
     protected Vector2d position;
 
@@ -29,6 +33,11 @@ public class AbstractUnit implements Unit, RegisterEntity, Comparable<RegisterEn
         this.position = new Vector2d(x, y);
         this.texture = texture;
         this.radius = radius;
+    }
+
+    @Override
+    public ALIGNEMENT getAligement() {
+        return this.aligement;
     }
 
     public Vector2d getPosition() {
