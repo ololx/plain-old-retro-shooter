@@ -11,7 +11,7 @@ import org.plain.old.retro.shooter.engine.graphics.Sprite;
  */
 public interface BulletFactory {
 
-    Sprite SPRITE = new Sprite("src/resources/fire-ball.png", 0.25, 0.25);
+    Sprite SPRITE = new Sprite("src/resources/fire-ball.png",1.5 , 1.5);
 
     static Bullet getInstance(Vector2d position, Vector2d direction) {
         return new Bullet(

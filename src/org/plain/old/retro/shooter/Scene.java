@@ -123,17 +123,17 @@ public class Scene extends JFrame {
             put(KeyEvent.VK_R, "RELOAD");
         }});
         this.enemies = new ConcurrentSkipListSet<>(){{
-            add(new Enemy(7.5, 7.5, new Sprite("src/resources/enemy-1.png")));
-            add(new Enemy(25.5, 3.5, new Sprite("src/resources/enemy-1.png")));
-            add(new Enemy(21.5, 7.5, new Sprite("src/resources/enemy-1.png")));
-            add(new Enemy(22.5, 6.5, new Sprite("src/resources/enemy-2.png")));
-            add(new Enemy(23.5, 7.5, new Sprite("src/resources/enemy-2.png")));
-            add(new Enemy(20.5, 12.5, new Sprite("src/resources/enemy-2.png")));
-            add(new Enemy(5.5, 10.5, new Sprite("src/resources/enemy-3.png")));
-            add(new Enemy(14.5, 19.5, new Sprite("src/resources/enemy-3.png")));
-            add(new Enemy(12.5, 10.5, new Sprite("src/resources/enemy-3.png")));
+            add(new Enemy(7.5, 7.5, new Sprite("src/resources/enemy-1.png",1.3 , 1.3)));
+            add(new Enemy(25.5, 3.5, new Sprite("src/resources/enemy-1.png",1.3 , 1.3)));
+            add(new Enemy(21.5, 7.5, new Sprite("src/resources/enemy-1.png",1.3 , 1.3)));
+            add(new Enemy(22.5, 6.5, new Sprite("src/resources/enemy-2.png",1.3 , 1.3)));
+            add(new Enemy(23.5, 7.5, new Sprite("src/resources/enemy-2.png",1.3 , 1.3)));
+            add(new Enemy(20.5, 12.5, new Sprite("src/resources/enemy-2.png",1.3 , 1.3)));
+            add(new Enemy(5.5, 10.5, new Sprite("src/resources/enemy-3.png",1.3 , 1.3)));
+            add(new Enemy(14.5, 19.5, new Sprite("src/resources/enemy-3.png",1.3 , 1.3)));
+            add(new Enemy(12.5, 10.5, new Sprite("src/resources/enemy-3.png",1.3 , 1.3)));
         }};
-        mainPlayer = new Camera(1, 2, 1, 0, SCENE_WIDTH, SCENE_HEIGHT, 0.9);
+        mainPlayer = new Camera(1, 2, 1, 0, SCENE_WIDTH, SCENE_HEIGHT, 60);
         image = new BufferedImage(SCENE_WIDTH, SCENE_HEIGHT, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
         screen = new Screen(
@@ -306,7 +306,7 @@ public class Scene extends JFrame {
                     add(5);
                 }},
                 0
-                );
+        );
         this.renderTemp.start();
         this.sceneTemp.start();
         this.clientTemp.start();

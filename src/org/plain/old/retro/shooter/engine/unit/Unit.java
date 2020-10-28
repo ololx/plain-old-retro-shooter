@@ -13,6 +13,14 @@ import java.io.Serializable;
  */
 public interface Unit extends Serializable {
 
+    enum ALIGNEMENT {
+        TOP,
+        BOTTOM,
+        CENTER
+    };
+
+    ALIGNEMENT getAligement();
+
     Vector2d getPosition();
 
     Sprite getSprite();

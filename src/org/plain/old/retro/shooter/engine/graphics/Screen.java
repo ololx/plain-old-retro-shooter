@@ -79,8 +79,12 @@ public class Screen {
     }
 
     int even = 0;
+
+    boolean flick = false;
     private int[][] map;
+
     private int width;
+
     private int height;
 
     private List<Sprite> textures;
@@ -89,13 +93,7 @@ public class Screen {
 
     private Rays raysCasted;
 
-    public Screen(int[][] map, int width, int height, List<Sprite> textures) {
-        this.map = map;
-        this.width = width;
-        this.height = height;
-        this.textures = textures;
-        this.raysCasted = new Rays();
-    }
+    boolean[] screenMask;
 
     public Screen(int[][] map, int width, int height, List<Sprite> textures, Camera playerCamera) {
         this.map = map;
@@ -113,7 +111,7 @@ public class Screen {
 
         int drawStart = (int) (((this.height) >> 1) + playerCamera.getHorizont());
         int drawEnd = this.height;
-        for (int y = drawStart + even; y < drawEnd - even; y+= 1 + even) {
+        for (int y = drawStart; y < drawEnd; y++) {
             double posZ = drawStart;
             int p = (int) y - drawStart;
             double rowDistance = posZ / p;
@@ -122,17 +120,22 @@ public class Screen {
             double floorX = playerCamera.getPosition().getX() + rowDistance * rayDirLeft.getX();
             double floorY = playerCamera.getPosition().getY() + rowDistance * rayDirLeft.getY();
 
+            if (y == drawEnd - 100) System.err.println(floorStepX);
+
             for (int x = even; x < this.width - even; x+= 1 + even) {
-                int cellX = (int)(floorX);
-                int cellY = (int)(floorY);
-                int tx = (int)(textures.get(floorTexture).getWidth() * Math.abs(floorX - cellX));
-                int ty = (int)(textures.get(floorTexture).getHeight() * Math.abs(floorY - cellY));
+                double cellX = Math.abs(floorX - (int)(floorX));
+                double cellY = Math.abs(floorY - (int)(floorY));
+                floorX += floorStepX;
+                floorY += floorStepY;
+
+                if (this.screenMask[x + y * width]) continue;
+                else this.screenMask[x + y * width] = true;
+
+                int tx = (int)(textures.get(floorTexture).getWidth() * cellX);
+                int ty = (int)(textures.get(floorTexture).getHeight() * cellY);
                 int colorFloor = textures.get(floorTexture).getPixelSafty(tx, ty);
 
                 pixels[x + y * width] = colorFloor;
-
-                floorX += floorStepX;
-                floorY += floorStepY;
             }
         }
 
@@ -146,7 +149,7 @@ public class Screen {
 
         int drawStart = 0;
         int drawEnd = (int) (((this.height) >> 1) + playerCamera.getHorizont());
-        for (int y = drawStart + even; y < drawEnd - even; y+= 1 + even) {
+        for (int y = drawStart; y < drawEnd; y++) {
             double posZ = drawEnd;
             int p = (int) drawEnd - y;
             double rowDistance = posZ / p;
@@ -157,16 +160,19 @@ public class Screen {
             double ceilingY = playerCamera.getPosition().getY() + rowDistance * rayDirLeft.getY();
 
             for (int x = even; x < this.width - even; x+= 1 + even) {
-                int cellX = (int)(ceilingX);
-                int cellY = (int)(ceilingY);
-                int tx = (int)(textures.get(ceilingTexture).getWidth() * Math.abs(ceilingX - cellX));
-                int ty = (int)(textures.get(ceilingTexture).getHeight() * Math.abs(ceilingY - cellY));
+                double cellX = Math.abs(ceilingX - (int)(ceilingX));
+                double cellY = Math.abs(ceilingY - (int)(ceilingY));
+                ceilingX += ceilingStepX;
+                ceilingY += ceilingStepY;
+
+                if (this.screenMask[x + y * width]) continue;
+                else this.screenMask[x + y * width] = true;
+
+                int tx = (int)(textures.get(ceilingTexture).getWidth() * cellX);
+                int ty = (int)(textures.get(ceilingTexture).getHeight() * cellY);
                 int colorCeiling = textures.get(ceilingTexture).getPixelSafty(tx, ty);
 
                 pixels[x + y * width] = colorCeiling;
-
-                ceilingX += ceilingStepX;
-                ceilingY += ceilingStepY;
             }
         }
 
@@ -174,7 +180,7 @@ public class Screen {
     }
 
     public void rayCast(Camera playerCamera) {
-        double maxRayLEngth = 0;
+        double maxRayLength = 0;
         Rays rys = new Rays();
         for (int x = even; x < width - even; x+= 1 + even) {
             Matrix2d rayRot = playerCamera.getRotationMatrix(x);
@@ -190,18 +196,15 @@ public class Screen {
                 rayPos = rayPos.add(rayDir.multiply(steps));
             }
 
-            double rayLength = Math.hypot(
-                    rayPos.getX() - playerCamera.getPosition().getX(),
-                    rayPos.getY() - playerCamera.getPosition().getY()
-            );
+            double rayLength = (playerCamera.getPosition().subtract(rayPos).getModule() * rayRot.getX1()) + 0.001;
 
             rys.setRay(x, new Ray(rayPos, rayDir, rayLength));
 
-            maxRayLEngth = rayLength > maxRayLEngth ? rayLength : maxRayLEngth;
+            maxRayLength = rayLength > maxRayLength ? rayLength : maxRayLength;
         }
-        rys.setMaxRayLength(maxRayLEngth);
+        rys.setMaxRayLength(maxRayLength);
         this.raysCasted = rys;
-        //this.raysCasted.setMaxRayLength(maxRayLEngth);
+        this.raysCasted.setMaxRayLength(maxRayLength);
     }
 
     public int[] renderWall(int[] pixels, Camera playerCamera) {
@@ -211,13 +214,16 @@ public class Screen {
             Vector2d rayDir = this.raysCasted.getRay(x).getDirection();
             double rayLength = this.raysCasted.getRay(x).getLength();
 
-            int wallHeight = (rayLength == 0) ? height : (int) ((height / (rayLength * rayRot.getX1())));
+            int wallHeight = (int) (height * (height / ((rayLength) * playerCamera.getDistanceToPlain())));
 
-            int drawStart = (int) (-(wallHeight >> 1) + (height >> 1) + playerCamera.getHorizont());
-            if (drawStart < 0) drawStart = 0;
-
-            int drawEnd = (int) ((wallHeight >> 1) + (height >> 1) + playerCamera.getHorizont());
-            if (drawEnd >= height) drawEnd = height;
+            int drawStart = SimpleMath.max(
+                    (int) (-(wallHeight >> 1) + (height >> 1) + playerCamera.getHorizont()),
+                    0
+            );
+            int drawEnd = SimpleMath.min(
+                    (int) ((wallHeight >> 1) + (height >> 1) + playerCamera.getHorizont()),
+                    height
+            );
 
             int texNum = SimpleMath.max(map[(int) rayPos.getX()][(int) rayPos.getY()] - 1, 0);
 
@@ -239,6 +245,9 @@ public class Screen {
             int imgPixYStart = height >= wallHeight ? 0 : (int) ((((wallHeight >> 1)) - (height >> 1)) * imgPixYSize);
 
             for (int y = drawStart + even; y < drawEnd - even; y+= 1 + even) {
+                if (this.screenMask[x + y * width]) continue;
+                else this.screenMask[x + y * width] = true;
+
                 int texY = imgPixYStart + (int)(((y - drawStart) * imgPixYSize));
                 int color = textures.get(texNum).getPixelSafty(texX, texY);
                 pixels[x + y * width] = color;
@@ -301,17 +310,41 @@ public class Screen {
             double angles = angleStep * (angleToUnitLeft);
             double rayLength = unit.getDistanceToCurrentObject();
 
-            int unitHeight = (rayLength == 0) ? sprite.getHeight() : (int) ((int) (sprite.getHeight() / (rayLength)));
+            int unitHeight = (int) (sprite.getHeight() * (sprite.getHeight() / ((rayLength + 0.0001) * playerCamera.getDistanceToPlain())));
+
+            //int unitHeight = (rayLength == 0) ? sprite.getHeight() : (int) ((int) (sprite.getHeight() / (rayLength)));
             if (unitHeight > sprite.getHeight()) unitHeight = sprite.getHeight();
 
-            int unitWidth = (rayLength == 0) ? sprite.getWidth() : (int) ((int) (sprite.getWidth() / (rayLength)));
+            int unitWidth = (int) (sprite.getWidth() * (sprite.getWidth() / ((rayLength + 0.0001) * playerCamera.getDistanceToPlain())));
+            //int unitWidth = (rayLength == 0) ? sprite.getWidth() : (int) ((int) (sprite.getWidth() / (rayLength)));
             if (unitWidth > sprite.getWidth()) unitWidth = sprite.getWidth();
 
-            int drawYStart = (int) (-(unitHeight >> 1) + (height >> 1) + playerCamera.getHorizont());
-            if (drawYStart < 0) drawYStart = 0;
-
-            int drawYEnd = (int) ((unitHeight >> 1) + (height >> 1) + playerCamera.getHorizont());
-            if (drawYEnd >= height) drawYEnd = height;
+            int drawYStart = 0;
+            int drawYEnd = 0;
+            if (unit.getAligement().equals(Unit.ALIGNEMENT.CENTER)) {
+                drawYStart = SimpleMath.max(
+                        (int) (-(unitHeight >> 1) + (height >> 1) + playerCamera.getHorizont()),
+                        0
+                );
+                drawYEnd = SimpleMath.min(
+                        (int) ((unitHeight >> 1) + (height >> 1) + playerCamera.getHorizont()),
+                        height
+                );
+            } else if (unit.getAligement().equals(Unit.ALIGNEMENT.BOTTOM)) {
+                int wallHeight = (int) (height * (height / ((rayLength) * playerCamera.getDistanceToPlain())));
+                int drawEnd = SimpleMath.min(
+                        (int) ((wallHeight >> 1) + (height >> 1) + playerCamera.getHorizont()),
+                        height
+                );
+                drawYStart = SimpleMath.max(
+                        drawEnd - unitHeight,
+                        0
+                );
+                drawYEnd = SimpleMath.min(
+                        drawEnd,
+                        height
+                );
+            }
 
             double imgPixYSize = 1.0 * sprite.getHeight() / unitHeight;
             int drawXStart = (int)angles - (unitWidth >> 1);
@@ -363,10 +396,12 @@ public class Screen {
                         ConcurrentSkipListSet<Enemy> enemies,
                         ConcurrentSkipListSet<Bullet> bullets,
                         Collection<Unit> players) {
-        //this.rayCast(playerCamera);
+        this.screenMask = new boolean[pixels.length];
+        if (this.flick) this.even ^= 1;
+
+        pixels = this.renderWall(pixels, playerCamera);
         pixels = this.renderFloor(pixels, playerCamera);
         pixels = this.renderCeiling(pixels, playerCamera);
-        pixels = this.renderWall(pixels, playerCamera);
         pixels = this.renderUnit(
                 pixels,
                 playerCamera,
@@ -379,5 +414,9 @@ public class Screen {
         pixels = this.renderGun(pixels, gun.getSprite());
 
         return pixels;
+    }
+
+    public void clickFlick() {
+        this.flick ^= true;
     }
 }
