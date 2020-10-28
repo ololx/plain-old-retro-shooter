@@ -120,6 +120,8 @@ public class Screen {
             double floorX = playerCamera.getPosition().getX() + rowDistance * rayDirLeft.getX();
             double floorY = playerCamera.getPosition().getY() + rowDistance * rayDirLeft.getY();
 
+            if (y == drawEnd - 100) System.err.println(floorStepX);
+
             for (int x = even; x < this.width - even; x+= 1 + even) {
                 double cellX = Math.abs(floorX - (int)(floorX));
                 double cellY = Math.abs(floorY - (int)(floorY));
@@ -178,7 +180,7 @@ public class Screen {
     }
 
     public void rayCast(Camera playerCamera) {
-        double maxRayLEngth = 0;
+        double maxRayLength = 0;
         Rays rys = new Rays();
         for (int x = even; x < width - even; x+= 1 + even) {
             Matrix2d rayRot = playerCamera.getRotationMatrix(x);
@@ -186,7 +188,7 @@ public class Screen {
             Vector2d rayPos = playerCamera.getPosition().clone();
 
             boolean hit = false;
-            double steps = 0.005;
+            double steps = 0.01;
             while (!hit) {
                 if ((int) rayPos.getX() > map.length || (int) rayPos.getY() > map[0].length) hit = true;
                 else if (map[(int) rayPos.getX()][(int) rayPos.getY()] != 0) hit = true;
@@ -198,11 +200,11 @@ public class Screen {
 
             rys.setRay(x, new Ray(rayPos, rayDir, rayLength));
 
-            maxRayLEngth = rayLength > maxRayLEngth ? rayLength : maxRayLEngth;
+            maxRayLength = rayLength > maxRayLength ? rayLength : maxRayLength;
         }
-        rys.setMaxRayLength(maxRayLEngth);
+        rys.setMaxRayLength(maxRayLength);
         this.raysCasted = rys;
-        this.raysCasted.setMaxRayLength(maxRayLEngth);
+        this.raysCasted.setMaxRayLength(maxRayLength);
     }
 
     public int[] renderWall(int[] pixels, Camera playerCamera) {
