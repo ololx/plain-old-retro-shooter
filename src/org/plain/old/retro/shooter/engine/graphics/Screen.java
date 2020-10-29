@@ -120,8 +120,6 @@ public class Screen {
             double floorX = playerCamera.getPosition().getX() + rowDistance * rayDirLeft.getX();
             double floorY = playerCamera.getPosition().getY() + rowDistance * rayDirLeft.getY();
 
-            if (y == drawEnd - 100) System.err.println(floorStepX);
-
             for (int x = even; x < this.width - even; x+= 1 + even) {
                 double cellX = Math.abs(floorX - (int)(floorX));
                 double cellY = Math.abs(floorY - (int)(floorY));
