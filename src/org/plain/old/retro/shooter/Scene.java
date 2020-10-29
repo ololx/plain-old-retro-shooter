@@ -6,7 +6,7 @@ import org.plain.old.retro.shooter.engine.clock.LowIntensiveClock;
 import org.plain.old.retro.shooter.engine.graphics.Camera;
 import org.plain.old.retro.shooter.engine.graphics.Screen;
 import org.plain.old.retro.shooter.engine.graphics.Sprite;
-import org.plain.old.retro.shooter.engine.listener.KeyboardController;
+import org.plain.old.retro.shooter.engine.listener.InputController;
 import org.plain.old.retro.shooter.engine.physics.BulletHitScanner;
 import org.plain.old.retro.shooter.engine.unit.Enemy;
 import org.plain.old.retro.shooter.engine.unit.RegisterEntity;
@@ -18,6 +18,7 @@ import org.plain.old.retro.shooter.multi.Client;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -110,18 +111,7 @@ public class Scene extends JFrame {
                         {1,1,1,1,1,1,1,4,4,4,4,4,4,4,4}
                 }
         );
-        KeyboardController controller = new KeyboardController(new HashMap<Integer, String>(){{
-            put(KeyEvent.VK_W, "MV_FWD");
-            put(KeyEvent.VK_S, "MV_BWD");
-            put(KeyEvent.VK_A, "TN_LFT");
-            put(KeyEvent.VK_D, "TN_RGT");
-            put(KeyEvent.VK_LEFT, "MV_LFT");
-            put(KeyEvent.VK_RIGHT, "MV_RHT");
-            put(KeyEvent.VK_UP, "MV_UP");
-            put(KeyEvent.VK_DOWN, "MV_DOWN");
-            put(KeyEvent.VK_SPACE, "SHOT");
-            put(KeyEvent.VK_R, "RELOAD");
-        }});
+
         this.enemies = new ConcurrentSkipListSet<>(){{
             add(new Enemy(7.5, 7.5, new Sprite("src/resources/enemy-1.png",1.3 , 1.3)));
             add(new Enemy(25.5, 3.5, new Sprite("src/resources/enemy-1.png",1.3 , 1.3)));
@@ -150,8 +140,12 @@ public class Scene extends JFrame {
                 }},
                 mainPlayer
         );
-        this.setSize(SCENE_WIDTH, SCENE_HEIGHT);
-        addKeyListener(controller);
+        setSize(SCENE_WIDTH, SCENE_HEIGHT);
+        setCursor(Toolkit.getDefaultToolkit().createCustomCursor(
+                new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB),
+                new Point(0, 0),
+                "blank")
+        );
         setSize(image.getWidth(), image.getHeight());
         setResizable(true);
         setTitle("The Plain Old Retro Shooter");
@@ -159,6 +153,35 @@ public class Scene extends JFrame {
         setBackground(Color.black);
         setLocationRelativeTo(null);
         setVisible(true);
+
+        Point center = getLocationOnScreen();
+        center.setLocation(
+                center.x + (this.getWidth() >> 1),
+                center.y + (this.getHeight() >> 1)
+        );
+
+        InputController controller = new InputController(new HashMap<Integer, String>(){{
+            put(KeyEvent.VK_W, "MV_FWD");
+            put(KeyEvent.VK_S, "MV_BWD");
+            put(KeyEvent.VK_A, "TN_LFT");
+            put(KeyEvent.VK_D, "TN_RGT");
+            put(KeyEvent.VK_LEFT, "MV_LFT");
+            put(MouseEvent.MOUSE_MOVED + 1, "MV_LFT2");
+            put(MouseEvent.MOUSE_MOVED + 2, "MV_RHT2");
+            put(KeyEvent.VK_RIGHT, "MV_RHT");
+            put(KeyEvent.VK_UP, "MV_UP");
+            put(KeyEvent.VK_DOWN, "MV_DOWN");
+            put(KeyEvent.VK_SPACE, "SHOT");
+            put(KeyEvent.VK_R, "RELOAD");
+        }},
+                center
+        );
+
+        addKeyListener(controller);
+        addMouseListener(controller);
+        addMouseMotionListener(controller);
+
+        System.out.println(center);
 
         this.sceneTemp = new LowIntensiveClock(
                 30,
@@ -178,7 +201,15 @@ public class Scene extends JFrame {
                                 mainPlayer.moveLeft();
                             }
 
+                            if (state.getKey().equals("MV_LFT2")) {
+                                mainPlayer.moveLeft();
+                            }
+
                             if (state.getKey().equals("MV_RHT")) {
+                                mainPlayer.moveRight();
+                            }
+
+                            if (state.getKey().equals("MV_RHT2")) {
                                 mainPlayer.moveRight();
                             }
 
