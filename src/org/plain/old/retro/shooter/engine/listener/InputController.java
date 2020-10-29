@@ -66,7 +66,7 @@ public class InputController implements KeyListener, FocusListener, MouseMotionL
     }
 
     public Map<String, Boolean> getState() {
-        this.mouseMovePick();
+        this.mouseMove();
         return this.state;
     }
 
@@ -85,19 +85,7 @@ public class InputController implements KeyListener, FocusListener, MouseMotionL
      */
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (e.getXOnScreen() > this.center.x) {
-            this.right = true;
-            this.left = false;
-        } else if (e.getXOnScreen() < this.center.x) {
-            this.right = false;
-            this.left = true;
-        } else {
-            this.right = false;
-            this.left = false;
-        }
-
-        this.state.put(this.keys.get(KeyEvent.VK_LEFT), left);
-        this.state.put(this.keys.get(KeyEvent.VK_RIGHT), right);
+        this.mouseMoverHorizont(e);
     }
 
     /**
@@ -108,19 +96,7 @@ public class InputController implements KeyListener, FocusListener, MouseMotionL
      */
     @Override
     public void mouseMoved(MouseEvent e) {
-        if (e.getXOnScreen() > this.center.x) {
-            this.right = true;
-            this.left = false;
-        } else if (e.getXOnScreen() < this.center.x) {
-            this.right = false;
-            this.left = true;
-        } else {
-            this.right = false;
-            this.left = false;
-        }
-
-        this.state.put(this.keys.get(MouseEvent.MOUSE_MOVED + 1), left);
-        this.state.put(this.keys.get(MouseEvent.MOUSE_MOVED + 2), right);
+        this.mouseMoverHorizont(e);
     }
 
     /**
@@ -170,8 +146,7 @@ public class InputController implements KeyListener, FocusListener, MouseMotionL
      */
     @Override
     public void mouseExited(MouseEvent e) {
-        //this.mouseMovePick();
-        //robot.mouseMove(this.center.x, this.center.y);
+        this.mouseMove();
     }
 
     /**
@@ -192,7 +167,23 @@ public class InputController implements KeyListener, FocusListener, MouseMotionL
     public void focusLost(FocusEvent e) {
     }
 
-    private void mouseMovePick() {
+    private void mouseMove() {
         robot.mouseMove(this.center.x, this.center.y);
+    }
+
+    private void mouseMoverHorizont(MouseEvent e) {
+        if (e.getXOnScreen() > this.center.x) {
+            this.right = true;
+            this.left = false;
+        } else if (e.getXOnScreen() < this.center.x) {
+            this.right = false;
+            this.left = true;
+        } else {
+            this.right = false;
+            this.left = false;
+        }
+
+        this.state.put(this.keys.get(MouseEvent.MOUSE_MOVED + 1), left);
+        this.state.put(this.keys.get(MouseEvent.MOUSE_MOVED + 2), right);
     }
 }
