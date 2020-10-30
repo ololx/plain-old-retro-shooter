@@ -173,17 +173,14 @@ public class InputController implements KeyListener, FocusListener, MouseMotionL
 
     private void mouseMoverHorizont(MouseEvent e) {
         if (e.getXOnScreen() > this.center.x) {
-            this.right = true;
-            this.left = false;
+            this.state.put(this.keys.get(MouseEvent.MOUSE_MOVED + 1), false);
+            this.state.put(this.keys.get(MouseEvent.MOUSE_MOVED + 2), true);
         } else if (e.getXOnScreen() < this.center.x) {
-            this.right = false;
-            this.left = true;
+            this.state.put(this.keys.get(MouseEvent.MOUSE_MOVED + 1), true);
+            this.state.put(this.keys.get(MouseEvent.MOUSE_MOVED + 2), false);
         } else {
-            this.right = false;
-            this.left = false;
+            this.state.put(this.keys.get(MouseEvent.MOUSE_MOVED + 1), false);
+            this.state.put(this.keys.get(MouseEvent.MOUSE_MOVED + 2), false);
         }
-
-        this.state.put(this.keys.get(MouseEvent.MOUSE_MOVED + 1), left);
-        this.state.put(this.keys.get(MouseEvent.MOUSE_MOVED + 2), right);
     }
 }
