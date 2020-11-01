@@ -4,15 +4,26 @@ import org.plain.old.retro.shooter.engine.calculus.linear.Vector2d;
 import org.plain.old.retro.shooter.engine.graphics.Sprite;
 
 /**
- * @project plain-old-retro-shooter
- * @created 31.07.2020 09:33
- * <p>
+ * The interface Bullet factory.
+ *
  * @author Alexander A. Kropotin
+ * @project plain -old-retro-shooter
+ * @created 31.07.2020 09:33 <p>
  */
 public interface BulletFactory {
 
+    /**
+     * The constant SPRITE.
+     */
     Sprite SPRITE = new Sprite("src/resources/fire-ball.png",1.5 , 1.5);
 
+    /**
+     * Gets instance.
+     *
+     * @param position  the position
+     * @param direction the direction
+     * @return the instance
+     */
     static Bullet getInstance(Vector2d position, Vector2d direction) {
         return new Bullet(
                 position.getX(),

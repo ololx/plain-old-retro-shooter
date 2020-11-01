@@ -10,23 +10,45 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * @project plain-old-retro-shooter
- * @created 25.08.2020 21:21
- * <p>
+ * The type Connection broker.
+ *
  * @author Alexander A. Kropotin
+ * @project plain -old-retro-shooter
+ * @created 25.08.2020 21:21 <p>
  */
 public class ConnectionBroker extends Thread {
 
+    /**
+     * The Producer socket.
+     */
     private final Socket producerSocket;
 
+    /**
+     * The Consumer sockets.
+     */
     private final Set<Socket> consumerSockets;
 
+    /**
+     * The Request message.
+     */
     private Object requestMessage = null;
 
+    /**
+     * The In.
+     */
     private ObjectInputStream in = null;
 
+    /**
+     * The Out.
+     */
     private ObjectOutputStream out = null;
 
+    /**
+     * Instantiates a new Connection broker.
+     *
+     * @param producerSocket  the producer socket
+     * @param consumerSockets the consumer sockets
+     */
     public ConnectionBroker(Socket producerSocket, Set<Socket> consumerSockets) {
         Objects.requireNonNull(producerSocket);
         Objects.requireNonNull(consumerSockets);
@@ -34,6 +56,9 @@ public class ConnectionBroker extends Thread {
         this.consumerSockets = consumerSockets;
     }
 
+    /**
+     * Run.
+     */
     @Override
     public void run() {
         List<ObjectOutputStream> writers = new ArrayList<>();

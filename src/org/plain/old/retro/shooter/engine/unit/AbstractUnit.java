@@ -8,58 +8,122 @@ import java.util.UUID;
 import static org.plain.old.retro.shooter.engine.unit.Unit.ALIGNEMENT.BOTTOM;
 
 /**
- * @project plain-old-retro-shooter
- * @created 08.08.2020 17:53
- * <p>
+ * The type Abstract unit.
+ *
  * @author Alexander A. Kropotin
+ * @project plain -old-retro-shooter
+ * @created 08.08.2020 17:53 <p>
  */
 public class AbstractUnit implements Unit, RegisterEntity, Comparable<RegisterEntity>  {
 
+    /**
+     * The Aligement.
+     */
     protected ALIGNEMENT aligement = BOTTOM;
 
+    /**
+     * The Position.
+     */
     protected Vector2d position;
 
+    /**
+     * The Radius.
+     */
     protected double radius;
 
+    /**
+     * The Distance to object.
+     */
     protected double distanceToObject;
 
+    /**
+     * The Is exist.
+     */
     protected boolean isExist = true;
 
+    /**
+     * The Texture.
+     */
     protected Sprite texture;
 
+    /**
+     * The Uid.
+     */
     private final UUID uid = UUID.randomUUID();
 
+    /**
+     * Instantiates a new Abstract unit.
+     *
+     * @param x       the x
+     * @param y       the y
+     * @param radius  the radius
+     * @param texture the texture
+     */
     public AbstractUnit(double x, double y, double radius, Sprite texture) {
         this.position = new Vector2d(x, y);
         this.texture = texture;
         this.radius = radius;
     }
 
+    /**
+     * Gets aligement.
+     *
+     * @return the aligement
+     */
     @Override
     public ALIGNEMENT getAligement() {
         return this.aligement;
     }
 
+    /**
+     * Gets position.
+     *
+     * @return the position
+     */
     public Vector2d getPosition() {
         return this.position;
     }
 
+    /**
+     * Gets sprite.
+     *
+     * @return the sprite
+     */
     public Sprite getSprite() {
         return texture;
     }
 
+    /**
+     * Gets radius.
+     *
+     * @return the radius
+     */
     public double getRadius() {
         return this.radius;
     }
 
+    /**
+     * Is exist boolean.
+     *
+     * @return the boolean
+     */
     public boolean isExist() {
         return this.isExist;
     }
 
+    /**
+     * Destroy.
+     */
     public void destroy() {
         this.isExist = false;
     }
 
+    /**
+     * Calculate distance to current object double.
+     *
+     * @param otherObjectPosition the other object position
+     * @return the double
+     */
     public double calculateDistanceToCurrentObject(Vector2d otherObjectPosition) {
         this.distanceToObject = Math.hypot(
                 Math.abs(otherObjectPosition.getX() - this.position.getX()),
@@ -69,14 +133,30 @@ public class AbstractUnit implements Unit, RegisterEntity, Comparable<RegisterEn
         return this.getDistanceToCurrentObject();
     }
 
+    /**
+     * Gets distance to current object.
+     *
+     * @return the distance to current object
+     */
     public double getDistanceToCurrentObject() {
         return this.distanceToObject;
     }
 
+    /**
+     * Sets position.
+     *
+     * @param x the x
+     * @param y the y
+     */
     public void setPosition(double x, double y) {
         this.position = new Vector2d(x, y);
     }
 
+    /**
+     * Gets uid.
+     *
+     * @return the uid
+     */
     @Override
     public UUID getUid() {
         return this.uid;
@@ -115,11 +195,9 @@ public class AbstractUnit implements Unit, RegisterEntity, Comparable<RegisterEn
      * <i>expression</i> is negative, zero, or positive, respectively.
      *
      * @param obj the object to be compared.
-     * @return a negative integer, zero, or a positive integer as this object
-     * is less than, equal to, or greater than the specified object.
+     * @return a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
      * @throws NullPointerException if the specified object is null
-     * @throws ClassCastException   if the specified object's type prevents it
-     *                              from being compared to this object.
+     * @throws ClassCastException   if the specified object's type prevents it                              from being compared to this object.
      */
     @Override
     public int compareTo(RegisterEntity obj) {

@@ -3,14 +3,12 @@ package org.plain.old.retro.shooter.engine.clock;
 import java.util.Objects;
 
 /**
- * @project plain-old-retro-shooter
- * @created 05.08.2020 10:34
- * <p>
- * @author Alexander A. Kropotin
- *
- * The interface Action.
+ * The interface Clock action.
  *
  * @param <A> the type parameter
+ * @author Alexander A. Kropotin The interface Action.
+ * @project plain -old-retro-shooter
+ * @created 05.08.2020 10:34 <p>
  */
 @FunctionalInterface
 public interface ClockAction<A> {

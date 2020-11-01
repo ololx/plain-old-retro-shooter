@@ -8,52 +8,95 @@ import org.plain.old.retro.shooter.engine.unit.Unit;
 import org.plain.old.retro.shooter.engine.unit.equipment.bullet.Bullet;
 import org.plain.old.retro.shooter.engine.unit.equipment.weapon.BoomStick;
 
-import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Collectors;
 
 /**
- * @project plain-old-retro-shooter
- * @created 05.07.2020 08:37
- * <p>
+ * The type Screen.
+ *
  * @author Alexander A. Kropotin
+ * @project plain -old-retro-shooter
+ * @created 05.07.2020 08:37 <p>
  */
 public class Screen {
 
+    /**
+     * The type Ray.
+     */
     public static class Ray {
 
+        /**
+         * The Position.
+         */
         private final Vector2d position;
 
+        /**
+         * The Direction.
+         */
         private final Vector2d direction;
 
+        /**
+         * The Lendth.
+         */
         private final double lendth;
 
+        /**
+         * Instantiates a new Ray.
+         *
+         * @param position  the position
+         * @param direction the direction
+         * @param lendth    the lendth
+         */
         public Ray(Vector2d position, Vector2d direction, double lendth) {
             this.position = position;
             this.direction = direction;
             this.lendth = lendth;
         }
 
+        /**
+         * Gets position.
+         *
+         * @return the position
+         */
         public Vector2d getPosition() {
             return this.position;
         }
 
+        /**
+         * Gets direction.
+         *
+         * @return the direction
+         */
         public Vector2d getDirection() {
             return this.direction;
         }
 
+        /**
+         * Gets length.
+         *
+         * @return the length
+         */
         public double getLength() {
             return this.lendth;
         }
     }
 
+    /**
+     * The type Rays.
+     */
     public static class Rays {
 
+        /**
+         * The Rays.
+         */
         private List<Ray> rays;
 
+        /**
+         * The Max ray length.
+         */
         private double maxRayLength;
 
         {
@@ -61,40 +104,93 @@ public class Screen {
             this.maxRayLength = 0;
         }
 
+        /**
+         * Sets ray.
+         *
+         * @param index the index
+         * @param ray   the ray
+         */
         public void setRay(int index, Ray ray) {
             this.rays.add(index, ray);
         }
 
+        /**
+         * Gets ray.
+         *
+         * @param index the index
+         * @return the ray
+         */
         public Ray getRay(int index) {
             return this.rays.size() > index ? this.rays.get(index) : null;
         }
 
+        /**
+         * Gets max ray length.
+         *
+         * @return the max ray length
+         */
         public double getMaxRayLength() {
             return this.maxRayLength;
         }
 
+        /**
+         * Sets max ray length.
+         *
+         * @param maxRayLength the max ray length
+         */
         public void setMaxRayLength(double maxRayLength) {
             this.maxRayLength = maxRayLength;
         }
     }
 
+    /**
+     * The Even.
+     */
     int even = 0;
 
+    /**
+     * The Flick.
+     */
     boolean flick = false;
+    /**
+     * The Map.
+     */
     private int[][] map;
 
+    /**
+     * The Width.
+     */
     private int width;
 
+    /**
+     * The Height.
+     */
     private int height;
 
+    /**
+     * The Textures.
+     */
     private List<Sprite> textures;
 
-    private Map<Integer, Double> rayLengths = new HashMap<>();
-
+    /**
+     * The Rays casted.
+     */
     private Rays raysCasted;
 
+    /**
+     * The Screen mask.
+     */
     boolean[] screenMask;
 
+    /**
+     * Instantiates a new Screen.
+     *
+     * @param map          the map
+     * @param width        the width
+     * @param height       the height
+     * @param textures     the textures
+     * @param playerCamera the player camera
+     */
     public Screen(int[][] map, int width, int height, List<Sprite> textures, Camera playerCamera) {
         this.map = map;
         this.width = width;
@@ -104,17 +200,24 @@ public class Screen {
         this.rayCast(playerCamera);
     }
 
+    /**
+     * Render floor int [ ].
+     *
+     * @param pixels       the pixels
+     * @param playerCamera the player camera
+     * @return the int [ ]
+     */
     public int[] renderFloor(int[] pixels, Camera playerCamera) {
         int floorTexture = 5;
-        Vector2d rayDirLeft = this.raysCasted.getRay(0).getDirection();//playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(angle));
-        Vector2d rayDirRight = this.raysCasted.getRay(width - 1).getDirection();//playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(-angle));
+        Vector2d rayDirLeft = this.raysCasted.getRay(0).getDirection();
+        Vector2d rayDirRight = this.raysCasted.getRay(width - 1).getDirection();
 
         int drawStart = (int) (((this.height) >> 1) + playerCamera.getHorizont());
         int drawEnd = this.height;
         for (int y = drawStart; y < drawEnd; y++) {
             double posZ = drawStart;
             int p = (int) y - drawStart;
-            double rowDistance = posZ / p;
+            double rowDistance = (posZ / p);
             double floorStepX = rowDistance * (rayDirRight.getX() - rayDirLeft.getX()) / this.width;
             double floorStepY = rowDistance * (rayDirRight.getY() - rayDirLeft.getY()) / this.width;
             double floorX = playerCamera.getPosition().getX() + rowDistance * rayDirLeft.getX();
@@ -140,10 +243,17 @@ public class Screen {
         return pixels;
     }
 
+    /**
+     * Render ceiling int [ ].
+     *
+     * @param pixels       the pixels
+     * @param playerCamera the player camera
+     * @return the int [ ]
+     */
     public int[] renderCeiling(int[] pixels, Camera playerCamera) {
         int ceilingTexture = 4;
-        Vector2d rayDirLeft = this.raysCasted.getRay(0).getDirection();//playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(angle));
-        Vector2d rayDirRight = this.raysCasted.getRay(width - 1).getDirection();//playerCamera.getDirection().rotate(playerCamera.getRotationMatrix(-angle));
+        Vector2d rayDirLeft = this.raysCasted.getRay(0).getDirection();
+        Vector2d rayDirRight = this.raysCasted.getRay(width - 1).getDirection();
 
         int drawStart = 0;
         int drawEnd = (int) (((this.height) >> 1) + playerCamera.getHorizont());
@@ -177,6 +287,11 @@ public class Screen {
         return pixels;
     }
 
+    /**
+     * Ray cast.
+     *
+     * @param playerCamera the player camera
+     */
     public void rayCast(Camera playerCamera) {
         double maxRayLength = 0;
         Rays rys = new Rays();
@@ -199,20 +314,30 @@ public class Screen {
             rys.setRay(x, new Ray(rayPos, rayDir, rayLength));
 
             maxRayLength = rayLength > maxRayLength ? rayLength : maxRayLength;
+
+            if (x == (width - 1) >> 1) System.err.printf("ANGLE = %s,   L = %s\r", rayRot.getX1(), rayLength);
         }
+
         rys.setMaxRayLength(maxRayLength);
         this.raysCasted = rys;
         this.raysCasted.setMaxRayLength(maxRayLength);
     }
 
+    /**
+     * Render wall int [ ].
+     *
+     * @param pixels       the pixels
+     * @param playerCamera the player camera
+     * @return the int [ ]
+     */
     public int[] renderWall(int[] pixels, Camera playerCamera) {
         for (int x = even; x < width - even; x+= 1 + even) {
-            Matrix2d rayRot = playerCamera.getRotationMatrix(x);
             Vector2d rayPos = this.raysCasted.getRay(x).getPosition();
             Vector2d rayDir = this.raysCasted.getRay(x).getDirection();
             double rayLength = this.raysCasted.getRay(x).getLength();
 
-            int wallHeight = (int) (height * (height / ((rayLength) * playerCamera.getDistanceToPlain())));
+            //int wallHeight = (int) (height * (height / ((rayLength) * playerCamera.getDistanceToPlain())));
+            int wallHeight = (int) (height / rayLength);
 
             int drawStart = SimpleMath.max(
                     (int) (-(wallHeight >> 1) + (height >> 1) + playerCamera.getHorizont()),
@@ -255,6 +380,13 @@ public class Screen {
         return pixels;
     }
 
+    /**
+     * Render gun int [ ].
+     *
+     * @param pixels the pixels
+     * @param gun    the gun
+     * @return the int [ ]
+     */
     public int[] renderGun(int[] pixels, Sprite gun) {
 
         int gunWidth = (width >> 2);
@@ -281,6 +413,14 @@ public class Screen {
         return pixels;
     }
 
+    /**
+     * Render unit int [ ].
+     *
+     * @param pixels       the pixels
+     * @param playerCamera the player camera
+     * @param units        the units
+     * @return the int [ ]
+     */
     public int[] renderUnit(int[] pixels, Camera playerCamera, List<Unit> units) {
         units = units.stream()
                 .map(s -> {
@@ -308,14 +448,23 @@ public class Screen {
             double angles = angleStep * (angleToUnitLeft);
             double rayLength = unit.getDistanceToCurrentObject();
 
-            int unitHeight = (int) (sprite.getHeight() * (sprite.getHeight() / ((rayLength + 0.0001) * playerCamera.getDistanceToPlain())));
+            //int unitHeight = (int) (sprite.getHeight() * (sprite.getHeight() / ((rayLength + 0.0001) * playerCamera.getDistanceToPlain())));
+            int unitHeight = SimpleMath.min(
+                    sprite.getHeight(),
+                    (int) (sprite.getHeight() / rayLength)
+            );
 
-            //int unitHeight = (rayLength == 0) ? sprite.getHeight() : (int) ((int) (sprite.getHeight() / (rayLength)));
-            if (unitHeight > sprite.getHeight()) unitHeight = sprite.getHeight();
+            //int unitHeight = (rayLength == 0) ? sprite.getHeight() : (int) ((int) (sprite.getHeight() / (rayLength + 0.0001)));
+            //if (unitHeight > sprite.getHeight()) unitHeight = sprite.getHeight();
 
-            int unitWidth = (int) (sprite.getWidth() * (sprite.getWidth() / ((rayLength + 0.0001) * playerCamera.getDistanceToPlain())));
+            //int unitWidth = (int) (sprite.getWidth() * (sprite.getWidth() / ((rayLength + 0.0001) * playerCamera.getDistanceToPlain())));
+            int unitWidth = SimpleMath.min(
+                    sprite.getWidth(),
+                    (int) (sprite.getWidth() / rayLength)
+            );
+
             //int unitWidth = (rayLength == 0) ? sprite.getWidth() : (int) ((int) (sprite.getWidth() / (rayLength)));
-            if (unitWidth > sprite.getWidth()) unitWidth = sprite.getWidth();
+            //if (unitWidth > sprite.getWidth()) unitWidth = sprite.getWidth();
 
             int drawYStart = 0;
             int drawYEnd = 0;
@@ -329,7 +478,7 @@ public class Screen {
                         height
                 );
             } else if (unit.getAligement().equals(Unit.ALIGNEMENT.BOTTOM)) {
-                int wallHeight = (int) (height * (height / ((rayLength) * playerCamera.getDistanceToPlain())));
+                int wallHeight = (int) (height / rayLength);
                 int drawEnd = SimpleMath.min(
                         (int) ((wallHeight >> 1) + (height >> 1) + playerCamera.getHorizont()),
                         height
@@ -351,16 +500,19 @@ public class Screen {
 
             int texXOffset = 0;
             if (drawXStart < 0) {
-                texXOffset = -drawXStart;
+                texXOffset = - drawXStart;
                 drawXStart = 0;
             }
 
             for (int y = drawYStart + even; y < drawYEnd - even; y+= 1 + even) {
                 int texY = (int)((y - drawYStart) * imgPixYSize);
                 for (int x = drawXStart + even; x < drawXEnd - even; x+= 1 + even) {
-                    int color = sprite.getPixelSafty((int) ((x - drawXStart + texXOffset) * imgPixXSize), texY);
+                    if (this.raysCasted.getRay(x) == null
+                            || (this.screenMask[x + y * width] && this.raysCasted.getRay(x).getLength() < rayLength)
+                    ) continue;
+                    else this.screenMask[x + y * width] = true;
 
-                    if (this.raysCasted.getRay(x) == null || this.raysCasted.getRay(x).getLength() <= rayLength) continue;
+                    int color = sprite.getPixelSafty((int) ((x - drawXStart + texXOffset) * imgPixXSize), texY);
 
                     if (color != 0) pixels[x + y * width] = color;
                 }
@@ -370,6 +522,18 @@ public class Screen {
         return pixels;
     }
 
+    /**
+     * Render int [ ].
+     *
+     * @param pixels       the pixels
+     * @param playerCamera the player camera
+     * @param gun          the gun
+     * @param enemies      the enemies
+     * @param bullets      the bullets
+     * @param players      the players
+     * @param flicker      the flicker
+     * @return the int [ ]
+     */
     public int[] render(int[] pixels,
                         Camera playerCamera,
                         BoomStick gun,
@@ -388,6 +552,17 @@ public class Screen {
         );
     }
 
+    /**
+     * Render int [ ].
+     *
+     * @param pixels       the pixels
+     * @param playerCamera the player camera
+     * @param gun          the gun
+     * @param enemies      the enemies
+     * @param bullets      the bullets
+     * @param players      the players
+     * @return the int [ ]
+     */
     public int[] render(int[] pixels,
                         Camera playerCamera,
                         BoomStick gun,
@@ -414,6 +589,9 @@ public class Screen {
         return pixels;
     }
 
+    /**
+     * Click flick.
+     */
     public void clickFlick() {
         this.flick ^= true;
     }

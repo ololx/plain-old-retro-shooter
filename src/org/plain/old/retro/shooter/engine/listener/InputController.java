@@ -7,31 +7,61 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * @project plain-old-retro-shooter
- * @created 05.07.2020 08:37
- * <p>
+ * The type Input controller.
+ *
  * @author Alexander A. Kropotin
+ * @project plain -old-retro-shooter
+ * @created 05.07.2020 08:37 <p>
  */
 public class InputController implements KeyListener, FocusListener, MouseMotionListener, MouseListener {
 
+    /**
+     * The Center.
+     */
     private Point center;
 
+    /**
+     * The Keys.
+     */
     private final Map<Integer, String> keys;
 
+    /**
+     * The State.
+     */
     private Map<String, Boolean> state;
 
+    /**
+     * The Robot.
+     */
     private Robot robot;
 
-    boolean right, left;
+    /**
+     * The Esc.
+     */
+    boolean esc = false;
 
+    /**
+     * Instantiates a new Input controller.
+     */
     public InputController() {
         this(null);
     }
 
+    /**
+     * Instantiates a new Input controller.
+     *
+     * @param keys the keys
+     */
     public InputController(Map<Integer, String> keys) {
         this(keys, new Point(0, 0));
     }
 
+    /**
+     * Instantiates a new Input controller.
+     *
+     * @param keys   the keys
+     * @param center the center
+     */
     public InputController(Map<Integer, String> keys, Point center) {
         this.keys = keys == null ? Collections.EMPTY_MAP : keys;
         state = keys.entrySet().stream()
@@ -49,24 +79,45 @@ public class InputController implements KeyListener, FocusListener, MouseMotionL
         robot.mouseMove(center.x, center.y);
     }
 
+    /**
+     * Key pressed.
+     *
+     * @param key the key
+     */
     @Override
     public void keyPressed(KeyEvent key) {
         if (this.keys.containsKey(key.getKeyCode())) this.state.put(this.keys.get(key.getKeyCode()), true);
+        if (key.getKeyCode() == key.VK_ESCAPE) this.esc ^= true;
     }
 
+    /**
+     * Key released.
+     *
+     * @param key the key
+     */
     @Override
     public void keyReleased(KeyEvent key) {
         if (this.keys.containsKey(key.getKeyCode())) this.state.put(this.keys.get(key.getKeyCode()), false);
     }
 
+    /**
+     * Key typed.
+     *
+     * @param key the key
+     */
     @Override
     public void keyTyped(KeyEvent key) {
         this.keyPressed(key);
         this.keyReleased(key);
     }
 
+    /**
+     * Gets state.
+     *
+     * @return the state
+     */
     public Map<String, Boolean> getState() {
-        this.mouseMove();
+        if (!esc) this.mouseMove();
         return this.state;
     }
 
@@ -85,7 +136,7 @@ public class InputController implements KeyListener, FocusListener, MouseMotionL
      */
     @Override
     public void mouseDragged(MouseEvent e) {
-        this.mouseMoverHorizont(e);
+        if (!esc) this.mouseMoverHorizont(e);
     }
 
     /**
@@ -96,7 +147,7 @@ public class InputController implements KeyListener, FocusListener, MouseMotionL
      */
     @Override
     public void mouseMoved(MouseEvent e) {
-        this.mouseMoverHorizont(e);
+        if (!esc) this.mouseMoverHorizont(e);
     }
 
     /**
@@ -146,7 +197,7 @@ public class InputController implements KeyListener, FocusListener, MouseMotionL
      */
     @Override
     public void mouseExited(MouseEvent e) {
-        this.mouseMove();
+        if (!esc) this.mouseMove();
     }
 
     /**
@@ -167,10 +218,18 @@ public class InputController implements KeyListener, FocusListener, MouseMotionL
     public void focusLost(FocusEvent e) {
     }
 
+    /**
+     * Mouse move.
+     */
     private void mouseMove() {
         robot.mouseMove(this.center.x, this.center.y);
     }
 
+    /**
+     * Mouse mover horizont.
+     *
+     * @param e the e
+     */
     private void mouseMoverHorizont(MouseEvent e) {
         if (e.getXOnScreen() > this.center.x) {
             this.state.put(this.keys.get(MouseEvent.MOUSE_MOVED + 1), false);

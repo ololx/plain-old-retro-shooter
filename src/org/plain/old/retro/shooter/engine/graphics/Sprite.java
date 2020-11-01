@@ -9,19 +9,34 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * @project plain-old-retro-shooter
- * @created 21.07.2020 14:18
- * <p>
+ * The type Sprite.
+ *
  * @author Alexander A. Kropotin
+ * @project plain -old-retro-shooter
+ * @created 21.07.2020 14:18 <p>
  */
 public class Sprite implements Serializable {
 
+    /**
+     * The Pixels.
+     */
     private int[][] pixels;
 
+    /**
+     * The Width.
+     */
     private int width;
 
+    /**
+     * The Height.
+     */
     private int height;
 
+    /**
+     * Instantiates a new Sprite.
+     *
+     * @param imageUri the image uri
+     */
     public Sprite(String imageUri) {
         try {
             BufferedImage image = ImageIO.read(new File(imageUri));
@@ -43,6 +58,13 @@ public class Sprite implements Serializable {
         }
     }
 
+    /**
+     * Instantiates a new Sprite.
+     *
+     * @param imageUri    the image uri
+     * @param scaleWidth  the scale width
+     * @param scaleHeight the scale height
+     */
     public Sprite(String imageUri, double scaleWidth, double scaleHeight) {
         try {
             BufferedImage image = ImageIO.read(new File(imageUri));
@@ -72,14 +94,31 @@ public class Sprite implements Serializable {
         }
     }
 
+    /**
+     * Gets width.
+     *
+     * @return the width
+     */
     public int getWidth() {
         return this.width;
     }
 
+    /**
+     * Gets height.
+     *
+     * @return the height
+     */
     public int getHeight() {
         return this.height;
     }
 
+    /**
+     * Gets pixel.
+     *
+     * @param x the x
+     * @param y the y
+     * @return the pixel
+     */
     public int getPixel(int x, int y) {
         Objects.checkIndex(x, this.width);
         Objects.checkIndex(y, this.height);
@@ -87,6 +126,13 @@ public class Sprite implements Serializable {
         return this.pixels[x][y];
     }
 
+    /**
+     * Gets pixel safty.
+     *
+     * @param x the x
+     * @param y the y
+     * @return the pixel safty
+     */
     public int getPixelSafty(int x, int y) {
         if (x < 0) x = -x;
         if (x >= this.getWidth()) x = x % this.getWidth();
@@ -96,6 +142,13 @@ public class Sprite implements Serializable {
         return this.getPixel(x, y);
     }
 
+    /**
+     * Sets pixels.
+     *
+     * @param width  the width
+     * @param height the height
+     * @param pixels the pixels
+     */
     private void setPixels(int width, int height, int[] pixels) {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {

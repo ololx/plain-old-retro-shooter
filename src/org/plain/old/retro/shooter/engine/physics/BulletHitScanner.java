@@ -8,13 +8,22 @@ import org.plain.old.retro.shooter.engine.unit.equipment.bullet.Bullet;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
- * @project plain-old-retro-shooter
- * @created 31.07.2020 09:19
- * <p>
+ * The interface Bullet hit scanner.
+ *
  * @author Alexander A. Kropotin
+ * @project plain -old-retro-shooter
+ * @created 31.07.2020 09:19 <p>
  */
 public interface BulletHitScanner {
 
+    /**
+     * Scan.
+     *
+     * @param bullets the bullets
+     * @param enemies the enemies
+     * @param hertz   the hertz
+     * @param map     the map
+     */
     static void scan(ConcurrentSkipListSet<Bullet> bullets, ConcurrentSkipListSet<Enemy> enemies, long hertz, Space2d map) {
         double hitScanStep = (100 * Bullet.MOVE_SPEED);
         double bulletSpeed = (Bullet.MOVE_SPEED / hertz) / hitScanStep;

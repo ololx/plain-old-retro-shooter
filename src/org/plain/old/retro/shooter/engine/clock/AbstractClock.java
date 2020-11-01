@@ -5,21 +5,37 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * @project plain-old-retro-shooter
- * @created 05.08.2020 20:29
- * <p>
+ * The type Abstract clock.
+ *
  * @author Alexander A. Kropotin
+ * @project plain -old-retro-shooter
+ * @created 05.08.2020 20:29 <p>
  */
 public abstract class AbstractClock implements Clock {
 
+    /**
+     * The Flow.
+     */
     protected final Thread flow;
 
+    /**
+     * The Actions.
+     */
     protected final List<ClockAction> actions;
 
+    /**
+     * The Frequency.
+     */
     protected long frequency;
 
+    /**
+     * The Time.
+     */
     protected double time;
 
+    /**
+     * The Is active.
+     */
     protected boolean isActive;
 
     {
@@ -81,10 +97,16 @@ public abstract class AbstractClock implements Clock {
         return this.frequency;
     }
 
+    /**
+     * Activate.
+     */
     private void activate() {
         this.isActive = true;
     }
 
+    /**
+     * Deactivate.
+     */
     private void deactivate() {
         this.isActive = false;
     }
