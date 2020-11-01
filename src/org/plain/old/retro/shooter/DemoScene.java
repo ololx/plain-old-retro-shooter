@@ -10,14 +10,22 @@ import java.io.IOException;
  */
 public class DemoScene {
 
+    /**
+     * The constant DEFAULT_ADDRESS.
+     */
     public static final String DEFAULT_ADDRESS = "127.0.0.1";
 
+    /**
+     * The constant DEFAULT_PORT.
+     */
     public static final int DEFAULT_PORT = 6666;
 
     /**
      * The entry point of application.
      *
      * @param args the input arguments
+     * @throws IOException            the io exception
+     * @throws ClassNotFoundException the class not found exception
      */
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         Server server = null;

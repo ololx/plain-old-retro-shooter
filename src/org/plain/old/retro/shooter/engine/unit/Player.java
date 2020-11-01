@@ -4,24 +4,59 @@ import org.plain.old.retro.shooter.engine.graphics.Sprite;
 
 import java.util.UUID;
 
+/**
+ * The type Player.
+ */
 public class Player extends AbstractUnit implements RegisterEntity {
 
-	public static final double DEFAULT_RADIUS = 0.25d;
+    /**
+     * The constant DEFAULT_RADIUS.
+     */
+    public static final double DEFAULT_RADIUS = 0.25d;
 
-	private final UUID uid = UUID.randomUUID();
+    /**
+     * The Uid.
+     */
+    private final UUID uid = UUID.randomUUID();
 
-	public Player(double x, double y, Sprite texture) {
+    /**
+     * Instantiates a new Player.
+     *
+     * @param x       the x
+     * @param y       the y
+     * @param texture the texture
+     */
+    public Player(double x, double y, Sprite texture) {
 		this(x, y, DEFAULT_RADIUS, texture);
 	}
-	public Player(double x, double y, double radius, Sprite texture) {
+
+    /**
+     * Instantiates a new Player.
+     *
+     * @param x       the x
+     * @param y       the y
+     * @param radius  the radius
+     * @param texture the texture
+     */
+    public Player(double x, double y, double radius, Sprite texture) {
 		super(x, y, radius, texture);
 	}
 
-	public String getMessage() {
+    /**
+     * Gets message.
+     *
+     * @return the message
+     */
+    public String getMessage() {
 		return this.position.getX() + "&" + this.position.getY();
 	}
 
-	@Override
+    /**
+     * Gets uid.
+     *
+     * @return the uid
+     */
+    @Override
 	public UUID getUid() {
 		return this.uid;
 	}

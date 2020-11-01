@@ -1,10 +1,11 @@
 package org.plain.old.retro.shooter.engine.clock;
 
 /**
- * @project plain-old-retro-shooter
- * @created 05.08.2020 20:29
- * <p>
+ * The type High intensive clock.
+ *
  * @author Alexander A. Kropotin
+ * @project plain -old-retro-shooter
+ * @created 05.08.2020 20:29 <p>
  */
 public class HighIntensiveClock extends AbstractClock {
 
@@ -18,6 +19,9 @@ public class HighIntensiveClock extends AbstractClock {
         super(frequency, actions);
     }
 
+    /**
+     * Run.
+     */
     @Override
     public void run() {
         long previousMoment = System.nanoTime();

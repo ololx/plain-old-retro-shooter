@@ -32,46 +32,94 @@ import java.util.concurrent.ConcurrentSkipListSet;
  * This is a main scene class, which is runnable and
  * will manage all scene logics (such as fps, screen update && e.t.c.)
  * <p>
+ *
  * @author Alexander A. Kropotin
  * @project plain -old-retro-shooter
  * @created 19.06.2020 08:58
  */
 public class Scene extends JFrame {
 
+    /**
+     * The constant SCENE_WIDTH.
+     */
     public static final int SCENE_WIDTH = 1024;//2560;
 
-    public static final int SCENE_HEIGHT = 768;//1440;
+    /**
+     * The constant SCENE_HEIGHT.
+     */
+    public static final int SCENE_HEIGHT = 600;//1440;
 
+    /**
+     * The Scene temp.
+     */
     private Clock sceneTemp;
 
+    /**
+     * The Render temp.
+     */
     private Clock renderTemp;
 
+    /**
+     * The Client temp.
+     */
     private Clock clientTemp;
 
+    /**
+     * The Main player.
+     */
     private Camera mainPlayer;
 
+    /**
+     * The Image.
+     */
     private BufferedImage image;
 
+    /**
+     * The Pixels.
+     */
     public int[] pixels;
 
+    /**
+     * The Screen.
+     */
     public Screen screen;
 
+    /**
+     * The Stick.
+     */
     private BoomStick stick;
 
+    /**
+     * The Enemies.
+     */
     private ConcurrentSkipListSet<Enemy> enemies;
 
+    /**
+     * The Temp bullets.
+     */
     private ConcurrentSkipListSet<Bullet> tempBullets = new ConcurrentSkipListSet<>();
 
+    /**
+     * The Bullets.
+     */
     private ConcurrentSkipListSet<Bullet> bullets = new ConcurrentSkipListSet<>();
 
+    /**
+     * The Other units.
+     */
     private ConcurrentSkipListMap<UUID, Unit> otherUnits = new ConcurrentSkipListMap<>();
 
+    /**
+     * The Client.
+     */
     private Client client;
 
     //TODO: Refactor It when main entities will be completed - it's just for tests
+
     /**
      * Instantiates a new Game.
-     * @param client
+     *
+     * @param client the client
      */
     public Scene(Client client) {
         this.client = client;
@@ -123,7 +171,7 @@ public class Scene extends JFrame {
             add(new Enemy(14.5, 19.5, new Sprite("src/resources/enemy-3.png",1.3 , 1.3)));
             add(new Enemy(12.5, 10.5, new Sprite("src/resources/enemy-3.png",1.3 , 1.3)));
         }};
-        mainPlayer = new Camera(1, 2, 1, 0, SCENE_WIDTH, SCENE_HEIGHT, 60);
+        mainPlayer = new Camera(1.5, 2.5, 1, 0, SCENE_WIDTH, SCENE_HEIGHT, 60);
         image = new BufferedImage(SCENE_WIDTH, SCENE_HEIGHT, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
         screen = new Screen(
@@ -343,6 +391,12 @@ public class Scene extends JFrame {
         this.clientTemp.start();
     }
 
+    /**
+     * Render.
+     *
+     * @param map      the map
+     * @param rateInfo the rate info
+     */
     public void render(Space2d map, String rateInfo) {
         int height = this.getSize().height;
         int width = this.getSize().width;

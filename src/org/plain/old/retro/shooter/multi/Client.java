@@ -7,19 +7,35 @@ import java.net.Socket;
 import java.util.Objects;
 
 /**
- * @project plain-old-retro-shooter
- * @created 14.08.2020 14:28
- * <p>
+ * The type Client.
+ *
  * @author Alexander A. Kropotin
+ * @project plain -old-retro-shooter
+ * @created 14.08.2020 14:28 <p>
  */
 public class Client {
 
+    /**
+     * The Ip.
+     */
     private final String ip;
 
+    /**
+     * The Port.
+     */
     private final int port;
 
+    /**
+     * The Socket.
+     */
     private Socket socket;
 
+    /**
+     * Instantiates a new Client.
+     *
+     * @param ip   the ip
+     * @param port the port
+     */
     public Client(String ip, int port) {
         Objects.requireNonNull(ip);
         Objects.requireNonNull(port);
@@ -27,6 +43,9 @@ public class Client {
         this.port = port;
     }
 
+    /**
+     * Connect.
+     */
     public void connect() {
         try {
             socket = new Socket(ip, port);
@@ -35,6 +54,9 @@ public class Client {
         }
     }
 
+    /**
+     * Disconnect.
+     */
     public void disconnect() {
         try {
             socket.close();
@@ -43,6 +65,12 @@ public class Client {
         }
     }
 
+    /**
+     * Send message object.
+     *
+     * @param requestMessage the request message
+     * @return the object
+     */
     public Object sendMessage(Object requestMessage) {
         ObjectOutputStream out = null;
         ObjectInputStream in = null;
