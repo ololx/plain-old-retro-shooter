@@ -42,12 +42,12 @@ public class Scene extends JFrame {
     /**
      * The constant SCENE_WIDTH.
      */
-    public static final int SCENE_WIDTH = 1024;//2560;
+    public static final int SCENE_WIDTH = 1024;
 
     /**
      * The constant SCENE_HEIGHT.
      */
-    public static final int SCENE_HEIGHT = 600;//1440;
+    public static final int SCENE_HEIGHT = 768;
 
     /**
      * The Scene temp.

@@ -215,9 +215,10 @@ public class Screen {
         int drawStart = (int) (((this.height) >> 1) + playerCamera.getHorizont());
         int drawEnd = this.height;
         for (int y = drawStart; y < drawEnd; y++) {
-            double posZ = drawStart;
+            double posZ = width / 2;
+            System.err.printf("DIS = %s,   POSZ = %s\r", (1 / map.length * 100) * playerCamera.getDistanceToPlain(),  drawStart * 1.4);
             int p = (int) y - drawStart;
-            double rowDistance = (posZ / p);
+            double rowDistance = posZ / p;
             double floorStepX = rowDistance * (rayDirRight.getX() - rayDirLeft.getX()) / this.width;
             double floorStepY = rowDistance * (rayDirRight.getY() - rayDirLeft.getY()) / this.width;
             double floorX = playerCamera.getPosition().getX() + rowDistance * rayDirLeft.getX();
@@ -258,7 +259,7 @@ public class Screen {
         int drawStart = 0;
         int drawEnd = (int) (((this.height) >> 1) + playerCamera.getHorizont());
         for (int y = drawStart; y < drawEnd; y++) {
-            double posZ = drawEnd;
+            double posZ = width / 2;
             int p = (int) drawEnd - y;
             double rowDistance = posZ / p;
             double ceilingStepX = rowDistance * (rayDirRight.getX() - rayDirLeft.getX()) / this.width;
@@ -314,8 +315,6 @@ public class Screen {
             rys.setRay(x, new Ray(rayPos, rayDir, rayLength));
 
             maxRayLength = rayLength > maxRayLength ? rayLength : maxRayLength;
-
-            if (x == (width - 1) >> 1) System.err.printf("ANGLE = %s,   L = %s\r", rayRot.getX1(), rayLength);
         }
 
         rys.setMaxRayLength(maxRayLength);
@@ -336,9 +335,7 @@ public class Screen {
             Vector2d rayDir = this.raysCasted.getRay(x).getDirection();
             double rayLength = this.raysCasted.getRay(x).getLength();
 
-            //int wallHeight = (int) (height * (height / ((rayLength) * playerCamera.getDistanceToPlain())));
-            int wallHeight = (int) (height / rayLength);
-
+            int wallHeight = (int) ((1 / rayLength) * playerCamera.getDistanceToPlain());
             int drawStart = SimpleMath.max(
                     (int) (-(wallHeight >> 1) + (height >> 1) + playerCamera.getHorizont()),
                     0
@@ -448,7 +445,7 @@ public class Screen {
             double angles = angleStep * (angleToUnitLeft);
             double rayLength = unit.getDistanceToCurrentObject();
 
-            //int unitHeight = (int) (sprite.getHeight() * (sprite.getHeight() / ((rayLength + 0.0001) * playerCamera.getDistanceToPlain())));
+            //int unitHeight = (int) (((sprite.getHeight() / 100) / rayLength) * playerCamera.getDistanceToPlain());
             int unitHeight = SimpleMath.min(
                     sprite.getHeight(),
                     (int) (sprite.getHeight() / rayLength)

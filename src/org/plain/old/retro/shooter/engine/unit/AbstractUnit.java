@@ -128,7 +128,7 @@ public class AbstractUnit implements Unit, RegisterEntity, Comparable<RegisterEn
         this.distanceToObject = Math.hypot(
                 Math.abs(otherObjectPosition.getX() - this.position.getX()),
                 Math.abs(otherObjectPosition.getY() - this.position.getY())
-        );
+        ) + 0.0001;
 
         return this.getDistanceToCurrentObject();
     }
