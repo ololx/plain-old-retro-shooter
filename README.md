@@ -99,8 +99,6 @@ To use it is necessary to:
 port
 ```
 
-
-
 ## 🛠 Built With
 
 **[Oracle JDK](https://www.oracle.com/java/technologies/javase-downloads.html)** -  java development kit;
@@ -125,7 +123,3 @@ For the versioning is used [Semantic Versioning](http://semver.org/). For the ve
 ## 🔏 Licensing
 
 This project is licensed under the MIT license - see the [lisence](LICENSE) document for details.
-
-```
-
-```
