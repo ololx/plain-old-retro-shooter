@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * @project plain -old-retro-shooter
  * @created 05.07.2020 08:37 <p>
  */
-public class InputController implements KeyListener, FocusListener, MouseMotionListener, MouseListener {
+public class InputController implements KeyListener, FocusListener, MouseListener {
 
     /**
      * The Center.
@@ -76,7 +76,7 @@ public class InputController implements KeyListener, FocusListener, MouseMotionL
         }
 
         this.center = center;
-        robot.mouseMove(center.x, center.y);
+        //robot.mouseMove(center.x, center.y);
     }
 
     /**
@@ -117,7 +117,7 @@ public class InputController implements KeyListener, FocusListener, MouseMotionL
      * @return the state
      */
     public Map<String, Boolean> getState() {
-        if (!esc) this.mouseMove();
+        //if (!esc) this.mouseMove();
         return this.state;
     }
 
@@ -134,10 +134,10 @@ public class InputController implements KeyListener, FocusListener, MouseMotionL
      *
      * @param e the event to be processed
      */
-    @Override
+    /*@Override
     public void mouseDragged(MouseEvent e) {
-        if (!esc) this.mouseMoverHorizont(e);
-    }
+       //if (!esc) this.mouseMoverHorizont(e);
+    }*/
 
     /**
      * Invoked when the mouse cursor has been moved onto a component
@@ -145,10 +145,10 @@ public class InputController implements KeyListener, FocusListener, MouseMotionL
      *
      * @param e the event to be processed
      */
-    @Override
+    /*@Override
     public void mouseMoved(MouseEvent e) {
-        if (!esc) this.mouseMoverHorizont(e);
-    }
+        //if (!esc) this.mouseMoverHorizont(e);
+    }*/
 
     /**
      * Invoked when the mouse button has been clicked (pressed

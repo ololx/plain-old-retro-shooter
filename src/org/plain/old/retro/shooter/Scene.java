@@ -6,7 +6,7 @@ import org.plain.old.retro.shooter.engine.clock.LowIntensiveClock;
 import org.plain.old.retro.shooter.engine.graphics.Camera;
 import org.plain.old.retro.shooter.engine.graphics.Screen;
 import org.plain.old.retro.shooter.engine.graphics.Sprite;
-import org.plain.old.retro.shooter.engine.listener.InputController;
+import org.plain.old.retro.shooter.engine.listener.*;
 import org.plain.old.retro.shooter.engine.physics.BulletHitScanner;
 import org.plain.old.retro.shooter.engine.unit.Enemy;
 import org.plain.old.retro.shooter.engine.unit.RegisterEntity;
@@ -42,7 +42,7 @@ public class Scene extends JFrame {
     /**
      * The constant SCENE_WIDTH.
      */
-    public static final int SCENE_WIDTH = 1024;//2560;
+    public static final int SCENE_WIDTH = 800;//2560;
 
     /**
      * The constant SCENE_HEIGHT.
@@ -214,8 +214,7 @@ public class Scene extends JFrame {
             put(KeyEvent.VK_A, "TN_LFT");
             put(KeyEvent.VK_D, "TN_RGT");
             put(KeyEvent.VK_LEFT, "MV_LFT");
-            put(MouseEvent.MOUSE_MOVED + 1, "MV_LFT2");
-            put(MouseEvent.MOUSE_MOVED + 2, "MV_RHT2");
+            put(KeyEvent.VK_ESCAPE, "ESC");
             put(KeyEvent.VK_RIGHT, "MV_RHT");
             put(KeyEvent.VK_UP, "MV_UP");
             put(KeyEvent.VK_DOWN, "MV_DOWN");
@@ -225,9 +224,16 @@ public class Scene extends JFrame {
                 center
         );
 
+        MouseController controllerMouseMove = new MouseController(new HashMap<Integer, ControlCommand>(){{
+            put(MouseEvent.MOUSE_MOVED + 1, new RotateLeftCommand(mainPlayer));
+            put(MouseEvent.MOUSE_MOVED + 2, new RotateRightCommand(mainPlayer));
+        }},
+                center
+        );
+
         addKeyListener(controller);
         addMouseListener(controller);
-        addMouseMotionListener(controller);
+        addMouseMotionListener(controllerMouseMove);
 
         System.out.println(center);
 
@@ -249,17 +255,17 @@ public class Scene extends JFrame {
                                 mainPlayer.moveLeft();
                             }
 
-                            if (state.getKey().equals("MV_LFT2")) {
+                            /*if (state.getKey().equals("MV_LFT2")) {
                                 mainPlayer.moveLeft();
-                            }
+                            }*/
 
                             if (state.getKey().equals("MV_RHT")) {
                                 mainPlayer.moveRight();
                             }
 
-                            if (state.getKey().equals("MV_RHT2")) {
+                            /*if (state.getKey().equals("MV_RHT2")) {
                                 mainPlayer.moveRight();
-                            }
+                            }*/
 
                             if (state.getKey().equals("MV_UP")) {
                                 mainPlayer.up();
@@ -286,8 +292,15 @@ public class Scene extends JFrame {
                             if (state.getKey().equals("RELOAD")) {
                                 this.stick.reload();
                             }
+
+                            if (state.getKey().equals("ESC")) {
+                                controllerMouseMove.swtch();
+                            }
                         }
                     }
+                },
+                () -> {
+                    controllerMouseMove.execute();
                 },
                 () -> {
                     this.stick.update();

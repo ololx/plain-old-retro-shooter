@@ -10,9 +10,24 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Refactor old project classes via game dev patterns implemetation.
 
+## [0.4.0-alpha] - 2020-11-30
+
+### Fixed
+
+- The floor && ceiling render.
+- The mouse picking.
+
+### Added
+
+- The event command strategy - for ,ouse move right|left.
+- The  disable mouse button - `ESCAPE`.
+- The mouse input.
+- The distance from player to plain.
+- The pixels mask for block render if already rendered.
+
 ## [0.2.4-alpha] - 2020-10-22
 
-### Add
+### Added
 
 - The flicker effect.
 
