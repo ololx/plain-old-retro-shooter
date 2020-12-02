@@ -216,7 +216,7 @@ public class Screen {
         int drawEnd = this.height;
         for (int y = drawStart; y < drawEnd; y++) {
             double posZ = width / 2;
-            System.err.printf("DIS = %s,   POSZ = %s\r", drawStart * 1.3,  width / 2);
+
             int p = (int) y - drawStart;
             double rowDistance = posZ / p;
             double floorStepX = rowDistance * (rayDirRight.getX() - rayDirLeft.getX()) / this.width;
