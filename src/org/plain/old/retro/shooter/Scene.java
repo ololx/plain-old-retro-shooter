@@ -42,12 +42,12 @@ public class Scene extends JFrame {
     /**
      * The constant SCENE_WIDTH.
      */
-    public static final int SCENE_WIDTH = 800;//2560;
+    public static final int SCENE_WIDTH = 640;//2560;
 
     /**
      * The constant SCENE_HEIGHT.
      */
-    public static final int SCENE_HEIGHT = 600;//1440;
+    public static final int SCENE_HEIGHT = 480;//1440;
 
     /**
      * The Scene temp.
@@ -320,7 +320,8 @@ public class Scene extends JFrame {
                     BulletHitScanner.scan(this.bullets, this.enemies, sceneTemp.getFrequency(), map);
                 },
                 () -> {
-                    screen.rayCast(this.mainPlayer);
+                    //screen.rayCast(this.mainPlayer);
+                    //System.err.println(mainPlayer.getDirection().toString());
                 }
         );
         renderTemp = new LowIntensiveClock(

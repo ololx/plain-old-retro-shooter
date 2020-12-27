@@ -8,6 +8,7 @@ import org.plain.old.retro.shooter.engine.unit.Unit;
 import org.plain.old.retro.shooter.engine.unit.equipment.bullet.Bullet;
 import org.plain.old.retro.shooter.engine.unit.equipment.weapon.BoomStick;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -215,7 +216,7 @@ public class Screen {
         int drawStart = (int) (((this.height) >> 1) + playerCamera.getHorizont());
         int drawEnd = this.height;
         for (int y = drawStart; y < drawEnd; y++) {
-            double posZ = width / 2;
+            double posZ = this.width / 2;
 
             int p = (int) y - drawStart;
             double rowDistance = posZ / p;
@@ -307,7 +308,7 @@ public class Screen {
                 if ((int) rayPos.getX() > map.length || (int) rayPos.getY() > map[0].length) hit = true;
                 else if (map[(int) rayPos.getX()][(int) rayPos.getY()] != 0) hit = true;
 
-                rayPos = rayPos.add(rayDir.multiply(steps));
+                if (!hit) rayPos = rayPos.add(rayDir.multiply(steps));
             }
 
             double rayLength = (playerCamera.getPosition().subtract(rayPos).getModule() * rayRot.getX1()) + 0.001;
@@ -322,6 +323,66 @@ public class Screen {
         this.raysCasted.setMaxRayLength(maxRayLength);
     }
 
+    public int[] mapRendering(int[] pixels, Camera playerCamera) {
+        int scale = 25;
+        int mapW = map.length * scale;
+        int mapH = map[0].length * scale;
+
+        for (int i = 1; i <= mapW; i++) {
+            for (int j = 1; j <= mapH; j++) {
+                pixels[i + j * width] = Color.BLACK.getRGB();
+
+                if (i == 1 || i == mapW || i % scale == 0) pixels[i + j * width] = Color.DARK_GRAY.getRGB();
+                else if (j == 1 || j == mapH || j % scale == 0) pixels[i + j * width] = Color.DARK_GRAY.getRGB();
+
+                if (this.screenMask[i + j * width]) continue;
+                else this.screenMask[i + j * width] = true;
+            }
+        }
+
+        double maxRayLength = 0;
+        Rays rys = new Rays();
+        for (int x = 0; x < width; x++) {
+            Matrix2d rayRot = playerCamera.getRotationMatrix(x);
+            Vector2d rayDir = playerCamera.getDirection().rotate(rayRot);
+            Vector2d rayPos = playerCamera.getPosition().clone();
+
+            boolean hit = false;
+            double steps = 0.01;
+            while (!hit) {
+                if ((int) rayPos.getX() > map.length || (int) rayPos.getY() > map[0].length
+                        || map[(int) rayPos.getX()][(int) rayPos.getY()] != 0) {
+                    hit = true;
+
+                    rayPos.setX(((int)(rayPos.getX() * 100)) / 100.0d);
+                    rayPos.setY(((int)(rayPos.getY() * 100)) / 100.0d);
+
+                    pixels[(int) (rayPos.getX() * scale) + (int) (rayPos.getY() * scale) * width] = Color.LIGHT_GRAY.getRGB();
+
+
+                    if (x == 0) System.err.println(rayPos.toString());
+                    continue;
+
+                }
+
+                pixels[(int) (rayPos.getX() * scale) + (int) (rayPos.getY() * scale) * width] = Color.LIGHT_GRAY.getRGB();
+                rayPos = rayPos.add(rayDir.multiply(steps));
+            }
+
+            double rayLength = (playerCamera.getPosition().subtract(rayPos).getModule() * rayRot.getX1()) + 0.001;
+
+            rys.setRay(x, new Ray(rayPos, rayDir, rayLength));
+
+            maxRayLength = rayLength > maxRayLength ? rayLength : maxRayLength;
+        }
+
+        rys.setMaxRayLength(maxRayLength);
+        this.raysCasted = rys;
+        this.raysCasted.setMaxRayLength(maxRayLength);
+
+        return pixels;
+    }
+
     /**
      * Render wall int [ ].
      *
@@ -330,7 +391,7 @@ public class Screen {
      * @return the int [ ]
      */
     public int[] renderWall(int[] pixels, Camera playerCamera) {
-        for (int x = even; x < width - even; x+= 1 + even) {
+        for (int x = 0; x < width; x++) {
             Vector2d rayPos = this.raysCasted.getRay(x).getPosition();
             Vector2d rayDir = this.raysCasted.getRay(x).getDirection();
             double rayLength = this.raysCasted.getRay(x).getLength();
@@ -353,7 +414,7 @@ public class Screen {
             double intersectionY = playerCamera.getPosition().getY() <= rayPos.getY()
                     ? Math.abs(rayPos.getY() - (int) rayPos.getY())
                     : 1 - Math.abs(rayPos.getY() - (int) rayPos.getY());
-            boolean horizontal = intersectionX * 0.001 < intersectionY * 0.001 ? true : false;
+            boolean horizontal = intersectionX < intersectionY ? true : false;
 
             double wallX = horizontal ? intersectionY : intersectionX;
             wallX -= Math.floor(wallX);
@@ -372,6 +433,42 @@ public class Screen {
                 int color = textures.get(texNum).getPixelSafty(texX, texY);
                 pixels[x + y * width] = color;
             }
+
+            /*double floorXWall = 0, floorYWall = 0;
+
+            if(horizontal && rayDir.getX() > 0) {
+                floorXWall = intersectionX;
+                floorYWall = intersectionY + wallX;
+            } else if(horizontal && rayDir.getX() < 0) {
+                floorXWall = intersectionX + 1.0;
+                floorYWall = intersectionY + wallX;
+            } else if(!horizontal && rayDir.getY() > 0) {
+                floorXWall = intersectionX + wallX;
+                floorYWall = intersectionY;
+            } else {
+                floorXWall = intersectionX + wallX;
+                floorYWall = intersectionY + 1.0;
+            }
+
+            double distWall = horizontal ? intersectionY : intersectionX;
+            double currentDist = 0;
+
+            for (int y = drawEnd; y < height; y++) {
+                currentDist = height / (2.0 * y - height);
+
+                double weight = currentDist / distWall;
+
+                double currentFloorX = weight * floorXWall + (1.0 - weight) * rayDir.getX();
+                double currentFloorY = weight * floorYWall + (1.0 - weight) * rayDir.getY();
+
+                int checkerBoardPattern = ((int) currentFloorX) + ((int) currentFloorY) % 2;
+                int floorColor =checkerBoardPattern == 0 ? Color.RED.getRGB() : Color.BLUE.getRGB();
+
+                if (this.screenMask[x + y * width]) continue;
+                else this.screenMask[x + y * width] = true;
+
+                pixels[x + y * width] = floorColor;
+            }*/
         }
 
         return pixels;
@@ -568,6 +665,8 @@ public class Screen {
                         Collection<Unit> players) {
         this.screenMask = new boolean[pixels.length];
         if (this.flick) this.even ^= 1;
+
+        pixels = this.mapRendering(pixels, playerCamera);
 
         pixels = this.renderWall(pixels, playerCamera);
         pixels = this.renderFloor(pixels, playerCamera);
