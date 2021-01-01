@@ -50,6 +50,16 @@ public class Scene extends JFrame {
     public static final int SCENE_HEIGHT = 480;//1440;
 
     /**
+     * The constant SCENE_WIDTH.
+     */
+    public static final int WIDTH = 2560;
+
+    /**
+     * The constant SCENE_HEIGHT.
+     */
+    public static final int HEIGHT = 1440;
+
+    /**
      * The Scene temp.
      */
     private Clock sceneTemp;
@@ -179,22 +189,22 @@ public class Scene extends JFrame {
                 SCENE_WIDTH,
                 SCENE_HEIGHT,
                 new ArrayList<>(){{
-                    add(new Sprite("src/resources/room/wall-9.png"));
-                    add(new Sprite("src/resources/room/wall-10.jpg"));
-                    add(new Sprite("src/resources/room/wall-10.jpg"));
-                    add(new Sprite("src/resources/room/wall-9.png"));
-                    add(new Sprite("src/resources/room/ceiling-3.png"));
-                    add(new Sprite("src/resources/room/floor-3.png"));
+                    add(new Sprite("src/resources/room/wall-5.jpg"));
+                    add(new Sprite("src/resources/room/wall-6.jpg"));
+                    add(new Sprite("src/resources/room/wall-7.jpg"));
+                    add(new Sprite("src/resources/room/wall-7.jpg"));
+                    add(new Sprite("src/resources/room/floor-2.jpg"));
+                    add(new Sprite("src/resources/room/ceiling-2.png"));
                 }},
                 mainPlayer
         );
-        setSize(SCENE_WIDTH, SCENE_HEIGHT);
+        setSize(WIDTH, HEIGHT);
         setCursor(Toolkit.getDefaultToolkit().createCustomCursor(
                 new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB),
                 new Point(0, 0),
                 "blank")
         );
-        setSize(image.getWidth(), image.getHeight());
+        //setSize(image.getWidth(), image.getHeight());
         setResizable(true);
         setTitle("The Plain Old Retro Shooter");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -318,14 +328,14 @@ public class Scene extends JFrame {
                     }
 
                     BulletHitScanner.scan(this.bullets, this.enemies, sceneTemp.getFrequency(), map);
-                },
-                () -> {
-                    //screen.rayCast(this.mainPlayer);
-                    //System.err.println(mainPlayer.getDirection().toString());
                 }
         );
         renderTemp = new LowIntensiveClock(
                 120,
+                () -> {
+                    screen.rayCast(this.mainPlayer);
+                    //System.err.println(mainPlayer.getDirection().toString());
+                },
                 () -> screen.render(
                         pixels,
                         this.mainPlayer,

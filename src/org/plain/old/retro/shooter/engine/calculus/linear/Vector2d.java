@@ -136,8 +136,8 @@ public class Vector2d implements Vector {
 	 */
 	public Vector2d rotate(Matrix2d matrix) {
 		return new Vector2d(
-				(this.x * matrix.getX1() + this.y * matrix.getX2()),
-				(this.x * matrix.getY1() + this.y * matrix.getY2())
+				this.x * matrix.getX1() + this.y * matrix.getX2(),
+				this.x * matrix.getY1() + this.y * matrix.getY2()
 		);
 	}
 
@@ -148,7 +148,10 @@ public class Vector2d implements Vector {
 	 * @return the vector 2 d
 	 */
 	public Vector2d add(Vector2d om) {
-		return new Vector2d(this.x + om.getX(), this.y + om.getY());
+		return new Vector2d(
+				this.x + om.getX(),
+				this.y + om.getY()
+		);
 	}
 
 	/**
@@ -158,7 +161,10 @@ public class Vector2d implements Vector {
 	 * @return the vector 2 d
 	 */
 	public Vector2d add(double k) {
-		return new Vector2d(this.x + k, this.y + k);
+		return new Vector2d(
+				this.x + k,
+				this.y + k
+		);
 	}
 
 	/**
@@ -188,7 +194,10 @@ public class Vector2d implements Vector {
 	 * @return the vector 2 d
 	 */
 	public Vector2d multiply(Vector2d om) {
-		return new Vector2d(this.x * om.getX(), this.y * om.getY());
+		return new Vector2d(
+				this.x * om.getX(),
+				this.y * om.getY()
+		);
 	}
 
 	/**
@@ -198,7 +207,10 @@ public class Vector2d implements Vector {
 	 * @return the vector 2 d
 	 */
 	public Vector2d multiply(double k) {
-		return new Vector2d(this.x * k, this.y * k);
+		return new Vector2d(
+				this.x * k,
+				this.y * k
+		);
 	}
 
 	/**
@@ -257,7 +269,7 @@ public class Vector2d implements Vector {
 	 * @return the scaled
 	 */
 	private double getScaled(double value, int scale) {
-		return Math.round(value * scale) / scale;
+		return 1d * (((int) (value * scale)) / scale);
 	}
 
 	/**
