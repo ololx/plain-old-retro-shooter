@@ -42,12 +42,22 @@ public class Scene extends JFrame {
     /**
      * The constant SCENE_WIDTH.
      */
-    public static final int SCENE_WIDTH = 800;//2560;
+    public static final int SCENE_WIDTH = 640;//2560;
 
     /**
      * The constant SCENE_HEIGHT.
      */
-    public static final int SCENE_HEIGHT = 600;//1440;
+    public static final int SCENE_HEIGHT = 480;//1440;
+
+    /**
+     * The constant SCENE_WIDTH.
+     */
+    public static final int WIDTH = 2560;
+
+    /**
+     * The constant SCENE_HEIGHT.
+     */
+    public static final int HEIGHT = 1440;
 
     /**
      * The Scene temp.
@@ -179,22 +189,22 @@ public class Scene extends JFrame {
                 SCENE_WIDTH,
                 SCENE_HEIGHT,
                 new ArrayList<>(){{
-                    add(new Sprite("src/resources/room/wall-9.png"));
-                    add(new Sprite("src/resources/room/wall-10.jpg"));
-                    add(new Sprite("src/resources/room/wall-10.jpg"));
-                    add(new Sprite("src/resources/room/wall-9.png"));
-                    add(new Sprite("src/resources/room/ceiling-3.png"));
-                    add(new Sprite("src/resources/room/floor-3.png"));
+                    add(new Sprite("src/resources/room/wall/wall-1.png"));
+                    add(new Sprite("src/resources/room/wall/wall-2.png"));
+                    add(new Sprite("src/resources/room/wall/wall-3.png"));
+                    add(new Sprite("src/resources/room/wall/wall-4.png"));
+                    add(new Sprite("src/resources/room/floor/floor-1.png"));
+                    add(new Sprite("src/resources/room/ceiling/ceiling-1.png"));
                 }},
                 mainPlayer
         );
-        setSize(SCENE_WIDTH, SCENE_HEIGHT);
+        setSize(WIDTH, HEIGHT);
         setCursor(Toolkit.getDefaultToolkit().createCustomCursor(
                 new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB),
                 new Point(0, 0),
                 "blank")
         );
-        setSize(image.getWidth(), image.getHeight());
+        //setSize(image.getWidth(), image.getHeight());
         setResizable(true);
         setTitle("The Plain Old Retro Shooter");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -241,7 +251,6 @@ public class Scene extends JFrame {
                 30,
                 () -> {
                     for (Map.Entry<String, Boolean> state : controller.getState().entrySet()) {
-
                         if (state.getValue()) {
                             if (state.getKey().equals("MV_FWD")) {
                                 mainPlayer.moveForward(map.getSpace());
@@ -318,13 +327,13 @@ public class Scene extends JFrame {
                     }
 
                     BulletHitScanner.scan(this.bullets, this.enemies, sceneTemp.getFrequency(), map);
-                },
-                () -> {
-                    screen.rayCast(this.mainPlayer);
                 }
         );
         renderTemp = new LowIntensiveClock(
                 120,
+                () -> {
+                    screen.rayCast(this.mainPlayer);
+                },
                 () -> screen.render(
                         pixels,
                         this.mainPlayer,
