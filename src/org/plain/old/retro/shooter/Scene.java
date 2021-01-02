@@ -189,12 +189,12 @@ public class Scene extends JFrame {
                 SCENE_WIDTH,
                 SCENE_HEIGHT,
                 new ArrayList<>(){{
-                    add(new Sprite("src/resources/room/wall-5.jpg"));
-                    add(new Sprite("src/resources/room/wall-6.jpg"));
-                    add(new Sprite("src/resources/room/wall-7.jpg"));
-                    add(new Sprite("src/resources/room/wall-7.jpg"));
-                    add(new Sprite("src/resources/room/floor-2.jpg"));
-                    add(new Sprite("src/resources/room/ceiling-2.png"));
+                    add(new Sprite("src/resources/room/wall/wall-1.png"));
+                    add(new Sprite("src/resources/room/wall/wall-2.png"));
+                    add(new Sprite("src/resources/room/wall/wall-3.png"));
+                    add(new Sprite("src/resources/room/wall/wall-4.png"));
+                    add(new Sprite("src/resources/room/floor/floor-1.png"));
+                    add(new Sprite("src/resources/room/ceiling/ceiling-1.png"));
                 }},
                 mainPlayer
         );
@@ -251,7 +251,6 @@ public class Scene extends JFrame {
                 30,
                 () -> {
                     for (Map.Entry<String, Boolean> state : controller.getState().entrySet()) {
-
                         if (state.getValue()) {
                             if (state.getKey().equals("MV_FWD")) {
                                 mainPlayer.moveForward(map.getSpace());
@@ -334,7 +333,6 @@ public class Scene extends JFrame {
                 120,
                 () -> {
                     screen.rayCast(this.mainPlayer);
-                    //System.err.println(mainPlayer.getDirection().toString());
                 },
                 () -> screen.render(
                         pixels,

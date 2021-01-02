@@ -205,7 +205,7 @@ public class Screen {
         return this.drawHorizontalSurface(
                 pixels,
                 playerCamera,
-                this.textures.get(5),
+                this.textures.get(4),
                 1,
                 this.height >> 1,
                 this.height
@@ -223,7 +223,7 @@ public class Screen {
         return this.drawHorizontalSurface(
                 pixels,
                 playerCamera,
-                this.textures.get(4),
+                this.textures.get(5),
                 -1,
                 0,
                 this.height >> 1
