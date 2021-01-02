@@ -10,6 +10,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Refactor old project classes via game dev patterns implemetation.
 
+## [0.4.1-alpha] - 2021-01-02
+
+### Fixed
+
+- The floor && ceiling casting.
+
 ## [0.4.0-alpha] - 2020-11-30
 
 ### Fixed
