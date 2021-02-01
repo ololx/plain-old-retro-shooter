@@ -142,6 +142,17 @@ public class Sprite implements Serializable {
         return this.getPixel(x, y);
     }
 
+    public int getPixelSafty(int x, int y, double intensity){
+        int color = this.getPixelSafty(x, y);
+        intensity = intensity > 1 ? 1 : intensity;
+        int a = (color >> 24) & 0xFF;
+        int r = (int) (((color >> 16) & 0xFF) * intensity);
+        int g = (int) (((color >> 8) & 0xFF) * intensity);
+        int b = (int) ((color & 0xFF) * intensity);
+
+        return (a << 24) | (r << 16) | (g << 8) | b;
+    }
+
     /**
      * Sets pixels.
      *
