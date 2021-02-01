@@ -247,9 +247,9 @@ public class Screen {
                 double cellX = Math.abs(((currentRayPosition.getX())) - (int)(currentRayPosition.getX()));
                 double cellY = Math.abs(((currentRayPosition.getY())) - (int)(currentRayPosition.getY()));
 
-                int tx = (int)(texture.getWidth() * cellX);
-                int ty = (int)(texture.getHeight() * cellY);
-                int colorFloor = texture.getPixelSafty(tx, ty);
+                int tX = (int)(texture.getWidth() * cellX);
+                int tY = (int)(texture.getHeight() * cellY);
+                int colorFloor = texture.getPixelSafty(tX, tY, 1 / (rowDistance));
 
                 pixels[x + y * width] = colorFloor;
             }
@@ -375,9 +375,9 @@ public class Screen {
 
             double wallX = horizontal ? intersectionY : intersectionX;
             wallX -= Math.floor(wallX);
-            int texX = (int)(wallX * (textures.get(texNum).getWidth()));
-            if (!horizontal && rayDir.getX() > 0) texX = (textures.get(texNum).getWidth()) - texX - 1;
-            if (horizontal && rayDir.getY() < 0) texX = (textures.get(texNum).getWidth()) - texX - 1;
+            int tX = (int)(wallX * (textures.get(texNum).getWidth()));
+            if (!horizontal && rayDir.getX() > 0) tX = (textures.get(texNum).getWidth()) - tX - 1;
+            if (horizontal && rayDir.getY() < 0) tX = (textures.get(texNum).getWidth()) - tX - 1;
 
             double imgPixYSize = 1.0 * textures.get(texNum).getHeight() / wallHeight;
             int imgPixYStart = height >= wallHeight ? 0 : (int) ((((wallHeight >> 1)) - (height >> 1)) * imgPixYSize);
@@ -386,8 +386,8 @@ public class Screen {
                 if (this.screenMask[x + y * width]) continue;
                 else this.screenMask[x + y * width] = true;
 
-                int texY = imgPixYStart + (int)(((y - drawStart) * imgPixYSize));
-                int color = textures.get(texNum).getPixelSafty(texX, texY);
+                int tY = imgPixYStart + (int)(((y - drawStart) * imgPixYSize));
+                int color = textures.get(texNum).getPixelSafty(tX, tY, 1 / (rayLength));
                 pixels[x + y * width] = color;
             }
         }
@@ -513,21 +513,21 @@ public class Screen {
             int drawXEnd = (int) drawXStart + (unitWidth);
             double imgPixXSize = 1.0 * sprite.getWidth() / unitWidth;
 
-            int texXOffset = 0;
+            int tXOffset = 0;
             if (drawXStart < 0) {
-                texXOffset = - drawXStart;
+                tXOffset = - drawXStart;
                 drawXStart = 0;
             }
 
             for (int y = drawYStart + even; y < drawYEnd - even; y+= 1 + even) {
-                int texY = (int)((y - drawYStart) * imgPixYSize);
+                int tY = (int)((y - drawYStart) * imgPixYSize);
                 for (int x = drawXStart + even; x < drawXEnd - even; x+= 1 + even) {
                     if (this.raysCasted.getRay(x) == null
-                            || (this.screenMask[x + y * width] && this.raysCasted.getRay(x).getLength() < rayLength)
+                            || (this.screenMask[x + y * width] && this.raysCasted.getRay(x).getLength() <= rayLength)
                     ) continue;
                     else this.screenMask[x + y * width] = true;
 
-                    int color = sprite.getPixelSafty((int) ((x - drawXStart + texXOffset) * imgPixXSize), texY);
+                    int color = sprite.getPixelSafty((int) ((x - drawXStart + tXOffset) * imgPixXSize), tY, 1 / (rayLength));
 
                     if (color != 0) pixels[x + y * width] = color;
                 }

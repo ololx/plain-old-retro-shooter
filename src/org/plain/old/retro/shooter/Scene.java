@@ -189,12 +189,12 @@ public class Scene extends JFrame {
                 SCENE_WIDTH,
                 SCENE_HEIGHT,
                 new ArrayList<>(){{
-                    add(new Sprite("src/resources/room/wall/wall-1.png"));
-                    add(new Sprite("src/resources/room/wall/wall-2.png"));
-                    add(new Sprite("src/resources/room/wall/wall-3.png"));
-                    add(new Sprite("src/resources/room/wall/wall-4.png"));
-                    add(new Sprite("src/resources/room/floor/floor-1.png"));
-                    add(new Sprite("src/resources/room/ceiling/ceiling-1.png"));
+                    add(new Sprite("src/resources/room/wall-1.png"));
+                    add(new Sprite("src/resources/room/wall-2.png"));
+                    add(new Sprite("src/resources/room/wall-3.png"));
+                    add(new Sprite("src/resources/room/wall-4.png"));
+                    add(new Sprite("src/resources/room/floor.png"));
+                    add(new Sprite("src/resources/room/ceiling.png"));
                 }},
                 mainPlayer
         );
@@ -426,7 +426,7 @@ public class Scene extends JFrame {
         BufferStrategy bs = getBufferStrategy();
 
         if (bs == null) {
-            createBufferStrategy(2);
+            createBufferStrategy(3);
             return;
         }
 

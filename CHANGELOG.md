@@ -8,7 +8,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
-- Refactor old project classes via game dev patterns implemetation.
+- Refactor old project classes via game dev patterns implementation.
+
+## [0.4.2-alpha] - 2021-02-01
+
+### Added
+
+- The simple dark effect.
 
 ## [0.4.1-alpha] - 2021-01-02
 
