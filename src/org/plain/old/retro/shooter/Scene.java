@@ -189,12 +189,12 @@ public class Scene extends JFrame {
                 SCENE_WIDTH,
                 SCENE_HEIGHT,
                 new ArrayList<>(){{
-                    add(new Sprite("src/resources/room/wall-1.png"));
-                    add(new Sprite("src/resources/room/wall-2.png"));
-                    add(new Sprite("src/resources/room/wall-3.png"));
-                    add(new Sprite("src/resources/room/wall-4.png"));
-                    add(new Sprite("src/resources/room/floor.png"));
-                    add(new Sprite("src/resources/room/ceiling.png"));
+                    add(new Sprite("src/resources/room/wall-5.jpg"));
+                    add(new Sprite("src/resources/room/wall-6.jpg"));
+                    add(new Sprite("src/resources/room/wall-7.jpg"));
+                    add(new Sprite("src/resources/room/wall-8.jpg"));
+                    add(new Sprite("src/resources/room/floor-2.jpg"));
+                    add(new Sprite("src/resources/room/ceiling-2.png"));
                 }},
                 mainPlayer
         );

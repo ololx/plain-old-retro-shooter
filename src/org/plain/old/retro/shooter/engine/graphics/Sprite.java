@@ -32,6 +32,8 @@ public class Sprite implements Serializable {
      */
     private int height;
 
+    private int maskColor = 0;
+
     /**
      * Instantiates a new Sprite.
      *
@@ -143,12 +145,22 @@ public class Sprite implements Serializable {
     }
 
     public int getPixelSafty(int x, int y, double intensity){
+        return getPixelSafty(x, y, intensity, Color.YELLOW.getRGB());
+    }
+
+    public int getPixelSafty(int x, int y, double intensity, int fogColor){
         int color = this.getPixelSafty(x, y);
+
+        if (color == maskColor) return color;
+
         intensity = intensity > 1 ? 1 : intensity;
-        int a = (color >> 24) & 0xFF;
-        int r = (int) (((color >> 16) & 0xFF) * intensity);
-        int g = (int) (((color >> 8) & 0xFF) * intensity);
-        int b = (int) ((color & 0xFF) * intensity);
+
+        double intensityColor = 1 - intensity;
+
+        int a = ((color >> 24) & 0xFF);
+        int r = (int) (((color >> 16) & 0xFF) * intensity) + (int) (((fogColor >> 16) & 0xFF) * intensityColor);
+        int g = (int) (((color >> 8) & 0xFF) * intensity) + (int) (((fogColor >> 8) & 0xFF) * intensityColor);
+        int b = (int) ((color & 0xFF) * intensity) + (int) ((fogColor & 0xFF) * intensityColor);
 
         return (a << 24) | (r << 16) | (g << 8) | b;
     }
