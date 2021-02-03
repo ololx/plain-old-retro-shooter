@@ -10,6 +10,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Refactor old project classes via game dev patterns implementation.
 
+## [0.4.3-alpha] - 2021-02-03
+
+### Added
+
+- The map show on/off button - "M".
+
+### Changed
+
+- Make a static function for fog effect and implement it into scene like yellow fog.
+
 ## [0.4.2-alpha] - 2021-02-01
 
 ### Added

@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
  */
 public class Screen {
 
+    private boolean showMap = false;
+
     /**
      * The type Ray.
      */
@@ -199,6 +201,10 @@ public class Screen {
         this.textures = textures;
         this.raysCasted = new Rays();
         this.rayCast(playerCamera);
+    }
+
+    public void switchShowMap() {
+        this.showMap ^= true;
     }
 
     public int[] renderFloor(int[] pixels, Camera playerCamera) {
@@ -600,7 +606,7 @@ public class Screen {
                     }}
                 );
         pixels = this.renderGun(pixels, gun.getSprite());
-        pixels = this.renderMap(pixels, playerCamera);
+        if (this.showMap) pixels = this.renderMap(pixels, playerCamera);
 
         return pixels;
     }

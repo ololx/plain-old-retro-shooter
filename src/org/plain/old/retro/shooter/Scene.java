@@ -42,12 +42,12 @@ public class Scene extends JFrame {
     /**
      * The constant SCENE_WIDTH.
      */
-    public static final int SCENE_WIDTH = 640;//2560;
+    public static final int SCENE_WIDTH = 1366;
 
     /**
      * The constant SCENE_HEIGHT.
      */
-    public static final int SCENE_HEIGHT = 480;//1440;
+    public static final int SCENE_HEIGHT = 768;
 
     /**
      * The constant SCENE_WIDTH.
@@ -230,6 +230,7 @@ public class Scene extends JFrame {
             put(KeyEvent.VK_DOWN, "MV_DOWN");
             put(KeyEvent.VK_SPACE, "SHOT");
             put(KeyEvent.VK_R, "RELOAD");
+            put(KeyEvent.VK_M, "MAP");
         }},
                 center
         );
@@ -244,8 +245,6 @@ public class Scene extends JFrame {
         addKeyListener(controller);
         addMouseListener(controller);
         addMouseMotionListener(controllerMouseMove);
-
-        System.out.println(center);
 
         this.sceneTemp = new LowIntensiveClock(
                 30,
@@ -304,6 +303,10 @@ public class Scene extends JFrame {
 
                             if (state.getKey().equals("ESC")) {
                                 controllerMouseMove.swtch();
+                            }
+
+                            if (state.getKey().equals("MAP")) {
+                                screen.switchShowMap();
                             }
                         }
                     }
