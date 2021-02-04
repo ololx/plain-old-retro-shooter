@@ -270,9 +270,6 @@ public class Screen {
      * @param playerCamera the player camera
      */
     public void rayCast(Camera playerCamera) {
-        if (!playerCamera.isMoved()) return;
-        else playerCamera.update();
-
         double maxRayLength = 0;
         Rays rys = new Rays();
         for (int x = even; x < width - even; x+= 1 + even) {
@@ -281,7 +278,7 @@ public class Screen {
             Vector2d rayPos = playerCamera.getPosition().clone();
 
             boolean hit = false;
-            double steps = 0.01;
+            double steps = 0.05;
             while (!hit) {
                 if ((int) rayPos.getX() > map.length || (int) rayPos.getY() > map[0].length) hit = true;
                 else if (map[(int) rayPos.getX()][(int) rayPos.getY()] != 0) hit = true;
@@ -302,6 +299,8 @@ public class Screen {
     }
 
     public int[] renderMap(int[] pixels, Camera playerCamera) {
+        if (!playerCamera.isMoved()) return pixels;
+
         int scale = 5;
         int mapW = map.length * scale;
         int mapH = map[0].length * scale;
@@ -480,17 +479,10 @@ public class Screen {
                     (int) (sprite.getHeight() / rayLength)
             );
 
-            //int unitHeight = (rayLength == 0) ? sprite.getHeight() : (int) ((int) (sprite.getHeight() / (rayLength + 0.0001)));
-            //if (unitHeight > sprite.getHeight()) unitHeight = sprite.getHeight();
-
-            //int unitWidth = (int) (sprite.getWidth() * (sprite.getWidth() / ((rayLength + 0.0001) * playerCamera.getDistanceToPlain())));
             int unitWidth = SimpleMath.min(
                     sprite.getWidth(),
                     (int) (sprite.getWidth() / rayLength)
             );
-
-            //int unitWidth = (rayLength == 0) ? sprite.getWidth() : (int) ((int) (sprite.getWidth() / (rayLength)));
-            //if (unitWidth > sprite.getWidth()) unitWidth = sprite.getWidth();
 
             int drawYStart = 0;
             int drawYEnd = 0;
@@ -534,14 +526,15 @@ public class Screen {
                 int tY = (int)((y - drawYStart) * imgPixYSize);
                 for (int x = drawXStart + even; x < drawXEnd - even; x+= 1 + even) {
                     if (this.raysCasted.getRay(x) == null
-                            || (this.screenMask[x + y * width] && this.raysCasted.getRay(x).getLength()
+                            || (this.raysCasted.getRay(x).getLength()
                             < (rayLength * playerCamera.getRotationMatrix(x).getX1()))
                     ) continue;
-                    else this.screenMask[x + y * width] = true;
-
                     int color = sprite.getPixelSafty((int) ((x - drawXStart + tXOffset) * imgPixXSize), tY, 1 / rayLength);
 
-                    if (color != 0) pixels[x + y * width] = color;
+                    if (color != 0) {
+                        pixels[x + y * width] = color;
+                        this.screenMask[x + y * width] = true;
+                    }
                 }
             }
         }
@@ -599,21 +592,22 @@ public class Screen {
         //this.rayCast(playerCamera);
 
         this.screenMask = new boolean[pixels.length];
-        pixels = this.renderWall(pixels, playerCamera);
-        pixels = this.renderFloor(pixels, playerCamera);
-        pixels = this.renderCeiling(pixels, playerCamera);
         pixels = this.renderUnit(
                 pixels,
                 playerCamera,
-                    new ArrayList<>(){{
-                        addAll(enemies);
-                        addAll(bullets);
-                        addAll(players);
-                    }}
-                );
+                new ArrayList<>(){{
+                    addAll(enemies);
+                    addAll(bullets);
+                    addAll(players);
+                }}
+        );
+        pixels = this.renderWall(pixels, playerCamera);
+        pixels = this.renderFloor(pixels, playerCamera);
+        pixels = this.renderCeiling(pixels, playerCamera);
         pixels = this.renderGun(pixels, gun.getSprite());
         if (this.showMap) pixels = this.renderMap(pixels, playerCamera);
 
+        else playerCamera.update();
         return pixels;
     }
 

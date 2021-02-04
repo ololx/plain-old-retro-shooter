@@ -330,13 +330,13 @@ public class Scene extends JFrame {
                     }
 
                     BulletHitScanner.scan(this.bullets, this.enemies, sceneTemp.getFrequency(), map);
-                },
-                () -> {
-                    screen.rayCast(this.mainPlayer);
                 }
         );
         renderTemp = new LowIntensiveClock(
                 60,
+                () -> {
+                    screen.rayCast(this.mainPlayer);
+                },
                 () -> screen.render(
                         pixels,
                         this.mainPlayer,
