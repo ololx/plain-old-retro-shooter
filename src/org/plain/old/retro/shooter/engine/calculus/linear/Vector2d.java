@@ -281,4 +281,8 @@ public class Vector2d implements Vector {
 	private double getScaled(double value) {
 		return this.getScaled(value, 100);
 	}
+
+	public boolean isSame(Vector2d om) {
+		return this.getX() == om.getX() && this.getY() == om.getY();
+	}
 }

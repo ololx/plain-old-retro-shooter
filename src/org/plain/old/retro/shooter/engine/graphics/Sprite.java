@@ -17,6 +17,21 @@ import java.util.Objects;
  */
 public class Sprite implements Serializable {
 
+    public static int getShadedColor(int imageColor, double imageIntensity, int fogColor, double fogIntensity) {
+        imageIntensity = imageIntensity > 1 ? 1 : imageIntensity;
+        fogIntensity = fogIntensity > 1 ? 1 : fogIntensity;
+
+        int alpha = ((imageColor >> 24) & 0xFF);
+        int red = (int) (((imageColor >> 16) & 0xFF) * imageIntensity)
+                + (int) (((fogColor >> 16) & 0xFF) * fogIntensity);
+        int green = (int) (((imageColor >> 8) & 0xFF) * imageIntensity)
+                + (int) (((fogColor >> 8) & 0xFF) * fogIntensity);
+        int blue = (int) ((imageColor & 0xFF) * imageIntensity)
+                + (int) ((fogColor & 0xFF) * fogIntensity);
+
+        return (alpha << 24) | (red << 16) | (green << 8) | blue;
+    }
+
     /**
      * The Pixels.
      */
@@ -31,6 +46,8 @@ public class Sprite implements Serializable {
      * The Height.
      */
     private int height;
+
+    private int maskColor = 0;
 
     /**
      * Instantiates a new Sprite.
@@ -143,14 +160,19 @@ public class Sprite implements Serializable {
     }
 
     public int getPixelSafty(int x, int y, double intensity){
-        int color = this.getPixelSafty(x, y);
-        intensity = intensity > 1 ? 1 : intensity;
-        int a = (color >> 24) & 0xFF;
-        int r = (int) (((color >> 16) & 0xFF) * intensity);
-        int g = (int) (((color >> 8) & 0xFF) * intensity);
-        int b = (int) ((color & 0xFF) * intensity);
+        return getPixelSafty(x, y, intensity, Color.BLACK.getRGB(), .80);
+    }
 
-        return (a << 24) | (r << 16) | (g << 8) | b;
+    public int getPixelSafty(int x, int y, double intensity, int fogColor, double fogIntensity) {
+        int color = this.getPixelSafty(x, y);
+        if (color == maskColor) return color;
+
+        intensity = intensity > 1 ? 1 : intensity;
+        fogIntensity = fogIntensity > 1 ? 1 : fogIntensity;
+
+        if (intensity + fogIntensity > 1) fogIntensity = 1 - intensity;
+
+        return getShadedColor(color, intensity, fogColor, fogIntensity);
     }
 
     /**
