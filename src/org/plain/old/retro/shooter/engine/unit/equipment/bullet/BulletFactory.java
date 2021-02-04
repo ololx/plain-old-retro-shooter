@@ -15,7 +15,7 @@ public interface BulletFactory {
     /**
      * The constant SPRITE.
      */
-    Sprite SPRITE = new Sprite("src/resources/fire-ball.png",1.5 , 1.5);
+    Sprite SPRITE = new Sprite("src/resources/fire-ball.png",0.5 , 0.5);
 
     /**
      * Gets instance.

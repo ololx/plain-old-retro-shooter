@@ -2,6 +2,7 @@ package org.plain.old.retro.shooter.engine.graphics;
 
 import org.plain.old.retro.shooter.engine.calculus.SimpleMath;
 import org.plain.old.retro.shooter.engine.calculus.linear.RotationMatrix2d;
+import org.plain.old.retro.shooter.engine.calculus.linear.Vector2d;
 import org.plain.old.retro.shooter.engine.unit.GeneralPlayer;
 
 import java.io.Serializable;
@@ -80,6 +81,10 @@ public class Camera extends GeneralPlayer {
         }
     }
 
+    private Vector2d previosPosition;
+
+    private Vector2d previosDirection;
+
     /**
      * The Z.
      */
@@ -147,6 +152,8 @@ public class Camera extends GeneralPlayer {
      */
     public Camera(double x, double y, double x2, double y2, int width, int height, double angle) {
         super(x, y, x2, y2);
+        this.previosPosition = new Vector2d(0, 0);
+        this.previosDirection = new Vector2d(0, 0);
         this.plain = new CameraPlane(width, height);
         this.angle = angle;
         this.distanceToPlain = (width / 2) / Math.tan(angle / 2);
@@ -248,5 +255,15 @@ public class Camera extends GeneralPlayer {
      */
     public double getDistanceToPlain() {
         return this.distanceToPlain;
+    }
+
+    public boolean isMoved() {
+        return !this.previosDirection.isSame(this.direction)
+                || !this.previosPosition.isSame(this.position);
+    }
+
+    public void update() {
+        this.previosDirection = this.direction;
+        this.previosPosition = this.position;
     }
 }

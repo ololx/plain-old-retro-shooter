@@ -270,6 +270,9 @@ public class Screen {
      * @param playerCamera the player camera
      */
     public void rayCast(Camera playerCamera) {
+        if (!playerCamera.isMoved()) return;
+        else playerCamera.update();
+
         double maxRayLength = 0;
         Rays rys = new Rays();
         for (int x = even; x < width - even; x+= 1 + even) {
@@ -393,7 +396,7 @@ public class Screen {
                 else this.screenMask[x + y * width] = true;
 
                 int tY = imgPixYStart + (int)(((y - drawStart) * imgPixYSize));
-                int color = textures.get(texNum).getPixelSafty(tX, tY, 1 / (rayLength));
+                int color = textures.get(texNum).getPixelSafty(tX, tY, 1 / rayLength);
                 pixels[x + y * width] = color;
             }
         }
@@ -462,15 +465,17 @@ public class Screen {
                     .rotate(playerCamera.getRotationMatrix(0))
                     .getAngle(rayToUnit);
             double angleToUnitCenter = playerCamera.getDirection().getAngle(rayToUnit);
-            boolean isVisible = angleToUnitCenter <= angle && angleToUnitLeft  <= angle * 2 ? true : false;
+            boolean isVisible = angleToUnitCenter <= angle ? true : false;
 
             if (!isVisible || !unit.isExist()) continue;
 
             double angles = angleStep * (angleToUnitLeft);
             double rayLength = unit.getDistanceToCurrentObject();
 
+            int unitHeight = (int) ((sprite.getWidth() / rayLength) * playerCamera.getDistanceToPlain());
+
             //int unitHeight = (int) (((sprite.getHeight() / 100) / rayLength) * playerCamera.getDistanceToPlain());
-            int unitHeight = SimpleMath.min(
+            unitHeight = SimpleMath.min(
                     sprite.getHeight(),
                     (int) (sprite.getHeight() / rayLength)
             );
@@ -529,11 +534,12 @@ public class Screen {
                 int tY = (int)((y - drawYStart) * imgPixYSize);
                 for (int x = drawXStart + even; x < drawXEnd - even; x+= 1 + even) {
                     if (this.raysCasted.getRay(x) == null
-                            || (this.screenMask[x + y * width] && this.raysCasted.getRay(x).getLength() <= rayLength)
+                            || (this.screenMask[x + y * width] && this.raysCasted.getRay(x).getLength()
+                            < (rayLength * playerCamera.getRotationMatrix(x).getX1()))
                     ) continue;
                     else this.screenMask[x + y * width] = true;
 
-                    int color = sprite.getPixelSafty((int) ((x - drawXStart + tXOffset) * imgPixXSize), tY, 1 / (rayLength));
+                    int color = sprite.getPixelSafty((int) ((x - drawXStart + tXOffset) * imgPixXSize), tY, 1 / rayLength);
 
                     if (color != 0) pixels[x + y * width] = color;
                 }
@@ -590,9 +596,9 @@ public class Screen {
                         ConcurrentSkipListSet<Enemy> enemies,
                         ConcurrentSkipListSet<Bullet> bullets,
                         Collection<Unit> players) {
-        this.screenMask = new boolean[pixels.length];
-        if (this.flick) this.even ^= 1;
+        //this.rayCast(playerCamera);
 
+        this.screenMask = new boolean[pixels.length];
         pixels = this.renderWall(pixels, playerCamera);
         pixels = this.renderFloor(pixels, playerCamera);
         pixels = this.renderCeiling(pixels, playerCamera);

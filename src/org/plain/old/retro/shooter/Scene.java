@@ -42,12 +42,12 @@ public class Scene extends JFrame {
     /**
      * The constant SCENE_WIDTH.
      */
-    public static final int SCENE_WIDTH = 1366;
+    public static final int SCENE_WIDTH = 640;
 
     /**
      * The constant SCENE_HEIGHT.
      */
-    public static final int SCENE_HEIGHT = 768;
+    public static final int SCENE_HEIGHT = 480;
 
     /**
      * The constant SCENE_WIDTH.
@@ -171,15 +171,15 @@ public class Scene extends JFrame {
         );
 
         this.enemies = new ConcurrentSkipListSet<>(){{
-            add(new Enemy(7.5, 7.5, new Sprite("src/resources/enemy-1.png",1.3 , 1.3)));
-            add(new Enemy(25.5, 3.5, new Sprite("src/resources/enemy-1.png",1.3 , 1.3)));
-            add(new Enemy(21.5, 7.5, new Sprite("src/resources/enemy-1.png",1.3 , 1.3)));
-            add(new Enemy(22.5, 6.5, new Sprite("src/resources/enemy-2.png",1.3 , 1.3)));
-            add(new Enemy(23.5, 7.5, new Sprite("src/resources/enemy-2.png",1.3 , 1.3)));
-            add(new Enemy(20.5, 12.5, new Sprite("src/resources/enemy-2.png",1.3 , 1.3)));
-            add(new Enemy(5.5, 10.5, new Sprite("src/resources/enemy-3.png",1.3 , 1.3)));
-            add(new Enemy(14.5, 19.5, new Sprite("src/resources/enemy-3.png",1.3 , 1.3)));
-            add(new Enemy(12.5, 10.5, new Sprite("src/resources/enemy-3.png",1.3 , 1.3)));
+            add(new Enemy(7.5, 7.5, new Sprite("src/resources/enemy-1.png",0.5 , 0.5)));
+            add(new Enemy(25.5, 3.5, new Sprite("src/resources/enemy-1.png",0.5 , 0.5)));
+            add(new Enemy(21.5, 7.5, new Sprite("src/resources/enemy-1.png",0.5 , 0.5)));
+            add(new Enemy(22.5, 6.9, new Sprite("src/resources/enemy-2.png",0.5 , 0.5)));
+            add(new Enemy(23.5, 7.5, new Sprite("src/resources/enemy-2.png",0.5 , 0.5)));
+            add(new Enemy(20.5, 12.5, new Sprite("src/resources/enemy-2.png",0.5 , 0.5)));
+            add(new Enemy(5.5, 10.5, new Sprite("src/resources/enemy-3.png",0.5 , 0.5)));
+            add(new Enemy(14.5, 19.5, new Sprite("src/resources/enemy-3.png",0.5 , 0.5)));
+            add(new Enemy(12.5, 10.5, new Sprite("src/resources/enemy-3.png",0.5 , 0.5)));
         }};
         mainPlayer = new Camera(1.5, 2.5, 1, 0, SCENE_WIDTH, SCENE_HEIGHT, 60);
         image = new BufferedImage(SCENE_WIDTH, SCENE_HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -247,7 +247,7 @@ public class Scene extends JFrame {
         addMouseMotionListener(controllerMouseMove);
 
         this.sceneTemp = new LowIntensiveClock(
-                30,
+                22,
                 () -> {
                     for (Map.Entry<String, Boolean> state : controller.getState().entrySet()) {
                         if (state.getValue()) {
@@ -330,13 +330,13 @@ public class Scene extends JFrame {
                     }
 
                     BulletHitScanner.scan(this.bullets, this.enemies, sceneTemp.getFrequency(), map);
+                },
+                () -> {
+                    screen.rayCast(this.mainPlayer);
                 }
         );
         renderTemp = new LowIntensiveClock(
-                120,
-                () -> {
-                    screen.rayCast(this.mainPlayer);
-                },
+                60,
                 () -> screen.render(
                         pixels,
                         this.mainPlayer,
@@ -346,12 +346,13 @@ public class Scene extends JFrame {
                         this.otherUnits.values()
                 ),
                 () -> this.render(
-                        map, String.format(
+                        map,
+                        String.format(
                                 "UPS: %s \n FPS: %s \n NETPS: %s",
                                 sceneTemp.getFrequency(),
                                 renderTemp.getFrequency(),
                                 clientTemp.getFrequency()
-                                )
+                        )
                 )
         );
 
@@ -393,12 +394,12 @@ public class Scene extends JFrame {
         requestFocus();
         this.stick = new BoomStick(
                 new ArrayList<>(){{
-                    add(new Sprite("src/resources/equip/boomstick-1.png", 3, 3));
-                    add(new Sprite("src/resources/equip/boomstick-2.png", 3, 3));
-                    add(new Sprite("src/resources/equip/boomstick-3.png", 3, 3));
-                    add(new Sprite("src/resources/equip/boomstick-4.png", 3, 3));
-                    add(new Sprite("src/resources/equip/boomstick-5.png", 3, 3));
-                    add(new Sprite("src/resources/equip/boomstick-6.png", 3, 3));
+                    add(new Sprite("src/resources/equip/boomstick-1.png", 2, 2));
+                    add(new Sprite("src/resources/equip/boomstick-2.png", 2, 2));
+                    add(new Sprite("src/resources/equip/boomstick-3.png", 2, 2));
+                    add(new Sprite("src/resources/equip/boomstick-4.png", 2, 2));
+                    add(new Sprite("src/resources/equip/boomstick-5.png", 2, 2));
+                    add(new Sprite("src/resources/equip/boomstick-6.png", 2, 2));
                 }},
                 new ArrayList<>(){{
                     add(1);
@@ -429,7 +430,7 @@ public class Scene extends JFrame {
         BufferStrategy bs = getBufferStrategy();
 
         if (bs == null) {
-            createBufferStrategy(3);
+            createBufferStrategy(2);
             return;
         }
 

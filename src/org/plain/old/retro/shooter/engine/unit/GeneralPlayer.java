@@ -28,7 +28,7 @@ public class GeneralPlayer extends AbstractUnit {
     /**
      * The Direction.
      */
-    private Vector2d direction;
+    protected Vector2d direction;
 
     /**
      * The Movement vector.

@@ -160,7 +160,7 @@ public class Sprite implements Serializable {
     }
 
     public int getPixelSafty(int x, int y, double intensity){
-        return getPixelSafty(x, y, intensity, Color.YELLOW.getRGB(), .80);
+        return getPixelSafty(x, y, intensity, Color.BLACK.getRGB(), .80);
     }
 
     public int getPixelSafty(int x, int y, double intensity, int fogColor, double fogIntensity) {
