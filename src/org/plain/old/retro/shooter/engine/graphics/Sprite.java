@@ -6,6 +6,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -53,10 +55,15 @@ public class Sprite implements Serializable {
      * Instantiates a new Sprite.
      *
      * @param imageUri the image uri
+     * @throws URISyntaxException
      */
     public Sprite(String imageUri) {
+        URL resource = getClass().getClassLoader().getResource(imageUri);
+        if (resource == null) 
+            throw new IllegalArgumentException("The image '" + imageUri + "' not found!");
+
         try {
-            BufferedImage image = ImageIO.read(new File(imageUri));
+            BufferedImage image = ImageIO.read(resource);
             this.width = image.getWidth();
             this.height = image.getHeight();
             this.pixels = new int[this.width][this.height];
@@ -83,8 +90,12 @@ public class Sprite implements Serializable {
      * @param scaleHeight the scale height
      */
     public Sprite(String imageUri, double scaleWidth, double scaleHeight) {
+        URL resource = getClass().getClassLoader().getResource(imageUri);
+        if (resource == null) 
+            throw new IllegalArgumentException("The image '" + imageUri + "' not found!");
+
         try {
-            BufferedImage image = ImageIO.read(new File(imageUri));
+            BufferedImage image = ImageIO.read(resource);
             this.width = (int) (image.getWidth() * scaleWidth);
             this.height = (int) (image.getHeight() * scaleHeight);
             BufferedImage resized = new BufferedImage(this.width, this.height, image.getType());

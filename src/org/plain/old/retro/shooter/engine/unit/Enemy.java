@@ -1,5 +1,10 @@
 package org.plain.old.retro.shooter.engine.unit;
 
+import java.util.Random;
+
+import org.plain.old.retro.shooter.engine.Space2d;
+import org.plain.old.retro.shooter.engine.calculus.linear.RotationMatrix2d;
+import org.plain.old.retro.shooter.engine.calculus.linear.Vector2d;
 import org.plain.old.retro.shooter.engine.graphics.Sprite;
 
 /**
@@ -8,9 +13,29 @@ import org.plain.old.retro.shooter.engine.graphics.Sprite;
 public class Enemy extends AbstractUnit {
 
     /**
+     * The constant MOVE_SPEED.
+     */
+    public static final double MOVE_SPEED = 0.001;
+
+    /**
+     * The constant ROTATION_SPEED.
+     */
+    public static final double ROTATION_SPEED = 0.15;
+
+    /**
      * The constant DEFAULT_RADIUS.
      */
     public static final double DEFAULT_RADIUS = 0.25d;
+
+    /**
+     * The Direction.
+     */
+    private Vector2d direction;
+
+    /**
+     * The Movement vector.
+     */
+    private Vector2d movementVector;
 
     /**
      * Instantiates a new Enemy.
@@ -20,8 +45,8 @@ public class Enemy extends AbstractUnit {
      * @param texture the texture
      */
     public Enemy(double x, double y, Sprite texture) {
-		this(x, y, DEFAULT_RADIUS, texture);
-	}
+		    this(x, y, DEFAULT_RADIUS, texture);
+	  }
 
     /**
      * Instantiates a new Enemy.
@@ -32,6 +57,56 @@ public class Enemy extends AbstractUnit {
      * @param texture the texture
      */
     public Enemy(double x, double y, double radius, Sprite texture) {
-		super(x, y, radius, texture);
-	}
+		    super(x, y, radius, texture);
+        this.direction = new Vector2d(++x, ++y);
+        this.movementVector = new Vector2d(MOVE_SPEED, MOVE_SPEED);
+	  }
+
+    public void update(Unit otherUnit, Space2d map) {
+        double distanceToOther = this.calculateDistanceToCurrentObject(otherUnit.getPosition());
+        if (distanceToOther > 3d) return;
+        
+        this.direction = direction.rotate((new Random().nextBoolean() ? 1 : -1) * ROTATION_SPEED);
+        this.moveForward(map.getSpace());
+    }
+
+    /**
+     * Move forward.
+     *
+     * @param space the space
+     */
+    private void moveForward(int[][] space) {
+        this.shiftPosition(space, position.add(getStepPosition()));
+    }
+
+    /**
+     * Shift position.
+     *
+     * @param space       the space
+     * @param shiftVector the shift vector
+     */
+    private void shiftPosition(int[][] space, Vector2d shiftVector) {
+        if (shiftVector.getX() >= space.length - 1 || shiftVector.getX() <= 1 
+            || shiftVector.getY() >= space[0].length - 1 || shiftVector.getY() <= 1) return;
+        if (space[(int) shiftVector.getX()][(int) shiftVector.getY()] == 0) this.position = shiftVector;
+    }
+
+    /**
+     * Gets step position.
+     *
+     * @param direction the direction
+     * @return the step position
+     */
+    private Vector2d getStepPosition(Vector2d direction) {
+        return movementVector.multiply(direction);
+    }
+
+    /**
+     * Gets step position.
+     *
+     * @return the step position
+     */
+    private Vector2d getStepPosition() {
+        return getStepPosition(this.direction);
+    }
 }

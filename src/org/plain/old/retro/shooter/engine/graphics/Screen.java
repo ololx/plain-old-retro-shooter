@@ -471,9 +471,9 @@ public class Screen {
             double angles = angleStep * (angleToUnitLeft);
             double rayLength = unit.getDistanceToCurrentObject();
 
-            int unitHeight = (int) ((sprite.getWidth() / rayLength) * playerCamera.getDistanceToPlain());
+            //int unitHeight = (int) ((sprite.getWidth() / rayLength) * playerCamera.getDistanceToPlain());
 
-            //int unitHeight = (int) (((sprite.getHeight() / 100) / rayLength) * playerCamera.getDistanceToPlain());
+            int unitHeight = (int) (((sprite.getHeight() / 100) / rayLength) * playerCamera.getDistanceToPlain());
             unitHeight = SimpleMath.min(
                     sprite.getHeight(),
                     (int) (sprite.getHeight() / rayLength)
