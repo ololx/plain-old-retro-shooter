@@ -42,22 +42,22 @@ public class Scene extends JFrame {
     /**
      * The constant SCENE_WIDTH.
      */
-    public static final int SCENE_WIDTH = 640;
+    public static final int SCENE_WIDTH = 240;
 
     /**
      * The constant SCENE_HEIGHT.
      */
-    public static final int SCENE_HEIGHT = 480;
+    public static final int SCENE_HEIGHT = 120;
 
     /**
      * The constant SCENE_WIDTH.
      */
-    public static final int WIDTH = 2560;
+    public static final int WIDTH = 1366;
 
     /**
      * The constant SCENE_HEIGHT.
      */
-    public static final int HEIGHT = 1440;
+    public static final int HEIGHT = 768;
 
     /**
      * The Scene temp.
@@ -171,15 +171,15 @@ public class Scene extends JFrame {
         );
 
         this.enemies = new ConcurrentSkipListSet<>(){{
-            add(new Enemy(7.5, 7.5, new Sprite("src/resources/enemy-1.png",0.5 , 0.5)));
-            add(new Enemy(25.5, 3.5, new Sprite("src/resources/enemy-1.png",0.5 , 0.5)));
-            add(new Enemy(21.5, 7.5, new Sprite("src/resources/enemy-1.png",0.5 , 0.5)));
-            add(new Enemy(22.5, 6.9, new Sprite("src/resources/enemy-2.png",0.5 , 0.5)));
-            add(new Enemy(23.5, 7.5, new Sprite("src/resources/enemy-2.png",0.5 , 0.5)));
-            add(new Enemy(20.5, 12.5, new Sprite("src/resources/enemy-2.png",0.5 , 0.5)));
-            add(new Enemy(5.5, 10.5, new Sprite("src/resources/enemy-3.png",0.5 , 0.5)));
-            add(new Enemy(14.5, 19.5, new Sprite("src/resources/enemy-3.png",0.5 , 0.5)));
-            add(new Enemy(12.5, 10.5, new Sprite("src/resources/enemy-3.png",0.5 , 0.5)));
+            add(new Enemy(7.5, 7.5, new Sprite("resources/enemy-1.png",0.25 , 0.25)));
+            add(new Enemy(25.5, 3.5, new Sprite("resources/enemy-1.png",0.25 , 0.25)));
+            add(new Enemy(21.5, 7.5, new Sprite("resources/enemy-1.png",0.25 , 0.25)));
+            add(new Enemy(22.5, 6.9, new Sprite("resources/enemy-2.png",0.25 , 0.25)));
+            add(new Enemy(23.5, 7.5, new Sprite("resources/enemy-2.png",0.25 , 0.25)));
+            add(new Enemy(20.5, 12.5, new Sprite("resources/enemy-2.png",0.25 , 0.25)));
+            add(new Enemy(5.5, 10.5, new Sprite("resources/enemy-3.png",0.25 , 0.25)));
+            add(new Enemy(14.5, 19.5, new Sprite("resources/enemy-3.png",0.25 , 0.25)));
+            add(new Enemy(12.5, 10.5, new Sprite("resources/enemy-3.png",0.25 , 0.25)));
         }};
         mainPlayer = new Camera(1.5, 2.5, 1, 0, SCENE_WIDTH, SCENE_HEIGHT, 60);
         image = new BufferedImage(SCENE_WIDTH, SCENE_HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -189,12 +189,12 @@ public class Scene extends JFrame {
                 SCENE_WIDTH,
                 SCENE_HEIGHT,
                 new ArrayList<>(){{
-                    add(new Sprite("src/resources/room/wall-5.jpg"));
-                    add(new Sprite("src/resources/room/wall-6.jpg"));
-                    add(new Sprite("src/resources/room/wall-7.jpg"));
-                    add(new Sprite("src/resources/room/wall-8.jpg"));
-                    add(new Sprite("src/resources/room/floor-2.jpg"));
-                    add(new Sprite("src/resources/room/ceiling-2.png"));
+                    add(new Sprite("resources/room/wall-5.jpg"));
+                    add(new Sprite("resources/room/wall-6.jpg"));
+                    add(new Sprite("resources/room/wall-7.jpg"));
+                    add(new Sprite("resources/room/wall-8.jpg"));
+                    add(new Sprite("resources/room/floor-2.jpg"));
+                    add(new Sprite("resources/room/ceiling-2.png"));
                 }},
                 mainPlayer
         );
@@ -323,9 +323,10 @@ public class Scene extends JFrame {
                         }
                     }
 
-                    synchronized (bullets) {
+                    synchronized (enemies) {
                         for (Enemy enemy : enemies) {
                             if (!enemy.isExist()) this.enemies.remove(enemy);
+                            enemy.update(mainPlayer, map);
                         }
                     }
 
@@ -394,12 +395,12 @@ public class Scene extends JFrame {
         requestFocus();
         this.stick = new BoomStick(
                 new ArrayList<>(){{
-                    add(new Sprite("src/resources/equip/boomstick-1.png", 2, 2));
-                    add(new Sprite("src/resources/equip/boomstick-2.png", 2, 2));
-                    add(new Sprite("src/resources/equip/boomstick-3.png", 2, 2));
-                    add(new Sprite("src/resources/equip/boomstick-4.png", 2, 2));
-                    add(new Sprite("src/resources/equip/boomstick-5.png", 2, 2));
-                    add(new Sprite("src/resources/equip/boomstick-6.png", 2, 2));
+                    add(new Sprite("resources/equip/boomstick-1.png", 2, 2));
+                    add(new Sprite("resources/equip/boomstick-2.png", 2, 2));
+                    add(new Sprite("resources/equip/boomstick-3.png", 2, 2));
+                    add(new Sprite("resources/equip/boomstick-4.png", 2, 2));
+                    add(new Sprite("resources/equip/boomstick-5.png", 2, 2));
+                    add(new Sprite("resources/equip/boomstick-6.png", 2, 2));
                 }},
                 new ArrayList<>(){{
                     add(1);

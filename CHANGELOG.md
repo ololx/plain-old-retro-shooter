@@ -10,6 +10,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Refactor old project classes via game dev patterns implementation.
 
+## [0.4.4-alpha] - 2021-05-26
+
+### Added
+
+- The simplest enemies movement when main player is near.
+
+### Fixed
+
+- The `Sprite` load during `.jar` execution.
+
 ## [0.4.3-alpha] - 2021-02-03
 
 ### Added
