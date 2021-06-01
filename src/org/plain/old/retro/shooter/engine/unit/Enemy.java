@@ -5,6 +5,7 @@ import java.util.Random;
 import org.plain.old.retro.shooter.engine.Space2d;
 import org.plain.old.retro.shooter.engine.calculus.linear.RotationMatrix2d;
 import org.plain.old.retro.shooter.engine.calculus.linear.Vector2d;
+import org.plain.old.retro.shooter.engine.graphics.Camera;
 import org.plain.old.retro.shooter.engine.graphics.Sprite;
 
 /**
@@ -15,7 +16,7 @@ public class Enemy extends AbstractUnit {
     /**
      * The constant MOVE_SPEED.
      */
-    public static final double MOVE_SPEED = 0.001;
+    public static final double MOVE_SPEED = 0.05;
 
     /**
      * The constant ROTATION_SPEED.
@@ -62,11 +63,19 @@ public class Enemy extends AbstractUnit {
         this.movementVector = new Vector2d(MOVE_SPEED, MOVE_SPEED);
 	  }
 
-    public void update(Unit otherUnit, Space2d map) {
-        double distanceToOther = this.calculateDistanceToCurrentObject(otherUnit.getPosition());
-        if (distanceToOther > 3d) return;
-        
-        this.direction = direction.rotate((new Random().nextBoolean() ? 1 : -1) * ROTATION_SPEED);
+    public void update(Camera otherUnit, Space2d map) {
+        Vector2d shortLine = otherUnit.getPosition().subtract(this.position);
+        double distanceToOther = shortLine.getModule();
+
+        if (distanceToOther > 5d) return;
+        else if (distanceToOther <= 0.2d) System.out.println("-10");
+
+        double angle = otherUnit.getAngle() / 2;
+        double angleToUnitCenter = otherUnit.getDirection().getAngle(this.position.subtract(otherUnit.getPosition()));
+
+        if (angleToUnitCenter < angle) return;
+
+        this.direction = shortLine.getNormalized();
         this.moveForward(map.getSpace());
     }
 
