@@ -10,6 +10,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Refactor old project classes via game dev patterns implementation.
 
+## [0.4.5-alpha] - 2021-06-01
+
+### Changed
+
+- The enemies movement - it moves when player is near and do not see it.
+
 ## [0.4.4-alpha] - 2021-05-26
 
 ### Added
