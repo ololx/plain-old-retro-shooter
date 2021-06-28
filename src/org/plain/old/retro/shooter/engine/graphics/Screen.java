@@ -255,7 +255,7 @@ public class Screen {
 
                 int tX = (int)(texture.getWidth() * cellX);
                 int tY = (int)(texture.getHeight() * cellY);
-                int colorFloor = texture.getPixelSafty(tX, tY, 1 / (rowDistance));
+                int colorFloor = texture.getPixelSafety(tX, tY, 1.5 / (rowDistance));
 
                 pixels[x + y * width] = colorFloor;
             }
@@ -395,7 +395,7 @@ public class Screen {
                 else this.screenMask[x + y * width] = true;
 
                 int tY = imgPixYStart + (int)(((y - drawStart) * imgPixYSize));
-                int color = textures.get(texNum).getPixelSafty(tX, tY, 1 / rayLength);
+                int color = textures.get(texNum).getPixelSafety(tX, tY, 1.5 / rayLength);
                 pixels[x + y * width] = color;
             }
         }
@@ -425,7 +425,7 @@ public class Screen {
 
         for (int x = drawXStart + even; x < drawXEnd - even; x+= 1 + even) {
             for (int y = drawYStart + even; y < drawYEnd - even; y+= 1 + even) {
-                int pixelColor = gun.getPixelSafty(
+                int pixelColor = gun.getPixelSafety(
                         (int) ((x - drawXStart) * imgPixXSize),
                         (int) ((y - drawYStart) * imgPixYSize)
                 );
@@ -529,7 +529,7 @@ public class Screen {
                             || (this.raysCasted.getRay(x).getLength()
                             < (rayLength * playerCamera.getRotationMatrix(x).getX1()))
                     ) continue;
-                    int color = sprite.getPixelSafty((int) ((x - drawXStart + tXOffset) * imgPixXSize), tY, 1 / rayLength);
+                    int color = sprite.getPixelSafety((int) ((x - drawXStart + tXOffset) * imgPixXSize), tY, 1.5 / rayLength);
 
                     if (color != 0) {
                         pixels[x + y * width] = color;
