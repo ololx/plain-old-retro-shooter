@@ -31,13 +31,15 @@ Game engines are far ahead. However, the good old tube shooters in pseudo-3D are
 
 ## 📸 Demo
 
-The demonstration shows the one small scene with enemies, shooting and player moving in 1024x600 render resolution on a 5k resolution of monitor (58-76 fps).
+### - This GIF demonstraits the `fog effect` and `NPC movement` features.
+
+<img src="https://github.com/ololx/plain-old-retro-shooter/blob/assets/plain-old-retro-shooter-demo-3.gif?raw=true" width="640"/>
+
+### - This GIF demonstraits the one small scene with enemies, shooting and player moving in 1024x600 render resolution on a 5k resolution of monitor (58-76 fps).
 
 <img src="https://github.com/ololx/plain-old-retro-shooter/blob/assets/plain-old-retro-shooter-demo-1.gif?raw=true" width="640"/>
 
-The demonstration shows the multiplayer scene with  2 players.
-
-<img src="https://github.com/ololx/plain-old-retro-shooter/blob/assets/plain-old-retro-shooter-demo-3.gif?raw=true" width="640"/>
+### - This GIF demonstraits the multiplayer scene with  2 players.
 
 <img src="https://github.com/ololx/plain-old-retro-shooter/blob/assets/plain-old-retro-shooter-demo-2.gif?raw=true" width="640"/>
 
