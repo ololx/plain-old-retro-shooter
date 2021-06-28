@@ -3,7 +3,6 @@ package org.plain.old.retro.shooter.engine.graphics;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URISyntaxException;
@@ -161,7 +160,7 @@ public class Sprite implements Serializable {
      * @param y the y
      * @return the pixel safty
      */
-    public int getPixelSafty(int x, int y) {
+    public int getPixelSafety(int x, int y) {
         if (x < 0) x = -x;
         if (x >= this.getWidth()) x = x % this.getWidth();
         if (y < 0) y = -y;
@@ -170,12 +169,12 @@ public class Sprite implements Serializable {
         return this.getPixel(x, y);
     }
 
-    public int getPixelSafty(int x, int y, double intensity){
-        return getPixelSafty(x, y, intensity, Color.BLACK.getRGB(), .80);
+    public int getPixelSafety(int x, int y, double intensity){
+        return getPixelSafety(x, y, intensity, Color.BLACK.getRGB(), 0.8);
     }
 
-    public int getPixelSafty(int x, int y, double intensity, int fogColor, double fogIntensity) {
-        int color = this.getPixelSafty(x, y);
+    public int getPixelSafety(int x, int y, double intensity, int fogColor, double fogIntensity) {
+        int color = this.getPixelSafety(x, y);
         if (color == maskColor) return color;
 
         intensity = intensity > 1 ? 1 : intensity;
