@@ -2,6 +2,8 @@
 
 The Plain Old Retro Shooter is a 2.5D FPS game engine based on the raycasting technology.
 
+![codeql_analysis](https://github.com/ololx/plain-old-retro-shooter/actions/workflows/codeql-analysis.yml/badge.svg) ![maven_deploy](https://github.com/ololx/plain-old-retro-shooter/actions/workflows/maven.yml/badge.svg)
+
 [![status](https://img.shields.io/badge/status-active-active?style=flat-square)](BADGES_GUIDE.md#status) [![version](https://img.shields.io/badge/version-0.4.5--alpha-informational?style=flat-square)](BADGES_GUIDE.md#version) [![stable](https://img.shields.io/badge/stable-no-important?style=flat-square)](BADGES_GUIDE.md#stable) [![build](https://img.shields.io/badge/build-passing-success?style=flat-square)](BADGES_GUIDE.md#build) [![oss lifecycle](https://img.shields.io/badge/oss_lifecycle-active-important?style=flat-square)](BADGES_GUIDE.md#oss-lifecycle) [![maintenance](https://img.shields.io/badge/maintenance-yes-informational?style=flat-square)](BADGES_GUIDE.md#maintenance) [![latest release date](https://img.shields.io/badge/latest_release_date-February_03,_2021-informational?style=flat-square)](BADGES_GUIDE.md#release-date) [![last commit](https://img.shields.io/badge/last_commit_date-June_01,_2021-informational?style=flat-square)](BADGES_GUIDE.md#commit-date)
 
 [![license](https://img.shields.io/badge/license-MIT-informational?style=flat-square)](LICENSE) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg?style=flat-square)](CODE_OF_CONDUCT.md)
