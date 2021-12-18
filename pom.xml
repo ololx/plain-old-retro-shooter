@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.github.ololx</groupId>
+    <artifactId>plain-old-retro-shooter</artifactId>
+    <version>${revision}${sha1}${changelist}</version>
+
+    <name>plain-old-retro-shooter</name>
+    <description>
+        The Plain Old Retro Shooter is a 2.5D FPS game scene based on the raycasting technology.
+    </description>
+    <url>https://github.com/ololx/plain-old-retro-shooter</url>
+    <inceptionYear>2020</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>MIT license</name>
+            <url>https://github.com/ololx/plain-old-retro-shooter/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:https://github.com/ololx/plain-old-retro-shooter</connection>
+        <developerConnection>scm:git:git@github.com:ololx/plain-old-retro-shooter.git</developerConnection>
+        <url>https://github.com/ololx/plain-old-retro-shooter</url>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/ololx/plain-old-retro-shooter/issues</url>
+    </issueManagement>
+
+    <developers>
+        <developer>
+            <id>ololx</id>
+            <name>Alexander A. Kropotin</name>
+            <email>ololx@icloud.com</email>
+            <roles>
+                <role>author</role>
+                <role>contributor</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <packaging>jar</packaging>
+
+    <properties>
+        <!--<project versions-->
+        <revision>0.4.5</revision>
+        <changelist>-alpha</changelist>
+        <sha1/>
+        <!--project versions>-->
+
+        <!--<project specific-->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>11</java.version>
+        <!--<project specific-->
+        <mainClass>io.github.ololx.plain.old.retro.shooter.DedicatedServer</mainClass>
+        <mainClass>io.github.ololx.plain.old.retro.shooter.DemoScene</mainClass>
+    </properties>
+
+    <build>
+        <plugins>
+            <!--<compiler-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <!--compiler>-->
+        </plugins>
+    </build>
+</project>
