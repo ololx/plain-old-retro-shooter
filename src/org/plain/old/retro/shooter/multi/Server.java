@@ -87,7 +87,7 @@ public class Server implements Runnable {
     public void run() {
         System.out.println("Server listening on port " + this.port + "...");
 
-        while (true){
+        while (this.isActive){
             Socket clientSocket = this.catchConnection();
             clientSockets.add(clientSocket);
             new ConnectionBroker(clientSocket, clientSockets).start();

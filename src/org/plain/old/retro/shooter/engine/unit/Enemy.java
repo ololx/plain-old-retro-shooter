@@ -1,9 +1,6 @@
 package org.plain.old.retro.shooter.engine.unit;
 
-import java.util.Random;
-
 import org.plain.old.retro.shooter.engine.Space2d;
-import org.plain.old.retro.shooter.engine.calculus.linear.RotationMatrix2d;
 import org.plain.old.retro.shooter.engine.calculus.linear.Vector2d;
 import org.plain.old.retro.shooter.engine.graphics.Camera;
 import org.plain.old.retro.shooter.engine.graphics.Sprite;

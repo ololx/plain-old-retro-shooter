@@ -42,12 +42,12 @@ public class Scene extends JFrame {
     /**
      * The constant SCENE_WIDTH.
      */
-    public static final int SCENE_WIDTH = 240;
+    public static final int SCENE_WIDTH = 256;
 
     /**
      * The constant SCENE_HEIGHT.
      */
-    public static final int SCENE_HEIGHT = 120;
+    public static final int SCENE_HEIGHT = 128;
 
     /**
      * The constant SCENE_WIDTH.
@@ -138,19 +138,19 @@ public class Scene extends JFrame {
                         {1,1,1,1,1,1,1,1,2,2,2,2,2,2,2},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
                         {1,0,0,0,3,0,0,4,0,0,2,1,1,0,2},
-                        {1,0,2,2,3,0,0,4,0,0,3,0,0,0,2},
-                        {1,0,2,0,3,0,4,1,0,0,2,4,3,0,2},
+                        {1,0,7,7,7,0,0,4,0,0,3,0,0,0,2},
+                        {1,0,6,0,6,0,4,1,0,0,2,4,3,0,2},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
-                        {1,0,1,0,0,0,0,0,0,0,0,0,0,0,2},
-                        {1,0,1,0,0,0,0,0,0,0,0,0,0,0,4},
-                        {1,0,1,0,0,0,0,2,0,0,0,0,0,0,4},
-                        {1,0,1,0,0,0,0,2,0,0,0,0,0,0,4},
-                        {1,0,1,0,0,0,0,3,0,0,0,0,0,0,4},
-                        {1,0,1,0,0,0,0,1,0,0,0,0,0,0,4},
-                        {1,0,1,0,0,0,0,0,0,0,0,0,0,0,4},
-                        {1,0,1,0,0,0,0,0,0,0,0,0,0,0,4},
-                        {1,0,1,1,2,3,1,4,1,3,1,0,0,0,4},
+                        {1,0,6,0,0,0,0,0,0,0,0,0,0,0,2},
+                        {1,0,7,0,0,0,0,0,0,0,0,0,0,0,4},
+                        {1,0,7,0,0,0,0,2,0,0,0,0,0,0,4},
+                        {1,0,8,0,0,0,0,2,0,0,0,0,0,0,4},
+                        {1,0,8,0,0,0,0,3,0,0,0,0,0,0,4},
+                        {1,0,5,0,0,0,0,1,0,0,0,0,0,0,4},
+                        {1,0,5,0,0,0,0,0,0,0,0,0,0,0,4},
+                        {1,0,3,0,0,0,0,0,0,0,0,0,0,0,4},
+                        {1,0,3,1,2,3,1,4,1,3,1,0,0,0,4},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
@@ -166,20 +166,20 @@ public class Scene extends JFrame {
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
                         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
-                        {1,1,1,1,1,1,1,4,4,4,4,4,4,4,4}
+                        {1,2,2,3,3,2,2,2,2,4,2,3,4,4,4}
                 }
         );
 
         this.enemies = new ConcurrentSkipListSet<>(){{
-            add(new Enemy(7.5, 7.5, new Sprite("resources/enemy-1.png",0.25 , 0.25)));
-            add(new Enemy(25.5, 3.5, new Sprite("resources/enemy-1.png",0.25 , 0.25)));
-            add(new Enemy(21.5, 7.5, new Sprite("resources/enemy-1.png",0.25 , 0.25)));
-            add(new Enemy(22.5, 6.9, new Sprite("resources/enemy-2.png",0.25 , 0.25)));
-            add(new Enemy(23.5, 7.5, new Sprite("resources/enemy-2.png",0.25 , 0.25)));
-            add(new Enemy(20.5, 12.5, new Sprite("resources/enemy-2.png",0.25 , 0.25)));
-            add(new Enemy(5.5, 10.5, new Sprite("resources/enemy-3.png",0.25 , 0.25)));
-            add(new Enemy(14.5, 19.5, new Sprite("resources/enemy-3.png",0.25 , 0.25)));
-            add(new Enemy(12.5, 10.5, new Sprite("resources/enemy-3.png",0.25 , 0.25)));
+            add(new Enemy(7.5, 7.5, new Sprite("resources/enemy/1.png",0.25 , 0.25)));
+            add(new Enemy(25.5, 3.5, new Sprite("resources/enemy/2.png",0.25 , 0.25)));
+            add(new Enemy(21.5, 7.5, new Sprite("resources/enemy/3.png",0.25 , 0.25)));
+            add(new Enemy(22.5, 6.9, new Sprite("resources/enemy/4.png",0.25 , 0.25)));
+            add(new Enemy(23.5, 7.5, new Sprite("resources/enemy/5.png",0.25 , 0.25)));
+            add(new Enemy(20.5, 12.5, new Sprite("resources/enemy/6.png",0.25 , 0.25)));
+            add(new Enemy(5.5, 10.5, new Sprite("resources/enemy/7.png",0.25 , 0.25)));
+            add(new Enemy(14.5, 19.5, new Sprite("resources/enemy/8.png",0.25 , 0.25)));
+            add(new Enemy(12.5, 10.5, new Sprite("resources/enemy/9.png",0.25 , 0.25)));
         }};
         mainPlayer = new Camera(1.5, 2.5, 1, 0, SCENE_WIDTH, SCENE_HEIGHT, 60);
         image = new BufferedImage(SCENE_WIDTH, SCENE_HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -189,12 +189,17 @@ public class Scene extends JFrame {
                 SCENE_WIDTH,
                 SCENE_HEIGHT,
                 new ArrayList<>(){{
-                    add(new Sprite("resources/room/wall-5.jpg"));
-                    add(new Sprite("resources/room/wall-6.jpg"));
-                    add(new Sprite("resources/room/wall-7.jpg"));
-                    add(new Sprite("resources/room/wall-8.jpg"));
-                    add(new Sprite("resources/room/floor-2.jpg"));
-                    add(new Sprite("resources/room/ceiling-2.png"));
+                    add(new Sprite("resources/textures/tile/16.png"));
+                    add(new Sprite("resources/textures/tile/12.png"));
+                    add(new Sprite("resources/textures/tile/13.png"));
+                    add(new Sprite("resources/textures/tile/3.png"));
+                    add(new Sprite("resources/textures/bricks/19.png"));
+                    add(new Sprite("resources/textures/bricks/20.png"));
+                    add(new Sprite("resources/textures/bricks/21.png"));
+                    add(new Sprite("resources/textures/wood/24.png"));
+                    add(new Sprite("resources/textures/wood/19.png"));
+                    add(new Sprite("resources/textures/tile/20.png"));
+                    add(new Sprite("resources/textures/tile/17.png"));
                 }},
                 mainPlayer
         );

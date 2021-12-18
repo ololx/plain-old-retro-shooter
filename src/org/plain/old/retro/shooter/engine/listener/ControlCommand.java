@@ -1,7 +1,6 @@
 package org.plain.old.retro.shooter.engine.listener;
 
 import org.plain.old.retro.shooter.engine.unit.GeneralPlayer;
-import org.plain.old.retro.shooter.engine.unit.Player;
 
 import java.util.Objects;
 
