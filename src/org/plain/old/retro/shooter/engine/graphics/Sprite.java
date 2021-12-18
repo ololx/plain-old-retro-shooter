@@ -122,6 +122,48 @@ public class Sprite implements Serializable {
     }
 
     /**
+     * Instantiates a new Sprite.
+     *
+     * @param imageUri    the image uri
+     * @param scaleWidth  the scale width
+     * @param scaleHeight the scale height
+     */
+    public Sprite(String imageUri, double maxWidth, double maxHeight, double scaleWidth, double scaleHeight) {
+        URL resource = getClass().getClassLoader().getResource(imageUri);
+        if (resource == null)
+            throw new IllegalArgumentException("The image '" + imageUri + "' not found!");
+
+        try {
+            BufferedImage image = ImageIO.read(resource);
+            double width = image.getWidth() > maxWidth ? maxWidth : image.getWidth();
+            double height = image.getHeight() > maxHeight ? maxHeight : image.getHeight();
+            this.width = (int) (width * scaleWidth);
+            this.height = (int) (height * scaleHeight);
+            BufferedImage resized = new BufferedImage(this.width, this.height, image.getType());
+            Graphics2D g = resized.createGraphics();
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g.drawImage(image, 0, 0, this.width, this.height, 0, 0, image.getWidth(),
+                    image.getHeight(), null);
+            g.dispose();
+
+            this.pixels = new int[this.width][this.height];
+            int[] pixels = new int[this.width * this.height];
+            resized.getRGB(
+                    0,
+                    0,
+                    this.width,
+                    this.height,
+                    pixels,
+                    0,
+                    this.width
+            );
+            this.setPixels(this.width, this.height, pixels);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Gets width.
      *
      * @return the width

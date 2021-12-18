@@ -69,7 +69,6 @@ public class GeneralPlayer extends AbstractUnit {
      */
     public GeneralPlayer(double x, double y, double x2, double y2, double moveStep, double rotationStep) {
         super(x, y, 0.2d, new Sprite("resources/enemy/19.png"));
-        //this.position = new Vector2d(x, y);
         this.direction = new Vector2d(x2, y2);
         this.movementVector = new Vector2d(moveStep, moveStep);
         this.leftRotationMatrix = new RotationMatrix2d(rotationStep);

@@ -171,15 +171,15 @@ public class Scene extends JFrame {
         );
 
         this.enemies = new ConcurrentSkipListSet<>(){{
-            add(new Enemy(7.5, 7.5, new Sprite("resources/enemy/1.png",0.25 , 0.25)));
-            add(new Enemy(25.5, 3.5, new Sprite("resources/enemy/2.png",0.25 , 0.25)));
-            add(new Enemy(21.5, 7.5, new Sprite("resources/enemy/3.png",0.25 , 0.25)));
-            add(new Enemy(22.5, 6.9, new Sprite("resources/enemy/4.png",0.25 , 0.25)));
-            add(new Enemy(23.5, 7.5, new Sprite("resources/enemy/5.png",0.25 , 0.25)));
-            add(new Enemy(20.5, 12.5, new Sprite("resources/enemy/6.png",0.25 , 0.25)));
-            add(new Enemy(5.5, 10.5, new Sprite("resources/enemy/7.png",0.25 , 0.25)));
-            add(new Enemy(14.5, 19.5, new Sprite("resources/enemy/8.png",0.25 , 0.25)));
-            add(new Enemy(12.5, 10.5, new Sprite("resources/enemy/9.png",0.25 , 0.25)));
+            add(new Enemy(7.5, 7.5, new Sprite("resources/enemy/1.png", SCENE_WIDTH, SCENE_HEIGHT, 0.8 , 0.8)));
+            add(new Enemy(25.5, 3.5, new Sprite("resources/enemy/2.png",SCENE_WIDTH, SCENE_HEIGHT, 0.8 , 0.8)));
+            add(new Enemy(21.5, 7.5, new Sprite("resources/enemy/3.png",SCENE_WIDTH, SCENE_HEIGHT, 0.8 , 0.8)));
+            add(new Enemy(22.5, 6.9, new Sprite("resources/enemy/4.png",SCENE_WIDTH, SCENE_HEIGHT, 0.8 , 0.8)));
+            add(new Enemy(23.5, 7.5, new Sprite("resources/enemy/5.png",SCENE_WIDTH, SCENE_HEIGHT, 0.8 , 0.8)));
+            add(new Enemy(20.5, 12.5, new Sprite("resources/enemy/6.png",SCENE_WIDTH, SCENE_HEIGHT, 0.8 , 0.8)));
+            add(new Enemy(5.5, 10.5, new Sprite("resources/enemy/7.png",SCENE_WIDTH, SCENE_HEIGHT, 0.8 , 0.8)));
+            add(new Enemy(14.5, 19.5, new Sprite("resources/enemy/8.png",SCENE_WIDTH, SCENE_HEIGHT, 0.8 , 0.8)));
+            add(new Enemy(12.5, 10.5, new Sprite("resources/enemy/9.png",SCENE_WIDTH, SCENE_HEIGHT, 0.8 , 0.8)));
         }};
         mainPlayer = new Camera(1.5, 2.5, 1, 0, SCENE_WIDTH, SCENE_HEIGHT, 60);
         image = new BufferedImage(SCENE_WIDTH, SCENE_HEIGHT, BufferedImage.TYPE_INT_RGB);
