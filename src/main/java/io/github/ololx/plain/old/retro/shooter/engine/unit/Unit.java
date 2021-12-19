@@ -2,6 +2,7 @@ package io.github.ololx.plain.old.retro.shooter.engine.unit;
 
 import io.github.ololx.plain.old.retro.shooter.engine.calculus.linear.Vector2d;
 import io.github.ololx.plain.old.retro.shooter.engine.graphics.Sprite;
+import io.github.ololx.plain.old.retro.shooter.engine.unit.components.GameObject;
 
 import java.io.Serializable;
 
@@ -37,7 +38,7 @@ public interface Unit extends Serializable {
      *
      * @return the aligement
      */
-    ALIGNEMENT getAligement();
+    ALIGNEMENT getAlignment();
 
     /**
      * Gets position.

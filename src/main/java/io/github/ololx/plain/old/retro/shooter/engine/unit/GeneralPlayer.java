@@ -3,6 +3,10 @@ package io.github.ololx.plain.old.retro.shooter.engine.unit;
 import io.github.ololx.plain.old.retro.shooter.engine.calculus.linear.RotationMatrix2d;
 import io.github.ololx.plain.old.retro.shooter.engine.calculus.linear.Vector2d;
 import io.github.ololx.plain.old.retro.shooter.engine.graphics.Sprite;
+import io.github.ololx.plain.old.retro.shooter.engine.unit.components.DamageLogic;
+import io.github.ololx.plain.old.retro.shooter.engine.unit.components.GameObject;
+import io.github.ololx.plain.old.retro.shooter.engine.unit.components.Health;
+import io.github.ololx.plain.old.retro.shooter.engine.unit.components.UnitHealth;
 
 /**
  * The type General player.
@@ -11,7 +15,7 @@ import io.github.ololx.plain.old.retro.shooter.engine.graphics.Sprite;
  * @project plain -old-retro-shooter
  * @created 05.07.2020 08:37 <p>
  */
-public class GeneralPlayer extends AbstractUnit {
+public class GeneralPlayer extends AbstractUnit implements GameObject<DamageLogic> {
 
     /**
      * The constant MOVE_SPEED.
@@ -23,7 +27,7 @@ public class GeneralPlayer extends AbstractUnit {
      */
     public static final double ROTATION_SPEED = 0.05;
 
-    //private Vector2d position;
+    public static final int INITIAL_HEALT = 100;
 
     /**
      * The Direction.
@@ -44,6 +48,8 @@ public class GeneralPlayer extends AbstractUnit {
      * The Right rotation matrix.
      */
     private RotationMatrix2d rightRotationMatrix;
+
+    public  Health health = new UnitHealth();
 
     /**
      * Instantiates a new General player.
@@ -73,6 +79,8 @@ public class GeneralPlayer extends AbstractUnit {
         this.movementVector = new Vector2d(moveStep, moveStep);
         this.leftRotationMatrix = new RotationMatrix2d(rotationStep);
         this.rightRotationMatrix = new RotationMatrix2d(-rotationStep);
+
+        this.health.set(INITIAL_HEALT);
     }
 
     /**
@@ -189,5 +197,10 @@ public class GeneralPlayer extends AbstractUnit {
      */
     public String getMessage() {
         return this.position.getX() + "&" + this.position.getY();
+    }
+
+    @Override
+    public void update(DamageLogic logic) {
+        logic.apply(health);
     }
 }

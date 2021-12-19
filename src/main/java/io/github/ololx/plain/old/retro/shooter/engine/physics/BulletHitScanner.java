@@ -41,10 +41,17 @@ public interface BulletHitScanner {
                     if (!enemy.isExist()) continue;
 
                     if (eVec.subtract(bVec).getModule() <= Bullet.DEFAULT_RADIUS + enemy.getRadius()) {
-                        enemy.destroy();
+                        enemy.update(bullet.damage);
+
+                        if (enemy.health.get() <= 0) {
+                            enemy.destroy();
+                        }
+
                         bullet.destroy();
                         break;
                     }
+
+                    if (!bullet.isExist()) break;
                 }
             }
         }

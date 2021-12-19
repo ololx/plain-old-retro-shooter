@@ -4,11 +4,15 @@ import io.github.ololx.plain.old.retro.shooter.engine.Space2d;
 import io.github.ololx.plain.old.retro.shooter.engine.calculus.linear.Vector2d;
 import io.github.ololx.plain.old.retro.shooter.engine.graphics.Camera;
 import io.github.ololx.plain.old.retro.shooter.engine.graphics.Sprite;
+import io.github.ololx.plain.old.retro.shooter.engine.unit.components.DamageLogic;
+import io.github.ololx.plain.old.retro.shooter.engine.unit.components.GameObject;
+import io.github.ololx.plain.old.retro.shooter.engine.unit.components.Health;
+import io.github.ololx.plain.old.retro.shooter.engine.unit.components.UnitHealth;
 
 /**
  * The type Enemy.
  */
-public class Enemy extends AbstractUnit {
+public class Enemy extends AbstractUnit implements GameObject<DamageLogic> {
 
     /**
      * The constant MOVE_SPEED.
@@ -35,6 +39,8 @@ public class Enemy extends AbstractUnit {
      */
     private Vector2d movementVector;
 
+    public Health health = new UnitHealth(650);
+
     /**
      * Instantiates a new Enemy.
      *
@@ -55,9 +61,11 @@ public class Enemy extends AbstractUnit {
      * @param texture the texture
      */
     public Enemy(double x, double y, double radius, Sprite texture) {
-		    super(x, y, radius, texture);
+        super(x, y, radius, texture);
         this.direction = new Vector2d(++x, ++y);
         this.movementVector = new Vector2d(MOVE_SPEED, MOVE_SPEED);
+
+        this.health.set(150);
 	  }
 
     public void update(Camera otherUnit, Space2d map) {
@@ -65,7 +73,9 @@ public class Enemy extends AbstractUnit {
         double distanceToOther = shortLine.getModule();
 
         if (distanceToOther > 5d) return;
-        else if (distanceToOther <= 0.2d) System.out.println("-10");
+        else if (distanceToOther <= 0.2d) {
+            otherUnit.update(new DamageLogic(1));
+        }
 
         double angle = otherUnit.getAngle() / 2;
         double angleToUnitCenter = otherUnit.getDirection().getAngle(this.position.subtract(otherUnit.getPosition()));
@@ -114,5 +124,10 @@ public class Enemy extends AbstractUnit {
      */
     private Vector2d getStepPosition() {
         return getStepPosition(this.direction);
+    }
+
+    @Override
+    public void update(DamageLogic logic) {
+        logic.apply(health);
     }
 }

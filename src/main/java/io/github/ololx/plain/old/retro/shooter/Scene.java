@@ -2,6 +2,7 @@ package io.github.ololx.plain.old.retro.shooter;
 
 import io.github.ololx.plain.old.retro.shooter.engine.Space2d;
 import io.github.ololx.plain.old.retro.shooter.engine.clock.Clock;
+import io.github.ololx.plain.old.retro.shooter.engine.clock.Duration;
 import io.github.ololx.plain.old.retro.shooter.engine.clock.LowIntensiveClock;
 import io.github.ololx.plain.old.retro.shooter.engine.listener.*;
 import io.github.ololx.plain.old.retro.shooter.engine.physics.BulletHitScanner;
@@ -171,8 +172,8 @@ public class Scene extends JFrame {
         );
 
         this.enemies = new ConcurrentSkipListSet<>(){{
-            add(new Enemy(7.5, 7.5, new Sprite("enemy/1.png", SCENE_WIDTH, SCENE_HEIGHT, 0.8 , 0.8)));
-            add(new Enemy(25.5, 3.5, new Sprite("enemy/2.png",SCENE_WIDTH, SCENE_HEIGHT, 0.8 , 0.8)));
+            add(new Enemy(7.5, 7.5, new Sprite("enemy/18.png", SCENE_WIDTH, SCENE_HEIGHT, 1 , 1)));
+            add(new Enemy(25.5, 3.5, new Sprite("enemy/16.png",SCENE_WIDTH, SCENE_HEIGHT, 0.8 , 0.8)));
             add(new Enemy(21.5, 7.5, new Sprite("enemy/3.png",SCENE_WIDTH, SCENE_HEIGHT, 0.8 , 0.8)));
             add(new Enemy(22.5, 6.9, new Sprite("enemy/4.png",SCENE_WIDTH, SCENE_HEIGHT, 0.8 , 0.8)));
             add(new Enemy(23.5, 7.5, new Sprite("enemy/5.png",SCENE_WIDTH, SCENE_HEIGHT, 0.8 , 0.8)));
@@ -252,7 +253,7 @@ public class Scene extends JFrame {
         addMouseMotionListener(controllerMouseMove);
 
         this.sceneTemp = new LowIntensiveClock(
-                22,
+                25,
                 () -> {
                     for (Map.Entry<String, Boolean> state : controller.getState().entrySet()) {
                         if (state.getValue()) {
@@ -336,6 +337,12 @@ public class Scene extends JFrame {
                     }
 
                     BulletHitScanner.scan(this.bullets, this.enemies, sceneTemp.getFrequency(), map);
+                },
+                () -> {
+                    if (mainPlayer.health.get() <= 0) {
+                        mainPlayer.health.reset();
+                        mainPlayer.setPosition(1.5, 2.5);
+                    }
                 }
         );
         renderTemp = new LowIntensiveClock(
@@ -351,46 +358,54 @@ public class Scene extends JFrame {
                         this.bullets,
                         this.otherUnits.values()
                 ),
-                () -> this.render(
-                        map,
-                        String.format(
-                                "UPS: %s \n FPS: %s \n NETPS: %s",
-                                sceneTemp.getFrequency(),
-                                renderTemp.getFrequency(),
-                                clientTemp.getFrequency()
-                        )
-                )
-        );
-
-        clientTemp = new LowIntensiveClock(
-                sceneTemp.getFrequency(),
                 () -> {
-
-                    Set<Object> responseMessages = new HashSet<>();
-                    this.client.connect();
-                    Object requestMessage = mainPlayer;
-                    Object responseMessage = this.client.sendMessage(requestMessage);
-                    this.client.disconnect();
-                    if (responseMessage != null) responseMessages.add(responseMessage);
-
-                    for (Bullet bullet : tempBullets) {
-                        this.client.connect();
-                        responseMessage = this.client.sendMessage(bullet);
-                        if (responseMessage != null) responseMessages.add(responseMessage);
-                        this.client.disconnect();
-                    }
-                    tempBullets.clear();
-
-                    for (Object unit : responseMessages) {
-                        if (unit instanceof Bullet && !this.bullets.contains((unit))) {
-                            this.bullets.add((Bullet) unit);
-                        } else {
-                            this.otherUnits.put(((RegisterEntity) unit).getUid(), (Unit) unit);
-                        }
+                    String stats = "UPS: "
+                            + sceneTemp.getFrequency()
+                            + "\n FPS: "
+                            + renderTemp.getFrequency();
+                    if (clientTemp != null) {
+                        stats += "\n NETPS: "
+                                + clientTemp.getFrequency();
                     }
 
+                    stats += "\n\n HEALTH: "
+                            + mainPlayer.health.toString();
+
+                    this.render(map, stats);
                 }
         );
+
+        if (this.client != null) {
+            clientTemp = new LowIntensiveClock(
+                    sceneTemp.getFrequency(),
+                    () -> {
+
+                        Set<Object> responseMessages = new HashSet<>();
+                        this.client.connect();
+                        Object requestMessage = mainPlayer;
+                        Object responseMessage = this.client.sendMessage(requestMessage);
+                        this.client.disconnect();
+                        if (responseMessage != null) responseMessages.add(responseMessage);
+
+                        for (Bullet bullet : tempBullets) {
+                            this.client.connect();
+                            responseMessage = this.client.sendMessage(bullet);
+                            if (responseMessage != null) responseMessages.add(responseMessage);
+                            this.client.disconnect();
+                        }
+                        tempBullets.clear();
+
+                        for (Object unit : responseMessages) {
+                            if (unit instanceof Bullet && !this.bullets.contains((unit))) {
+                                this.bullets.add((Bullet) unit);
+                            } else {
+                                this.otherUnits.put(((RegisterEntity) unit).getUid(), (Unit) unit);
+                            }
+                        }
+
+                    }
+            );
+        }
     }
 
     /**
@@ -420,7 +435,7 @@ public class Scene extends JFrame {
         );
         this.renderTemp.start();
         this.sceneTemp.start();
-        this.clientTemp.start();
+        if (this.clientTemp != null) this.clientTemp.start();
     }
 
     /**

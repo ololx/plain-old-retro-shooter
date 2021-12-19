@@ -1,13 +1,14 @@
 package io.github.ololx.plain.old.retro.shooter.engine.unit;
 
 import io.github.ololx.plain.old.retro.shooter.engine.graphics.Sprite;
+import io.github.ololx.plain.old.retro.shooter.engine.unit.components.*;
 
 import java.util.UUID;
 
 /**
  * The type Player.
  */
-public class Player extends AbstractUnit implements RegisterEntity {
+public class Player extends AbstractUnit implements RegisterEntity{
 
     /**
      * The constant DEFAULT_RADIUS.

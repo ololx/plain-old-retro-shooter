@@ -2,6 +2,10 @@ package io.github.ololx.plain.old.retro.shooter.engine.unit;
 
 import io.github.ololx.plain.old.retro.shooter.engine.calculus.linear.Vector2d;
 import io.github.ololx.plain.old.retro.shooter.engine.graphics.Sprite;
+import io.github.ololx.plain.old.retro.shooter.engine.unit.components.DamageLogic;
+import io.github.ololx.plain.old.retro.shooter.engine.unit.components.GameObject;
+import io.github.ololx.plain.old.retro.shooter.engine.unit.components.Health;
+import io.github.ololx.plain.old.retro.shooter.engine.unit.components.UnitHealth;
 
 import java.util.UUID;
 
@@ -14,7 +18,7 @@ import static io.github.ololx.plain.old.retro.shooter.engine.unit.Unit.ALIGNEMEN
  * @project plain -old-retro-shooter
  * @created 08.08.2020 17:53 <p>
  */
-public class AbstractUnit implements Unit, RegisterEntity, Comparable<RegisterEntity>  {
+public abstract class AbstractUnit implements Unit, RegisterEntity, Comparable<RegisterEntity>  {
 
     /**
      * The Aligement.
@@ -71,7 +75,7 @@ public class AbstractUnit implements Unit, RegisterEntity, Comparable<RegisterEn
      * @return the aligement
      */
     @Override
-    public ALIGNEMENT getAligement() {
+    public ALIGNEMENT getAlignment() {
         return this.aligement;
     }
 

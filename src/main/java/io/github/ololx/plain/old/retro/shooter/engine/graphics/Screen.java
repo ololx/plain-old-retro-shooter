@@ -486,7 +486,7 @@ public class Screen {
 
             int drawYStart = 0;
             int drawYEnd = 0;
-            if (unit.getAligement().equals(Unit.ALIGNEMENT.CENTER)) {
+            if (unit.getAlignment().equals(Unit.ALIGNEMENT.CENTER)) {
                 drawYStart = SimpleMath.max(
                         (int) (-(unitHeight >> 1) + (height >> 1) + playerCamera.getHorizont()),
                         0
@@ -495,7 +495,7 @@ public class Screen {
                         (int) ((unitHeight >> 1) + (height >> 1) + playerCamera.getHorizont()),
                         height
                 );
-            } else if (unit.getAligement().equals(Unit.ALIGNEMENT.BOTTOM)) {
+            } else if (unit.getAlignment().equals(Unit.ALIGNEMENT.BOTTOM)) {
                 int wallHeight = (int) (height / rayLength);
                 int drawEnd = SimpleMath.min(
                         (int) ((wallHeight >> 1) + (height >> 1) + playerCamera.getHorizont()),

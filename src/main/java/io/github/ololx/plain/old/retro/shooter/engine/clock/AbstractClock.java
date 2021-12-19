@@ -87,6 +87,19 @@ public abstract class AbstractClock implements Clock {
         this.deactivate();
     }
 
+    @Override
+    public void pause(long mills) {
+        this.deactivate();
+
+        try {
+            this.flow.wait(mills);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        this.activate();
+    }
+
     /**
      * Gets frequency.
      *

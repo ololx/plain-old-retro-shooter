@@ -29,6 +29,8 @@ public interface Clock extends Runnable {
      */
     void pause();
 
+    void pause(long mills);
+
     /**
      * Gets frequency.
      *

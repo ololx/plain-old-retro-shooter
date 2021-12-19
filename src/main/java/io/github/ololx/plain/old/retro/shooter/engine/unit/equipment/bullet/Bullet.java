@@ -3,6 +3,7 @@ package io.github.ololx.plain.old.retro.shooter.engine.unit.equipment.bullet;
 import io.github.ololx.plain.old.retro.shooter.engine.calculus.linear.Vector2d;
 import io.github.ololx.plain.old.retro.shooter.engine.graphics.Sprite;
 import io.github.ololx.plain.old.retro.shooter.engine.unit.AbstractUnit;
+import io.github.ololx.plain.old.retro.shooter.engine.unit.components.DamageLogic;
 
 /**
  * The type Bullet.
@@ -22,6 +23,8 @@ public class Bullet extends AbstractUnit {
      * The constant DEFAULT_RADIUS.
      */
     public final static double DEFAULT_RADIUS = 0.01;
+
+    public DamageLogic damage = new DamageLogic(100);
 
     /**
      * The Direction.

@@ -41,9 +41,9 @@ public class DemoScene {
                 client = new Client(args[0], Integer.valueOf(args[1]));
                 break;
             default:
-                server = new Server(DEFAULT_PORT);
-                server.start();
-                client = new Client(DEFAULT_ADDRESS, DEFAULT_PORT);
+                //server = new Server(DEFAULT_PORT);
+                //server.start();
+                //client = new Client(DEFAULT_ADDRESS, DEFAULT_PORT);
         }
 
         Scene game = new Scene(client);
