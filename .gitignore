@@ -1,5 +1,5 @@
 # Package Files
-*.jaк
+*.jar
 
 # Builds
 out/*
@@ -24,3 +24,4 @@ target/*
 
 # Exclusions FIiles
 !.gitignore
+!.github

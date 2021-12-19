@@ -2,9 +2,11 @@
 
 The Plain Old Retro Shooter is a 2.5D FPS game engine based on the raycasting technology.
 
-[![status](https://img.shields.io/badge/status-active-active?style=flat-square)](BADGES_GUIDE.md#status) [![version](https://img.shields.io/badge/version-0.4.5--alpha-informational?style=flat-square)](BADGES_GUIDE.md#version) [![stable](https://img.shields.io/badge/stable-no-important?style=flat-square)](BADGES_GUIDE.md#stable) [![build](https://img.shields.io/badge/build-passing-success?style=flat-square)](BADGES_GUIDE.md#build) [![oss lifecycle](https://img.shields.io/badge/oss_lifecycle-active-important?style=flat-square)](BADGES_GUIDE.md#oss-lifecycle) [![maintenance](https://img.shields.io/badge/maintenance-yes-informational?style=flat-square)](BADGES_GUIDE.md#maintenance) [![latest release date](https://img.shields.io/badge/latest_release_date-February_03,_2021-informational?style=flat-square)](BADGES_GUIDE.md#release-date) [![last commit](https://img.shields.io/badge/last_commit_date-June_01,_2021-informational?style=flat-square)](BADGES_GUIDE.md#commit-date)
+![codeql_analysis](https://github.com/ololx/plain-old-retro-shooter/actions/workflows/codeql-analysis.yml/badge.svg) ![maven_deploy](https://github.com/ololx/plain-old-retro-shooter/actions/workflows/maven.yml/badge.svg)
 
-[![license](https://img.shields.io/badge/license-MIT-informational?style=flat-square)](LICENSE) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg?style=flat-square)](CODE_OF_CONDUCT.md)
+[![status](https://img.shields.io/badge/status-active-active)](BADGES_GUIDE.md#status) [![version](https://img.shields.io/badge/version-0.4.5--alpha-informational)](BADGES_GUIDE.md#version) [![oss lifecycle](https://img.shields.io/badge/oss_lifecycle-active-important)](BADGES_GUIDE.md#oss-lifecycle) [![latest release date](https://img.shields.io/badge/latest_release_date-February_03,_2021-informational)](BADGES_GUIDE.md#release-date) [![last commit](https://img.shields.io/badge/last_commit_date-December_19,_2021-informational)](BADGES_GUIDE.md#commit-date)
+
+[![license](https://img.shields.io/badge/license-MIT-informational)](LICENSE) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
 ---
 
@@ -31,15 +33,19 @@ Game engines are far ahead. However, the good old tube shooters in pseudo-3D are
 
 ## 📸 Demo
 
-### - This GIF demonstraits the `fog effect` and `NPC movement` features.
+##### - This GIF demonstraits the `Damage` feature.
+
+<img src="https://github.com/ololx/plain-old-retro-shooter/blob/assets/plain-old-retro-shooter-demo-4.gif?raw=true" width="640"/>
+
+##### - This GIF demonstraits the `fog effect` and `NPC movement` features.
 
 <img src="https://github.com/ololx/plain-old-retro-shooter/blob/assets/plain-old-retro-shooter-demo-3.gif?raw=true" width="640"/>
 
-### - This GIF demonstraits the one small scene with enemies, shooting and player moving in 1024x600 render resolution on a 5k resolution of monitor (58-76 fps).
+###### - This GIF demonstraits the one small scene with enemies, shooting and player moving in 1024x600 render resolution on a 5k resolution of monitor (58-76 fps).
 
 <img src="https://github.com/ololx/plain-old-retro-shooter/blob/assets/plain-old-retro-shooter-demo-1.gif?raw=true" width="640"/>
 
-### - This GIF demonstraits the multiplayer scene with  2 players.
+##### - This GIF demonstraits the multiplayer scene with  2 players.
 
 <img src="https://github.com/ololx/plain-old-retro-shooter/blob/assets/plain-old-retro-shooter-demo-2.gif?raw=true" width="640"/>
 
