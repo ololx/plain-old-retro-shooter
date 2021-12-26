@@ -1,6 +1,7 @@
 package io.github.ololx.plain.old.retro.shooter;
 
 import io.github.ololx.plain.old.retro.shooter.engine.Space2d;
+import io.github.ololx.plain.old.retro.shooter.engine.calculus.linear.Vector2d;
 import io.github.ololx.plain.old.retro.shooter.engine.clock.Clock;
 import io.github.ololx.plain.old.retro.shooter.engine.clock.Duration;
 import io.github.ololx.plain.old.retro.shooter.engine.clock.LowIntensiveClock;
@@ -298,7 +299,12 @@ public class Scene extends JFrame {
                             }
 
                             if (state.getKey().equals("SHOT")) {
-                                Vector<Bullet> bullets = stick.shoot(mainPlayer.getPosition(), mainPlayer.getDirection());
+                                Vector<Bullet> bullets = stick.shoot(
+                                        mainPlayer.getPosition()
+                                                .add(new Vector2d(0.25, 0.25)
+                                                .multiply(mainPlayer.getDirection())),
+                                        mainPlayer.getDirection()
+                                );
                                 this.bullets.addAll(bullets);
                                 this.tempBullets.addAll(bullets);
                             }
@@ -332,11 +338,13 @@ public class Scene extends JFrame {
                     synchronized (enemies) {
                         for (Enemy enemy : enemies) {
                             if (!enemy.isExist()) this.enemies.remove(enemy);
-                            enemy.update(mainPlayer, map);
+                            bullets.addAll(
+                                    enemy.update(mainPlayer, map, new Vector<>())
+                            );
                         }
                     }
 
-                    BulletHitScanner.scan(this.bullets, this.enemies, sceneTemp.getFrequency(), map);
+                    BulletHitScanner.scan(this.bullets, this.enemies, sceneTemp.getFrequency(), map, this.mainPlayer);
                 },
                 () -> {
                     if (mainPlayer.health.get() <= 0) {

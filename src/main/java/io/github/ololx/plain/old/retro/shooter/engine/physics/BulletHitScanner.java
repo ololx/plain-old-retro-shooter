@@ -3,8 +3,10 @@ package io.github.ololx.plain.old.retro.shooter.engine.physics;
 import io.github.ololx.plain.old.retro.shooter.engine.Space2d;
 import io.github.ololx.plain.old.retro.shooter.engine.calculus.linear.Vector2d;
 import io.github.ololx.plain.old.retro.shooter.engine.unit.Enemy;
+import io.github.ololx.plain.old.retro.shooter.engine.unit.GeneralPlayer;
 import io.github.ololx.plain.old.retro.shooter.engine.unit.equipment.bullet.Bullet;
 
+import java.util.Vector;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
@@ -24,7 +26,11 @@ public interface BulletHitScanner {
      * @param hertz   the hertz
      * @param map     the map
      */
-    static void scan(ConcurrentSkipListSet<Bullet> bullets, ConcurrentSkipListSet<Enemy> enemies, long hertz, Space2d map) {
+    static void scan(ConcurrentSkipListSet<Bullet> bullets,
+                     ConcurrentSkipListSet<Enemy> enemies,
+                     long hertz,
+                     Space2d map,
+                     GeneralPlayer p) {
         double hitScanStep = (100 * Bullet.MOVE_SPEED);
         double bulletSpeed = (Bullet.MOVE_SPEED / hertz) / hitScanStep;
 
@@ -35,12 +41,22 @@ public interface BulletHitScanner {
                 bullet.move(map.getSpace(), bulletSpeed);
                 Vector2d bVec = bullet.getPosition();
 
+                Vector2d pVec = p.getPosition();
+                if (pVec.subtract(bVec).getModule() < Bullet.DEFAULT_RADIUS) {
+                    p.update(bullet.damage);
+
+                    bullet.destroy();
+                    break;
+                }
+
+                if (!bullet.isExist()) break;
+
                 for (Enemy enemy : enemies) {
                     Vector2d eVec = enemy.getPosition();
 
                     if (!enemy.isExist()) continue;
 
-                    if (eVec.subtract(bVec).getModule() <= Bullet.DEFAULT_RADIUS + enemy.getRadius()) {
+                    if (eVec.subtract(bVec).getModule() < Bullet.DEFAULT_RADIUS + enemy.getRadius()) {
                         enemy.update(bullet.damage);
 
                         if (enemy.health.get() <= 0) {
