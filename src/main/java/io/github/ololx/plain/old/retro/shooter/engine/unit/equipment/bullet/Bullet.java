@@ -24,7 +24,7 @@ public class Bullet extends AbstractUnit {
      */
     public final static double DEFAULT_RADIUS = 0.01;
 
-    public DamageLogic damage = new DamageLogic(100);
+    public DamageLogic damage = new DamageLogic(20);
 
     /**
      * The Direction.
@@ -80,7 +80,9 @@ public class Bullet extends AbstractUnit {
      * @param shiftVector the shift vector
      */
     private void shiftPosition(int[][] space, Vector2d shiftVector) {
-        if (space[(int) shiftVector.getX()][(int) shiftVector.getY()] == 0) this.position = shiftVector;
+        if ((shiftVector.getX() < space.length)
+                && (shiftVector.getY() < space[0].length)
+                && (space[(int) shiftVector.getX()][(int) shiftVector.getY()] == 0)) this.position = shiftVector;
         else this.destroy();
     }
 

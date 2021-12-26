@@ -1,9 +1,9 @@
 package io.github.ololx.plain.old.retro.shooter.engine.unit.equipment.weapon;
 
-import io.github.ololx.plain.old.retro.shooter.engine.unit.equipment.bullet.Bullet;
-import io.github.ololx.plain.old.retro.shooter.engine.unit.equipment.bullet.BulletFactory;
 import io.github.ololx.plain.old.retro.shooter.engine.calculus.linear.Vector2d;
 import io.github.ololx.plain.old.retro.shooter.engine.graphics.Sprite;
+import io.github.ololx.plain.old.retro.shooter.engine.unit.equipment.bullet.Bullet;
+import io.github.ololx.plain.old.retro.shooter.engine.unit.equipment.bullet.BulletFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,17 +16,17 @@ import java.util.Vector;
  * @project plain -old-retro-shooter
  * @created 21.07.2020 13:41 <p>
  */
-public class BoomStick {
+public class MonsterSpliting {
 
     /**
      * The constant BULLETS_IN_SHOT.
      */
-    public static final int BULLETS_IN_SHOT = 6;
+    public static final int BULLETS_IN_SHOT = 1;
 
     /**
      * The Fire times.
      */
-    int fireTimes = 15;
+    int fireTimes = 10;
 
     /**
      * The Current fire times.
@@ -36,7 +36,7 @@ public class BoomStick {
     /**
      * The Reload times.
      */
-    int reloadTimes = 30;
+    int reloadTimes = 20;
 
     /**
      * The Current reload time.
@@ -90,10 +90,10 @@ public class BoomStick {
      * @param reloadFrames the reload frames
      * @param mainFrame    the main frame
      */
-    public BoomStick(List<Sprite> sprites,
-                     List<Integer> fireFrames,
-                     List<Integer> reloadFrames,
-                     int mainFrame) {
+    public MonsterSpliting(List<Sprite> sprites,
+                           List<Integer> fireFrames,
+                           List<Integer> reloadFrames,
+                           int mainFrame) {
         this.mainFrame = mainFrame;
         this.sprites = sprites;
         this.fireFrames = fireFrames;
@@ -103,8 +103,10 @@ public class BoomStick {
     /**
      * Update.
      */
-    public void update() {
-        if (this.isShooting()) {
+    public Vector<Bullet> update(Vector2d position, Vector2d direction) {
+        if (!this.isShooting() && !isReload()) {
+            return this.shoot(position, direction);
+        } else if (this.isShooting()) {
             if (currentFireTimes < this.fireTimes) {
                 this.currentFireTimes++;
             } else {
@@ -112,8 +114,7 @@ public class BoomStick {
                 this.isShooting = false;
                 this.isReload = true;
             }
-        }
-        else if (this.isReload()) {
+        } else if (this.isReload()) {
             if (currentReloadTime < this.reloadTimes) {
                 this.currentReloadTime++;
             } else {
@@ -121,6 +122,8 @@ public class BoomStick {
                 this.isReload = false;
             }
         }
+
+        return new Vector<>();
     }
 
     /**
@@ -165,7 +168,7 @@ public class BoomStick {
         if (this.isShooting && (this.currentFireTimes == 0)) {
 
             for (double c = 0; c < BULLETS_IN_SHOT; c++) {
-                bullets.add(BulletFactory.getInstance(position, direction.rotate(Math.random() * (.05) - (.025))));
+                bullets.add(BulletFactory.getInstance(position, direction));
             }
         }
 

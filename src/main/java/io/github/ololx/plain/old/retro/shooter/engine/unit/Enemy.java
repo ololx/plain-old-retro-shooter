@@ -8,6 +8,11 @@ import io.github.ololx.plain.old.retro.shooter.engine.unit.components.DamageLogi
 import io.github.ololx.plain.old.retro.shooter.engine.unit.components.GameObject;
 import io.github.ololx.plain.old.retro.shooter.engine.unit.components.Health;
 import io.github.ololx.plain.old.retro.shooter.engine.unit.components.UnitHealth;
+import io.github.ololx.plain.old.retro.shooter.engine.unit.equipment.bullet.Bullet;
+import io.github.ololx.plain.old.retro.shooter.engine.unit.equipment.weapon.MonsterSpliting;
+
+import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  * The type Enemy.
@@ -38,6 +43,27 @@ public class Enemy extends AbstractUnit implements GameObject<DamageLogic> {
      * The Movement vector.
      */
     private Vector2d movementVector;
+
+    MonsterSpliting stick = new MonsterSpliting(
+            new ArrayList<>(){{
+                add(new Sprite("equip/boomstick-1.png", 2, 2));
+                add(new Sprite("equip/boomstick-2.png", 2, 2));
+                add(new Sprite("equip/boomstick-3.png", 2, 2));
+                add(new Sprite("equip/boomstick-4.png", 2, 2));
+                add(new Sprite("equip/boomstick-5.png", 2, 2));
+                add(new Sprite("equip/boomstick-6.png", 2, 2));
+            }},
+            new ArrayList<>(){{
+                add(1);
+                add(2);
+            }},
+            new ArrayList<>(){{
+                add(3);
+                add(4);
+                add(5);
+            }},
+            0
+    );
 
     public Health health = new UnitHealth(650);
 
@@ -74,16 +100,43 @@ public class Enemy extends AbstractUnit implements GameObject<DamageLogic> {
 
         if (distanceToOther > 5d) return;
         else if (distanceToOther <= 0.2d) {
-            otherUnit.update(new DamageLogic(1));
+            otherUnit.update(new DamageLogic(25));
         }
 
         double angle = otherUnit.getAngle() / 2;
         double angleToUnitCenter = otherUnit.getDirection().getAngle(this.position.subtract(otherUnit.getPosition()));
+        this.direction = shortLine.getNormalized();
+
+        this.stick.update(this.position.add(DEFAULT_RADIUS * 2), this.direction);
 
         if (angleToUnitCenter < angle) return;
 
-        this.direction = shortLine.getNormalized();
         this.moveForward(map.getSpace());
+    }
+
+    public Vector<Bullet> update(Camera otherUnit, Space2d map, Vector<Bullet> bullets) {
+        Vector2d shortLine = otherUnit.getPosition().subtract(this.position);
+        double distanceToOther = shortLine.getModule();
+
+        if (distanceToOther <= DEFAULT_RADIUS) {
+            otherUnit.update(new DamageLogic(1));
+        }
+
+        if (distanceToOther > 8d) {
+            return new Vector<>();
+        }
+
+        double angle = otherUnit.getAngle() / 2;
+        double angleToUnitCenter = otherUnit.getDirection().getAngle(this.position.subtract(otherUnit.getPosition()));
+        this.direction = shortLine.getNormalized();
+
+        Vector<Bullet> vectors = this.stick.update(this.position.add(new Vector2d(DEFAULT_RADIUS * 2, DEFAULT_RADIUS * 2).multiply(direction)), this.direction);
+
+        if (distanceToOther >= 2d || angleToUnitCenter < angle) return vectors;
+
+        this.moveForward(map.getSpace());
+
+        return vectors;
     }
 
     /**
